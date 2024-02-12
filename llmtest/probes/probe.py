@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from detector import Detector
+from llmtest.detector import Detector
 class Probe:
     """Base class for Probe"""
 

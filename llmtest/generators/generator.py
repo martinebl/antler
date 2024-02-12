@@ -6,6 +6,6 @@ class Generator:
         self.model = model
         self.options = options
 
-    def generate(prompt: str) -> str:
+    def generate(self, prompt: str) -> str:
         raise NotImplementedError("This method should be implemented in subclasses")
 

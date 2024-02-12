@@ -4,7 +4,7 @@ class Detector:
     def __init__(self, targets: list[str],):
         self.targets = targets
 
-    def detectTargets(self, answer: str) -> str:
+    def detectTargets(self, answer: str) -> bool:
         for target in self.targets:
             if target in answer:
                 return True

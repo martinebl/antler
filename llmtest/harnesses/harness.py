@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-from generators.gpt4all import GPT4all
-from probes.cursewordfuck import CurseWordFuck 
-from transformers.transformer import Transformer
-from exploits.acceptingprefix import AcceptingPrefix
+from llmtest.generators.gpt4all import GPT4all
+from llmtest.probes.cursewordfuck import CurseWordFuck 
+from llmtest.transformers.transformer import Transformer
+from llmtest.exploits.acceptingprefix import AcceptingPrefix
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """

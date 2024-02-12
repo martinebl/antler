@@ -1,4 +1,4 @@
-from harnesses.harness import Harness
+from llmtest.harnesses.harness import Harness
 
 """"entry point script"""
 
