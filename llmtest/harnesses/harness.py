@@ -6,10 +6,16 @@ from llmtest.exploits.acceptingprefix import AcceptingPrefix
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
+    ProbeMapping = {
+        'CurseWordFuck': CurseWordFuck,
+    }
 
-    def __init__(self) -> None:
-        self.generator = GPT4all("orca-mini-3b-gguf2-q4_0", {})
-        self.probes = [CurseWordFuck()]
+    def __init__(self, model="orca-mini-3b-gguf2-q4_0", probe="CurseWordFuck") -> None:
+        if probe not in Harness.ProbeMapping.keys():
+            raise Exception("Error: Given probe does not exist")
+        
+        self.generator = GPT4all(model, {})
+        self.probes = [self.ProbeMapping[probe]()]
         self.transformers = [Transformer([AcceptingPrefix()])]
 
     

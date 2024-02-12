@@ -1,10 +1,9 @@
-from llmtest.harnesses.harness import Harness
+from llmtest.cli import handle
 
 """"entry point script"""
 
 def main():
-    harness = Harness()
-    harness.run()
+    handle()
 
 if __name__ == "__main__":
     main()
