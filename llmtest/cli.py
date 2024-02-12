@@ -1,4 +1,5 @@
 import argparse
+import sys
 from llmtest.harnesses.harness import Harness
 
 def handle() -> None:
@@ -27,7 +28,8 @@ def handle() -> None:
 
     args = parser.parse_args()
 
-    harness = Harness() if args.default else Harness(args.model, args.probe)
+    # Use the default value if either d is specified, or no arguments are given
+    harness = Harness() if args.default or len(sys.argv) == 1 else Harness(args.model, args.probe)
     harness.run()
 
 
