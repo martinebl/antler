@@ -23,7 +23,7 @@ def handle() -> None:
         "--default",
         "-d",
         action='store_true',
-        help="Use the default probe and generator (CurseWord and orca-mini)"
+        help="Use the default probe and generator (CurseWord and orca-mini). Same behaviour happens when no arguments are provided"
     )
 
     args = parser.parse_args()
