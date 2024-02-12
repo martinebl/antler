@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 from llmtest.generators.gpt4all import GPT4all
 from llmtest.probes.cursewordfuck import CurseWordFuck 
+from llmtest.probes.robastore import RobAStore
 from llmtest.transformers.transformer import Transformer
 from llmtest.exploits.acceptingprefix import AcceptingPrefix
+from llmtest.exploits.refusalsuppresion import RefusalSuppresion
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
     ProbeMapping = {
         'CurseWordFuck': CurseWordFuck,
+        'RobAStore': RobAStore
     }
 
     def __init__(self, model="orca-mini-3b-gguf2-q4_0", probe="CurseWordFuck") -> None:
