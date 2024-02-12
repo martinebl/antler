@@ -3,13 +3,15 @@ from llmtest.generators.gpt4all import GPT4all
 from llmtest.probes.cursewordfuck import CurseWordFuck 
 from llmtest.transformers.transformer import Transformer
 from llmtest.exploits.acceptingprefix import AcceptingPrefix
+from llmtest.probes import Probe
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self) -> None:
+    def __init__(self, probes:list[Probe]) -> None:
         self.generator = GPT4all("orca-mini-3b-gguf2-q4_0", {})
-        self.probes = [CurseWordFuck()]
+        #self.probes = [CurseWordFuck()]
+        self.probes = probes
         self.transformers = [Transformer([AcceptingPrefix()])]
 
     
