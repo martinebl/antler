@@ -10,13 +10,14 @@ from llmtest.probes import Probe
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], model="orca-mini-3b-gguf2-q4_0") -> None:
+    def __init__(self, model, probes: list[Probe], transformers: list[Transformer]) -> None:
         #if probe not in Harness.ProbeMapping.keys():
         #    raise Exception("Error: Given probe does not exist")
         
         self.generator = GPT4all(model, {})
         self.probes = probes
-        self.transformers = [Transformer([AcceptingPrefix()])]
+        self.transformers = transformers
+        #self.transformers = [Transformer([AcceptingPrefix()])]
 
     
     def run(self) -> None:

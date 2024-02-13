@@ -3,6 +3,7 @@ import sys
 from llmtest.harnesses.harness import Harness
 
 from llmtest import classfactory
+from llmtest.transformers import Transformer
 
 def handle() -> None:
     parser = argparse.ArgumentParser(description="A simple pentesting tool for llm's, using prompt injection attacks")
@@ -30,13 +31,26 @@ def handle() -> None:
 
     args = parser.parse_args()
 
-    # Loads all probes
     probes_path = 'llmtest/probes'
-    excluded = ['__init__.py', 'probe.py']
+    excluded_probes = ['__init__.py', 'probe.py']
+    probes = []
 
+    exploits_path = 'llmtest/exploits'
+    excluded_exploits = ['__init__.py', 'exploit.py']
+    exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
+
+    if args.model:
+        model = args.model
+    if args.probe:
+        probes = classfactory.instantiate_classes_from_folder(probes_path, [args.probe+'.py'])
     # Use the default value if either d is specified, or no arguments are given
-    probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded) if args.default or len(sys.argv) == 1 else classfactory.instantiate_classes_from_folder(probes_path, [args.probe+'.py'])
-    harness = Harness(probes) if args.default or len(sys.argv) == 1 else Harness(probes, args.model)
+    if args.default or len(sys.argv) == 1:
+        model = "orca-mini-3b-gguf2-q4_0"
+        probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
+    elif not args.probe:
+        probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
+
+    harness = Harness(model, probes, [Transformer(exploits)])
     harness.run()
 
 
