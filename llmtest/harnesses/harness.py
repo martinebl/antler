@@ -5,21 +5,19 @@ from llmtest.probes.robastore import RobAStore
 from llmtest.transformers.transformer import Transformer
 from llmtest.exploits.acceptingprefix import AcceptingPrefix
 from llmtest.exploits.refusalsuppresion import RefusalSuppresion
+from llmtest.probes import Probe
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
-    ProbeMapping = {
-        'CurseWordFuck': CurseWordFuck,
-        'RobAStore': RobAStore
-    }
 
-    def __init__(self, model="orca-mini-3b-gguf2-q4_0", probe="CurseWordFuck") -> None:
-        if probe not in Harness.ProbeMapping.keys():
-            raise Exception("Error: Given probe does not exist")
+    def __init__(self, model, probes: list[Probe], transformers: list[Transformer]) -> None:
+        #if probe not in Harness.ProbeMapping.keys():
+        #    raise Exception("Error: Given probe does not exist")
         
         self.generator = GPT4all(model, {})
-        self.probes = [self.ProbeMapping[probe]()]
-        self.transformers = [Transformer([AcceptingPrefix()])]
+        self.probes = probes
+        self.transformers = transformers
+        #self.transformers = [Transformer([AcceptingPrefix()])]
 
     
     def run(self) -> None:
