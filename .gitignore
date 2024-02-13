@@ -1,2 +1,8 @@
+### Python ###
 **/__pycache__
+
+# Distribution / packaging
 *.egg-info/
+
+#Testing
+.pytest_cache/
