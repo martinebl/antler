@@ -42,7 +42,7 @@ def handle() -> None:
     if args.model:
         model = args.model
     if args.probe:
-        probes = classfactory.instantiate_classes_from_folder(probes_path, [args.probe.tolower()+'.py'])
+        probes = classfactory.instantiate_classes_from_folder(probes_path, [args.probe.lower()+'.py'])
     # Use the default value if either d is specified, or no arguments are given
     if args.default or len(sys.argv) == 1:
         model = "orca-mini-3b-gguf2-q4_0"
