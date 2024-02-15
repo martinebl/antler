@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import llm
-from llmtest.generators.generator import Generator
+from llmtest.generators import Generator
 class GPT4all(Generator):
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)

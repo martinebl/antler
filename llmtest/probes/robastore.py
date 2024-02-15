@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from llmtest.detector import Detector
-from llmtest.probes.probe import Probe
+from llmtest.probes import Probe
 
 class RobAStore(Probe):
     def __init__(self):
