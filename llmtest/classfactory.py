@@ -3,7 +3,7 @@ import os
 import importlib
 from pathlib import Path
 
-def instantiate_all_classes_from_folder(relative_folder_path, excluded: list[str]):
+def instantiate_all_classes_from_folder(relative_folder_path, excluded: list[str]) -> list[object]:
 
     # Step 1: Identify the files in the folder
     files = [f for f in os.listdir(Path.cwd() / relative_folder_path) if f.endswith(".py") and f not in (excluded)]
