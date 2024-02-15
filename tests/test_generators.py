@@ -1,5 +1,5 @@
 import pytest
-from llmtest.generators.generator import Generator
+from llmtest.generators import Generator
 
 def raise_not_implemented():
     generator = Generator("model")

@@ -1,6 +1,6 @@
 import argparse
 import sys
-from llmtest.harnesses.harness import Harness
+from llmtest.harnesses import Harness
 
 from llmtest import classfactory
 from llmtest.transformers import Transformer

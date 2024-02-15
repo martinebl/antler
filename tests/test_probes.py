@@ -1,6 +1,5 @@
 import pytest
 from llmtest.probes.probe import Probe
-from llmtest.detector import Detector
 
 @pytest.fixture
 def payload():

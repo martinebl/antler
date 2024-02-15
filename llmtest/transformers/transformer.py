@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from llmtest.exploits.exploit import Exploit
+from llmtest.exploits import Exploit
 class Transformer:
     """ 
         The base class for transforming a prompt, by applying exploits.
