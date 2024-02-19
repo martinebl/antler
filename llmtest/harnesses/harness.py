@@ -2,6 +2,11 @@
 from llmtest.generators.gpt4all import GPT4all
 from llmtest.transformers import Transformer
 from llmtest.probes import Probe
+from enum import Enum
+
+class Answer(Enum):
+    SUCCESS = 1
+    FAILURE = 2
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
@@ -14,17 +19,18 @@ class Harness:
 
     
     def run(self) -> None:
-        for probe in self.probes:
-            first_answer = self.generator.generate(probe.getPayload())
-            if probe.runDetectors(first_answer):
-                print("Payload was a success in clean form, no need for transformations")
+        print(self.probes)
+        for i, probe in enumerate(self.probes):
+            payload_answer = self.generator.generate(probe.getPayload())
+            print("Probe #%i" % i)
+            if probe.runDetectors(payload_answer):
+                print("Clean Payload: %s" % Answer.FAILURE)
             else:
-                print("Payload was NOT a success in clean form. Applying transformations...")
-                for transformer in self.transformers:
-                    print(probe.getPayload())
+                print("Clean Payload: %s" % Answer.SUCCESS)
+                for j, transformer in enumerate(self.transformers):
+                    #print(probe.getPayload())
                     prompt = transformer.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
-                    print("Prompt: %s" % prompt)
-                    print("Answer: %s" % answer)
-                    print("Successful hack!") if probe.runDetectors(answer) else print("Failure, the model won")
+                    status = Answer.FAILURE if probe.runDetectors(answer) else Answer.SUCCESS
+                    print("Transform #%i: %s" % (j, status))
         
