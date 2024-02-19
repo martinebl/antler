@@ -3,14 +3,13 @@ from llmtest.exploits import Exploit
 class Transformer:
     """ 
         The base class for transforming a prompt, by applying exploits.
-        The list of exploits is formed possibly at random, in the INSERT HERE class
     """
 
-    def __init__(self, exploits: list[Exploit]) -> None:
-        self.exploits = exploits
+    def __init__(self, exploits: list[(int, Exploit)]) -> None:
+        self.exploits = sorted(exploits, key=lambda x: x[0])
 
     def applyExploits(self, payload: str) -> str:
         prompt = payload
-        for exploit in self.exploits:
-            prompt = exploit.applyExploit(prompt)
+        for tuple in self.exploits:
+            prompt = tuple[1].applyExploit(prompt)
         return prompt

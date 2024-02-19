@@ -34,9 +34,13 @@ def handle() -> None:
     excluded_probes = ['__init__.py', 'probe.py']
     probes = []
 
+    # loads all exploits
     exploits_path = 'llmtest/exploits'
     excluded_exploits = ['__init__.py', 'exploit.py']
     exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
+    prioritized_exploits = []
+    for exploit in exploits:
+        prioritized_exploits.append((1, exploit))
 
     if args.model:
         model = args.model
@@ -48,8 +52,8 @@ def handle() -> None:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
-
-    harness = Harness(model, probes, [Transformer(exploits)])
+    
+    harness = Harness(model, probes, [Transformer(prioritized_exploits)])
     harness.run()
 
 
