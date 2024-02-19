@@ -23,12 +23,11 @@ class Harness:
         for i, probe in enumerate(self.probes):
             payload_answer = self.generator.generate(probe.getPayload())
             print("Probe #%i" % i)
-            if probe.runDetectors(payload_answer):
+            if probe.runDetectors(payload_answer): 
                 print("Clean Payload: %s" % Answer.FAILURE)
             else:
                 print("Clean Payload: %s" % Answer.SUCCESS)
                 for j, transformer in enumerate(self.transformers):
-                    #print(probe.getPayload())
                     prompt = transformer.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
                     status = Answer.FAILURE if probe.runDetectors(answer) else Answer.SUCCESS
