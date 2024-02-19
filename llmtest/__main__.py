@@ -1,7 +1,6 @@
-from llmtest.harnesses.harness import Harness
 from llmtest.cli import handle
 
-""""entry point script"""
+"""Entry point script"""
 
 def main():
     handle()
