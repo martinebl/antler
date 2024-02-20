@@ -2,7 +2,7 @@ import argparse
 import sys
 from llmtest.harnesses import Harness
 from llmtest import classfactory
-from llmtest.transformers import Transformer
+from llmtest.transforms import Transform
 
 def handle() -> None:
     parser = argparse.ArgumentParser(description="A simple pentesting tool for llm's, using prompt injection attacks")
@@ -56,7 +56,7 @@ def handle() -> None:
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     
-    harness = Harness(model, probes, [Transformer(all_exploits_prioritized), Transformer(all_exploits_prioritized_reversed)])
+    harness = Harness(model, probes, [Transform(all_exploits_prioritized), Transform(all_exploits_prioritized_reversed)])
     harness.run()
 
 

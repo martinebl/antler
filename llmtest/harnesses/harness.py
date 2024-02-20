@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 from llmtest.generators.gpt4all import GPT4all
-from llmtest.transformers import Transformer
+from llmtest.transforms import Transform
 from llmtest.probes import Probe
 from enum import Enum
 
@@ -11,11 +11,11 @@ class Answer(Enum):
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, model, probes: list[Probe], transformers: list[Transformer]) -> None:
+    def __init__(self, model, probes: list[Probe], transforms: list[Transform]) -> None:
         
         self.generator = GPT4all(model, {})
         self.probes = probes
-        self.transformers = transformers
+        self.transforms = transforms
 
     
     def run(self) -> None:
@@ -27,8 +27,8 @@ class Harness:
                 print("Clean Payload: %s" % Answer.FAILURE)
             else:
                 print("Clean Payload: %s" % Answer.SUCCESS)
-                for j, transformer in enumerate(self.transformers):
-                    prompt = transformer.applyExploits(probe.getPayload())
+                for j, transform in enumerate(self.transforms):
+                    prompt = transform.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
                     status = Answer.FAILURE if probe.runDetectors(answer) else Answer.SUCCESS
                     print("Transform #%i: %s" % (j, status))
