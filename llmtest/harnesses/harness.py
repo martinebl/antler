@@ -6,10 +6,6 @@ from llmtest.result import Result
 from llmtest.evaluator import Evaluator
 from enum import Enum
 
-class Answer(Enum):
-    SUCCESS = 1
-    FAILURE = 2
-
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
@@ -35,15 +31,17 @@ class Harness:
                 applied_transforms = None
             else:
                 for j, transform in enumerate(self.transforms):
+                    print("   Transform %i/%i" % (j+1, len(self.transforms)))
                     prompt = transform.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
-                    status = Answer.FAILURE if probe.runDetectors(answer) else Answer.SUCCESS
-                    print("   Transform %i/%i" % (j+1, len(self.transforms)))
-
-                    applied_transforms.append((transform, status))
+                    isHit = probe.runDetectors(answer)
+                    applied_transforms.append((transform, isHit))
 
             results.append(Result(payload, applied_transforms))
         
+        self.evaluateResults(results)
+
+    def evaluateResults(self, results):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(results)
         print(evaluation)
