@@ -7,7 +7,7 @@ from llmtest.exploits.acceptingprefix import AcceptingPrefix
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):
-        Explorer([]).generateTransforms()
+        Explorer([]).generateInitialTransforms()
 
 def test_base_explorer_feed_result_not_implemented():
     with pytest.raises(NotImplementedError):
@@ -15,7 +15,7 @@ def test_base_explorer_feed_result_not_implemented():
 
 def test_exhaustive_search_generation():
     explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()])
-    transforms = explorer.generateTransforms()
+    transforms = explorer.generateInitialTransforms()
     assert(len(transforms) == 4)
 
 def test_exhaustive_search_iteration():

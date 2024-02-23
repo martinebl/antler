@@ -8,7 +8,7 @@ class ExhaustiveSearch(Explorer):
     def __init__(self, exploits: list[Exploit]) -> None:
         super().__init__(exploits)
 
-    def generateTransforms(self) -> list[Transform]:
+    def generateInitialTransforms(self) -> list[Transform]:
         combos = [ itertools.combinations(self.exploits, i) for i in range(1, len(self.exploits) + 1) ]
         # The list that stores all the permutations, of all the combos
         perms = []

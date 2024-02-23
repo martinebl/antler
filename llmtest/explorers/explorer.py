@@ -12,7 +12,7 @@ class Explorer:
     def __init__(self, exploits: list[Exploit]) -> None:
         self.exploits = exploits
         self.index = -1 # So the first call to __next__ will be on index 0
-        self.transforms = self.generateTransforms()
+        self.transforms = self.generateInitialTransforms()
 
     def __iter__(self):
         return self
@@ -27,7 +27,7 @@ class Explorer:
     def getTransforms(self):
         return self.transforms
     
-    def generateTransforms(self) -> list[Transform]:
+    def generateInitialTransforms(self) -> list[Transform]:
         """
         The function to set the inital list of transforms. Could also be a list with one element.
         This list is iterated with the __next__ function, and possibly modified by the feedResult function.
