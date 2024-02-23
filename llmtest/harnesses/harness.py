@@ -21,6 +21,7 @@ class Harness:
 
     
     def run(self) -> None:
+        
         results = []
         print("Running penetration tests ...")
         for i, probe in enumerate(self.probes):
@@ -42,7 +43,8 @@ class Harness:
                     applied_transforms.append((transform, status))
 
             results.append(Result(payload, applied_transforms))
+        
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(results)
-        evaluator.printEvaluation(evaluation)
+        print(evaluation)
         
