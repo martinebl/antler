@@ -13,7 +13,7 @@ class Evaluation:
             output += "\nPayload %i: '%s'" % (i+1, clean_payload)
         
         if not self.exploit_hits.items(): 
-            output += "\nALL PROMPTS HIT CLEAN \n NO EXPLOITS TESTED"
+            output += "\nALL PROMPTS HIT CLEAN \nNO EXPLOITS TESTED"
         else:
             for exploit, tuple in self.exploit_hits.items():
                 hits, total = tuple
