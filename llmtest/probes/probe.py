@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from llmtest.detector import Detector
+from llmtest.detectors import Detector
 class Probe:
     """Base class for Probe"""
 
@@ -12,6 +12,6 @@ class Probe:
 
     def runDetectors(self, answer: str) -> bool:
         for detector in self.detectors:
-            if detector.detectTargets(answer):
+            if detector.detect(answer):
                 return True
         return False
