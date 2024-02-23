@@ -2,7 +2,6 @@
 from llmtest.result import Result
 from llmtest.evaluation import Evaluation
 from typing import Tuple, List, Dict
-from llmtest.transformers.transformer import Transformer
 
 class Evaluator:
     def __init__(self) -> None:

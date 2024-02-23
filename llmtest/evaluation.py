@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-from llmtest.result import Result
 from typing import Tuple, List, Dict
-from llmtest.transformers.transformer import Transformer
 
 class Evaluation:
     def __init__(self, clean_payload_hits: List[str], exploit_hits: Dict[str, Tuple[int, int]]) -> None:

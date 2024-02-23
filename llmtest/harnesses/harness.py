@@ -38,7 +38,7 @@ class Harness:
                     prompt = transform.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
                     status = Answer.FAILURE if probe.runDetectors(answer) else Answer.SUCCESS
-                    print("   Transform %i/%i" % (j+1, len(self.transformers)))
+                    print("   Transform %i/%i" % (j+1, len(self.transforms)))
 
                     applied_transforms.append((transform, status))
 
