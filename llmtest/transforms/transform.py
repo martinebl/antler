@@ -2,7 +2,7 @@
 from llmtest.exploits import Exploit
 class Transform:
     """ 
-        The base class for transforming a prompt, by applying exploits.
+    The base class for transforming a prompt, by applying exploits.
     """
 
     def __init__(self, exploits: list[(int, Exploit)]) -> None:

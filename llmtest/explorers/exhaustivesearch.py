@@ -18,3 +18,6 @@ class ExhaustiveSearch(Explorer):
                 perms.append([ list(perm) for perm in itertools.permutations(combo)])
         
         return [ Transform(list(enumerate(permutation))) for perm_list in perms for permutation in perm_list ]
+    
+    def feedResult(self, result: bool) -> None:
+        pass
