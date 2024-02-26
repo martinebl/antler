@@ -30,11 +30,11 @@ class Explorer:
     def generateInitialTransforms(self) -> list[Transform]:
         """
         The function to set the inital list of transforms. Could also be a list with one element.
-        This list is iterated with the __next__ function, and possibly modified by the feedResult function.
+        This list is iterated with the __next__ function, and possibly modified by the seedResult function.
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     
-    def feedResult(self, result: bool) -> None:
+    def seedResult(self, result: bool) -> None:
         """
         In the case of actual optimisation of exploration, this function is used to run the
         acquisition function of the bayesian optimisation, and append the next transform to
