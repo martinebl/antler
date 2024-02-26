@@ -18,7 +18,7 @@ class Evaluator:
                     clean_hit_payloads.append(probe.getPayload())
                 continue
             
-            for _, exploit in res.transform.exploits:
+            for exploit in res.transform.exploits:
                 exploit_name = type(exploit).__name__
                 if(exploit_name) in exploit_scores:
                     exploit_scores[exploit_name].append(res.score)

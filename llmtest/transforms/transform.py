@@ -5,11 +5,12 @@ class Transform:
     The base class for transforming a prompt, by applying exploits.
     """
 
-    def __init__(self, exploits: list[tuple[int, Exploit]]) -> None:
-        self.exploits = sorted(exploits, key=lambda x: x[0])
+    def __init__(self, exploits_with_priority: list[tuple[int, Exploit]]) -> None:
+        self.exploits_with_priority = sorted(exploits_with_priority, key=lambda x: x[0])
+        self.exploits = list(map(lambda x: x[1], self.exploits_with_priority))
 
     def applyExploits(self, payload: str) -> str:
         prompt = payload
-        for tuple in self.exploits:
-            prompt = tuple[1].applyExploit(prompt)
+        for exploit in self.exploits:
+            prompt = exploit.applyExploit(prompt)
         return prompt
