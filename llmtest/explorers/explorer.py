@@ -24,6 +24,9 @@ class Explorer:
         except IndexError:
             raise StopIteration
         
+    def __len__(self) -> int:
+        return len(self.transforms)
+        
     def getTransforms(self):
         return self.transforms
     
@@ -34,7 +37,7 @@ class Explorer:
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     
-    def seedResult(self, result: bool) -> None:
+    def seedScore(self, result: float) -> None:
         """
         In the case of actual optimisation of exploration, this function is used to run the
         acquisition function of the bayesian optimisation, and append the next transform to

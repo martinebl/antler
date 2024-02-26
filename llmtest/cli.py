@@ -2,7 +2,7 @@ import argparse
 import sys
 from llmtest.harnesses import Harness
 from llmtest import classfactory
-from llmtest.transforms import Transform
+from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 
 def handle() -> None:
     parser = argparse.ArgumentParser(description="A simple pentesting tool for llm's, using prompt injection attacks")
@@ -38,12 +38,6 @@ def handle() -> None:
     exploits_path = 'llmtest/exploits'
     excluded_exploits = ['__init__.py', 'exploit.py']
     all_exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
-    all_exploits_prioritized = []
-    all_exploits_prioritized_reversed = []
-    for i, exploit in enumerate(all_exploits):
-        all_exploits_prioritized.append((i, exploit))
-    for i, exploit in enumerate(all_exploits[::-1]):
-        all_exploits_prioritized_reversed.append((i, exploit))
 
     if args.model:
         model = args.model
@@ -56,7 +50,7 @@ def handle() -> None:
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     
-    harness = Harness(model, probes, [Transform(all_exploits_prioritized), Transform(all_exploits_prioritized_reversed)])
+    harness = Harness(model, probes, ExhaustiveSearch(all_exploits))
     harness.run()
 
 

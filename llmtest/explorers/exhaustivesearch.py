@@ -19,5 +19,5 @@ class ExhaustiveSearch(Explorer):
         
         return [ Transform(list(enumerate(permutation))) for perm_list in perms for permutation in perm_list ]
     
-    def seedResult(self, result: bool) -> None:
+    def seedScore(self, result: float) -> None:
         pass

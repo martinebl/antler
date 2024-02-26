@@ -4,40 +4,42 @@ from llmtest.transforms import Transform
 from llmtest.probes import Probe
 from llmtest.result import Result
 from llmtest.evaluator import Evaluator
-from enum import Enum
+from llmtest.explorers import Explorer
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, model, probes: list[Probe], transforms: list[Transform]) -> None:
-        
+    def __init__(self, model, probes: list[Probe], explorer: Explorer) -> None:
         self.generator = GPT4all(model, {})
         self.probes = probes
-        self.transforms = transforms
+        self.explorer = explorer
 
     
     def run(self) -> None:
+        results: list[Result] = []
+        clean_hit_probes: list[Probe] = []
+        non_clean_hit_probes: list[Probe] = []
         
-        results = []
         print("Running penetration tests ...")
         for i, probe in enumerate(self.probes):
-            payload = probe.getPayload()
-            applied_transforms = []
-
-            print("Probe %i/%i" % (i+1, len(self.probes)))
-            # checking in the payload without exploits fails
+            print("Checking clean payload for probe %i/%i" % (i+1, len(self.probes)))
             only_payload_answer = self.generator.generate(probe.getPayload())
-            if probe.runDetectors(only_payload_answer): 
-                applied_transforms = None
-            else:
-                for j, transform in enumerate(self.transforms):
-                    print("   Transform %i/%i" % (j+1, len(self.transforms)))
+            clean_hit_probes.append(probe) if probe.runDetectors(only_payload_answer) else non_clean_hit_probes.append(probe)
+        
+        results.append(Result(Transform([]), len(clean_hit_probes), clean_hit_probes))
+
+        if len(non_clean_hit_probes) > 0:
+            for i, transform in enumerate(self.explorer):
+                print("\tTransform %i/%i" % (i+1, len(self.explorer)))
+                hits = 0
+                for probe in non_clean_hit_probes:
                     prompt = transform.applyExploits(probe.getPayload())
                     answer = self.generator.generate(prompt)
-                    isHit = probe.runDetectors(answer)
-                    applied_transforms.append((transform, isHit))
-
-            results.append(Result(payload, applied_transforms))
+                    if probe.runDetectors(answer): hits += 1
+                    
+                result = Result(transform, hits, non_clean_hit_probes)
+                results.append(result)
+                self.explorer.seedScore(result.score)
         
         self.evaluateResults(results)
 

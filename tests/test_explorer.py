@@ -11,7 +11,7 @@ def test_base_explorer_generate_transforms_not_implemented():
 
 def test_base_explorer_feed_result_not_implemented():
     with pytest.raises(NotImplementedError):
-        Explorer([]).seedResult()
+        Explorer([]).seedScore()
 
 def test_exhaustive_search_generation():
     explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()])
@@ -23,6 +23,6 @@ def test_exhaustive_search_iteration():
     count = 0
     for transform in explorer:
         count +=1
-        explorer.seedResult(True)
+        explorer.seedScore(1)
         assert(isinstance(transform, Transform))
     assert(count == 4)

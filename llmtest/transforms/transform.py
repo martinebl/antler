@@ -5,7 +5,7 @@ class Transform:
     The base class for transforming a prompt, by applying exploits.
     """
 
-    def __init__(self, exploits: list[(int, Exploit)]) -> None:
+    def __init__(self, exploits: list[tuple[int, Exploit]]) -> None:
         self.exploits = sorted(exploits, key=lambda x: x[0])
 
     def applyExploits(self, payload: str) -> str:
