@@ -1,19 +1,18 @@
 #!/usr/bin/env python3
 from llmtest.result import Result
 from llmtest.evaluation import Evaluation
-from typing import Tuple, List, Dict
 
 class Evaluator:
     def __init__(self) -> None:
         self = self
 
     #Every result = 1 probe
-    def evaluate(self, results: list[Result]) -> Tuple[List[str], Dict[str, Tuple[int, int]]]:
+    def evaluate(self, results: list[Result]) -> Evaluation:
         clean_payload_hits = []
         exploit_hit = {} #type exploit = (hits, total)
 
         for res in results:
-            #Check if clean payload hit
+            #Checks if no transforms have been applied, e.g. the clean payload hit
             if not res.applied_transforms:
                 clean_payload_hits.append(res.payload)
                 continue
