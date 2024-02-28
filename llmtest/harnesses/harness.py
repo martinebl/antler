@@ -1,16 +1,14 @@
 #!/usr/bin/env python3
-from llmtest.generators.gpt4all import GPT4all
-from llmtest.transforms import Transform
 from llmtest.probes import Probe
-from llmtest.result import Result
 from llmtest.evaluator import Evaluator
 from llmtest.explorers import Explorer
+from llmtest.generators import Generator
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, model, probes: list[Probe], explorer: Explorer) -> None:
-        self.generator = GPT4all(model, {})
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, model_options: dict = {}) -> None:
+        self.generator = generator_type(model, model_options)
         self.probes = probes
         self.explorer = explorer
     

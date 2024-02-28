@@ -1,8 +1,10 @@
 import argparse
 import sys
 from llmtest.harnesses.linearharness import LinearHarness
+from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest import classfactory
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
+from llmtest.generators.gpt4all import GPT4all
 
 def handle() -> None:
     parser = argparse.ArgumentParser(description="A simple pentesting tool for llm's, using prompt injection attacks")
@@ -50,7 +52,7 @@ def handle() -> None:
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     
-    harness = LinearHarness(model, probes, ExhaustiveSearch(all_exploits))
+    harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), GPT4all, model)
     harness.run()
 
 
