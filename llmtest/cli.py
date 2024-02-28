@@ -54,7 +54,3 @@ def handle() -> None:
     
     harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), GPT4all, model)
     harness.run()
-
-
-
-

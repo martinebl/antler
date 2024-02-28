@@ -16,7 +16,4 @@ class Evaluation:
         else:
             for exploit, score_list in self.exploit_scores.items():
                 output += "\nExploit: %s - score: %f " % (exploit, sum(score_list) / len(score_list))
-                
-            #    output += "\nExploit: %s - ASR %i (%i/%i)" % (exploit, (hits/total*100), hits, total)
-        
         return output
