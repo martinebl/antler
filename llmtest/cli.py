@@ -1,6 +1,6 @@
 import argparse
 import sys
-from llmtest.harnesses import Harness
+from llmtest.harnesses.linearharness import LinearHarness
 from llmtest import classfactory
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 
@@ -50,7 +50,7 @@ def handle() -> None:
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     
-    harness = Harness(model, probes, ExhaustiveSearch(all_exploits))
+    harness = LinearHarness(model, probes, ExhaustiveSearch(all_exploits))
     harness.run()
 
 
