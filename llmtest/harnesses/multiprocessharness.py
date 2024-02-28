@@ -14,11 +14,12 @@ class MultiProcessHarness(Harness):
         self.probes = probes
         self.explorer = explorer
         self.processes = processes
+        self.options = options
     
     @staticmethod
     def runCleanProbe(args: tuple[Harness, Probe]):
         harness, probe = args
-        generator = harness.generator_type(harness.model)
+        generator = harness.generator_type(harness.model, harness.options)
         answer = generator.generate(probe.getPayload())
         print(probe.getPayload())
         print(answer)
@@ -27,7 +28,7 @@ class MultiProcessHarness(Harness):
     @staticmethod
     def runTransformedProbe(args: tuple[Harness, Probe, Transform]):
         harness, probe, transform = args
-        generator = harness.generator_type(harness.model)
+        generator = harness.generator_type(harness.model, harness.options)
         answer = generator.generate(transform.applyExploits(probe.getPayload()))
         return (probe, probe.runDetectors(answer))
 
