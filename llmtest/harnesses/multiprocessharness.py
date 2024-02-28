@@ -21,8 +21,6 @@ class MultiProcessHarness(Harness):
         harness, probe = args
         generator = harness.generator_type(harness.model, harness.options)
         answer = generator.generate(probe.getPayload())
-        print(probe.getPayload())
-        print(answer)
         return (probe, probe.runDetectors(answer))
     
     @staticmethod

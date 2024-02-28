@@ -30,6 +30,20 @@ def handle() -> None:
         help="Use the default probe and generator (CurseWord and orca-mini). Same behaviour happens when no arguments are provided"
     )
 
+    parser.add_argument(
+        "--processes",
+        "-c",
+        type=int,
+        help="When present, activates Multiprocessing and spawns a pool of PROCESSES processes"
+    )
+
+    parser.add_argument(
+        "--family",
+        "-f",
+        type=str,
+        help="Specify which Generator family (class) to use for running the target LLM"
+    )
+
     args = parser.parse_args()
 
     probes_path = 'llmtest/probes'
@@ -41,16 +55,30 @@ def handle() -> None:
     excluded_exploits = ['__init__.py', 'exploit.py']
     all_exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
 
+    generator_class = GPT4all # Defalt generator
+    generator_path = 'llmtest/generators'
+    exluded_generators = ['__init__.py', 'generator.py']
+
+    harness_class = LinearHarness # Default harness
+
+    options = {} # Default options
+
     if args.model:
         model = args.model
     if args.probe:
         probes = classfactory.instantiate_classes_from_folder(probes_path, [args.probe.lower()+'.py'])
+    if args.family:
+        generator_class = classfactory.get_classes_from_folder(generator_path, [args.family.lower()+'.py'])[0] # Should only return 1
+    if args.processes:
+        harness_class = MultiProcessHarness
+
     # Use the default value if either d is specified, or no arguments are given
     if args.default or len(sys.argv) == 1:
         model = "orca-mini-3b-gguf2-q4_0"
+        # model = "meta/llama-2-70b-chat"
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     elif not args.probe:
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
     
-    harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), GPT4all, model)
+    harness = harness_class(probes, ExhaustiveSearch(all_exploits), generator_class, model, options)
     harness.run()

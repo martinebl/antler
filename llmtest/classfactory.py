@@ -11,7 +11,7 @@ def instantiate_all_classes_from_folder(relative_folder_path, excluded: list[str
 
     return objects
 
-def instantiate_classes_from_folder(relative_folder_path, included: list[str]):
+def get_classes_from_folder(relative_folder_path, included: list[str]):
     objects = []
 
     # Step 1: Identify the files in the folder
@@ -32,9 +32,12 @@ def instantiate_classes_from_folder(relative_folder_path, included: list[str]):
         try:
             class_obj_name = next((cls for cls in dir(module) if cls.lower() == module_name.lower()), None)
             class_obj = getattr(module, class_obj_name)
-            objects.append(class_obj())
+            objects.append(class_obj)
         except Exception as e:
             print(f"Error finding class of name {class_obj_name if class_obj_name else module_name }: {e}")
             continue
 
     return objects
+
+def instantiate_classes_from_folder(relative_folder_path, included: list[str]):
+    return [ class_obj() for class_obj in get_classes_from_folder(relative_folder_path, included)]
