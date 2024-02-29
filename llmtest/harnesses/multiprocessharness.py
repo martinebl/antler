@@ -41,9 +41,12 @@ class MultiProcessHarness(Harness):
 
             # Run probes in parallel
             print("Testing clean payloads")
-            pool_results = pool.map(MultiProcessHarness.runCleanProbe, [(self, probe) for probe in self.probes])
+            pool_results = pool.map(MultiProcessHarness.runCleanProbe, [(self, probe) for probe in self.probes] * self.repetitions)
             for probe, hit in pool_results:
-                clean_hit_probes.append(probe) if hit else non_clean_hit_probes.append(probe)
+                if hit: clean_hit_probes.append(probe) 
+            
+            # Get each probe that did not have a single clean hit, exactly self.repetitions times in the list
+            non_clean_hit_probes = [probe for probe in self.probes if probe not in clean_hit_probes] * self.repetitions
             
             results.append(Result(Transform([]), len(clean_hit_probes), clean_hit_probes))
 
