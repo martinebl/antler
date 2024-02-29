@@ -7,10 +7,11 @@ from llmtest.generators import Generator
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, model_options: dict = {}) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, model_options: dict = {}, repetitions: int = 1) -> None:
         self.generator = generator_type(model, model_options)
         self.probes = probes
         self.explorer = explorer
+        self.repetitions = repetitions
     
     def run(self) -> None:
         """

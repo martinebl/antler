@@ -8,13 +8,14 @@ from llmtest.probes import Probe
 from llmtest.result import Result
 
 class MultiProcessHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, processes: int = None) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = None) -> None:
         self.generator_type = generator_type
         self.model = model
         self.probes = probes
         self.explorer = explorer
-        self.processes = processes
         self.options = options
+        self.repetitions = repetitions
+        self.processes = processes
     
     @staticmethod
     def runCleanProbe(args: tuple[Harness, Probe]):

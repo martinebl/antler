@@ -48,7 +48,14 @@ def handle() -> None:
         "--options",
         "-o",
         type=json.loads,
-        help="Dictionary of options in JSON format"
+        help="Dictionary of model options in JSON format"
+    )
+
+    parser.add_argument(
+        "--repetitions",
+        "-r",
+        type=int,
+        help="The number of times each transformed and clean prompt, will be given to the target model for probes to run on them"
     )
 
     args = parser.parse_args()
@@ -73,6 +80,8 @@ def handle() -> None:
 
     options = {} # Default options
 
+    repetitions = 1
+
     # Setting given arguments
 
     if args.model:
@@ -86,10 +95,12 @@ def handle() -> None:
         generator_class = classfactory.get_classes_from_folder(generator_path, [args.family.lower()+'.py'])[0] # Should only return 1
     if args.options:
         options = args.options
-    
+    if args.repetitions:
+        repetitions = args.repetitions
+
     if args.processes == 1:
-        harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options)
+        harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options, repetitions)
     else:
-        harness = MultiProcessHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options, args.processes)
+        harness = MultiProcessHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options, repetitions, args.processes)
         
     harness.run()
