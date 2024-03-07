@@ -22,7 +22,7 @@ class LinearHarness(Harness):
         results.append(Result(Transform([]), len(clean_hit_probes), clean_hit_probes))
 
         if len(non_clean_hit_probes) > 0:
-            print("Runing tests with transforms...")
+            print("Running tests with transforms...")
             for transform in tqdm(self.explorer):
                 hits = 0
                 for probe in non_clean_hit_probes:
