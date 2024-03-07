@@ -4,7 +4,7 @@ from llmtest.harnesses.linearharness import LinearHarness
 from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest import classfactory
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.generators.replicate import Replicate
+from llmtest.generators.nvidia import Nvidia
 
 def handle() -> None:
     parser = argparse.ArgumentParser(description="A simple pentesting tool for llm's, using prompt injection attacks")
@@ -61,7 +61,8 @@ def handle() -> None:
 
     # Setting default values
 
-    model = "meta/llama-2-70b-chat" # Default model
+    model = "8f4118ba-60a8-4e6b-8574-e38a4067a4a3" # Default model Mixtral 8x7B Instruct
+    # model = "meta/llama-2-70b-chat" 
     # model = "orca-mini-3b-gguf2-q4_0" 
 
     probes_path = 'llmtest/probes'
@@ -73,7 +74,7 @@ def handle() -> None:
     excluded_exploits = ['__init__.py', 'exploit.py']
     all_exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
 
-    generator_class = Replicate # Defalt generator
+    generator_class = Nvidia # Defalt generator
     generator_path = 'llmtest/generators'
     exluded_generators = ['__init__.py', 'generator.py']
 
