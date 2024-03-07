@@ -18,7 +18,6 @@ def handle() -> None:
 
     parser.add_argument(
         "--probe",
-        "-p",
         type=str,
         help="Specify which probes to run on the target LLM"
     )
@@ -32,7 +31,7 @@ def handle() -> None:
 
     parser.add_argument(
         "--processes",
-        "-c",
+        "-p",
         type=int,
         help="When present, activates Multiprocessing and spawns a pool of PROCESSES processes"
     )
