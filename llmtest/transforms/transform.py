@@ -14,3 +14,15 @@ class Transform:
         for exploit in self.exploits:
             prompt = exploit.applyExploit(prompt)
         return prompt
+    
+    def getExploits(self) -> list[Exploit]:
+        return self.exploits
+    
+    def isEmpty(self) -> bool:
+        return (True if len(self.exploits) == 0 else False)
+    
+    def __str__(self):
+        str = ""
+        for exploit in self.exploits:
+            str += f"{type(exploit).__name__},"
+        return f"({str})"
