@@ -7,6 +7,9 @@ import json
 from llmtest.generators import Generator
 
 class Nvidia(Generator):
+    # SMAUG 008cff6d-4f4c-4514-b61e-bcfad6ba52a7
+    # LLama 2 70B 0e349b44-440a-44e1-93e9-abe8dcb27158
+    # Gemma 7b 1361fa56-61d7-4a12-af32-69a3825746fa
 
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
@@ -15,8 +18,6 @@ class Nvidia(Generator):
     def generate(self, prompt: str) -> str:
         ans = ""
 
-        # SMAUG 008cff6d-4f4c-4514-b61e-bcfad6ba52a7
-        # LLama 2 70B 0e349b44-440a-44e1-93e9-abe8dcb27158
         invoke_url = "https://api.nvcf.nvidia.com/v2/nvcf/pexec/functions/" + self.model
 
         headers = {
