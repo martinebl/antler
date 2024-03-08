@@ -2,8 +2,8 @@ import pytest
 from llmtest.explorers import Explorer
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.exploits.refusalsuppression import RefusalSuppression
-from llmtest.exploits.acceptingprefix import AcceptingPrefix
+from llmtest.techniques.refusalsuppression import RefusalSuppression
+from llmtest.techniques.acceptingprefix import AcceptingPrefix
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):

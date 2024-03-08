@@ -26,7 +26,7 @@ class LinearHarness(Harness):
             for transform in tqdm(self.explorer):
                 hits = 0
                 for probe in non_clean_hit_probes:
-                    prompt = transform.applyExploits(probe.getPayload())
+                    prompt = transform.applyTechniques(probe.getPayload())
                     answer = self.generator.generate(prompt)
                     if probe.runDetectors(answer): hits += 1
                     

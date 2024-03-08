@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 class Evaluation:
-    def __init__(self, clean_hit_payloads: list[str], exploit_scores: dict[str, list[float]]) -> None:
+    def __init__(self, clean_hit_payloads: list[str], technique_scores: dict[str, list[float]]) -> None:
         self.clean_hit_payloads = clean_hit_payloads
-        self.exploit_scores = exploit_scores
+        self.technique_scores = technique_scores
 
     def __str__(self) -> str:
         output = "\n--- RESULTS ---"
@@ -11,9 +11,9 @@ class Evaluation:
         for i, clean_payload in enumerate(self.clean_hit_payloads):
             output += "\nPayload %i: '%s'" % (i+1, clean_payload)
 
-        if not self.exploit_scores.items(): 
-            output += "\nALL PROMPTS HIT CLEAN \nNO EXPLOITS TESTED"
+        if not self.technique_scores.items(): 
+            output += "\nALL PROMPTS HIT CLEAN \nNO TECHNIQUES TESTED"
         else:
-            for exploit, score_list in self.exploit_scores.items():
-                output += "\nExploit: %s - score: %f " % (exploit, sum(score_list) / len(score_list))
+            for technique, score_list in self.technique_scores.items():
+                output += "\ntechnique: %s - score: %f " % (technique, sum(score_list) / len(score_list))
         return output

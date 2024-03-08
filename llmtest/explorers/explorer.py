@@ -1,16 +1,16 @@
 from llmtest.transforms import Transform
-from llmtest.exploits import Exploit
+from llmtest.techniques import Technique
 
 class Explorer:
     """
     This is the base explorer class. This class defines how the search space
-    of the permutations and combinations of exploits is explored.
+    of the permutations and combinations of techniques is explored.
     It is designed to work like an iterable wrapper around the list of transforms,
     so the list can be manipulated while iterating it.
     """
     
-    def __init__(self, exploits: list[Exploit]) -> None:
-        self.exploits = exploits
+    def __init__(self, techniques: list[Technique]) -> None:
+        self.techniques = techniques
         self.index = -1 # So the first call to __next__ will be on index 0
         self.transforms = self.generateInitialTransforms()
 

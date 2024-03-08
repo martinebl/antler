@@ -9,19 +9,19 @@ class Evaluator:
     #Every result = 1 probe
     def evaluate(self, results: list[Result]) -> Evaluation:
         clean_hit_payloads = []
-        exploit_scores: dict[str, list[float]] = {}
+        technique_scores: dict[str, list[float]] = {}
 
         for res in results:
             # Checks for empty transformer - The transformer with clean hit prompts
-            if len(res.transform.exploits) == 0:
+            if len(res.transform.techniques) == 0:
                 for probe in res.probes:
                     clean_hit_payloads.append(probe.getPayload())
                 continue
             
-            for exploit in res.transform.exploits:
-                exploit_name = type(exploit).__name__
-                if(exploit_name) in exploit_scores:
-                    exploit_scores[exploit_name].append(res.score)
+            for technique in res.transform.techniques:
+                technique_name = type(technique).__name__
+                if(technique_name) in technique_scores:
+                    technique_scores[technique_name].append(res.score)
                 else:
-                    exploit_scores[exploit_name] = [res.score]
-        return Evaluation(clean_hit_payloads, exploit_scores)
+                    technique_scores[technique_name] = [res.score]
+        return Evaluation(clean_hit_payloads, technique_scores)

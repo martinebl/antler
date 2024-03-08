@@ -69,10 +69,10 @@ def handle() -> None:
     excluded_probes = ['__init__.py', 'probe.py']
     probes = [] # When enough probes are present, it might be too slow to load them all without needing them. Hence the empty start value
 
-    # loads all exploits (always needed)
-    exploits_path = 'llmtest/exploits'
-    excluded_exploits = ['__init__.py', 'exploit.py']
-    all_exploits = classfactory.instantiate_all_classes_from_folder(exploits_path, excluded_exploits)
+    # loads all techniques (always needed)
+    techniques_path = 'llmtest/techniques'
+    excluded_techniques = ['__init__.py', 'technique.py']
+    all_techniques = classfactory.instantiate_all_classes_from_folder(techniques_path, excluded_techniques)
 
     generator_class = Nvidia # Defalt generator
     generator_path = 'llmtest/generators'
@@ -99,8 +99,8 @@ def handle() -> None:
         repetitions = args.repetitions
 
     if args.processes == 1:
-        harness = LinearHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options, repetitions)
+        harness = LinearHarness(probes, ExhaustiveSearch(all_techniques), generator_class, model, options, repetitions)
     else:
-        harness = MultiProcessHarness(probes, ExhaustiveSearch(all_exploits), generator_class, model, options, repetitions, args.processes)
+        harness = MultiProcessHarness(probes, ExhaustiveSearch(all_techniques), generator_class, model, options, repetitions, args.processes)
         
     harness.run()

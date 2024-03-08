@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-from llmtest.exploits import Exploit
+from llmtest.techniques import Technique
 class Transform:
     """ 
-    The base class for transforming a prompt, by applying exploits.
+    The base class for transforming a prompt, by applying techniques.
     """
 
-    def __init__(self, exploits_with_priority: list[tuple[int, Exploit]]) -> None:
-        self.exploits_with_priority = sorted(exploits_with_priority, key=lambda x: x[0])
-        self.exploits = list(map(lambda x: x[1], self.exploits_with_priority))
+    def __init__(self, techniques_with_priority: list[tuple[int, Technique]]) -> None:
+        self.techniques_with_priority = sorted(techniques_with_priority, key=lambda x: x[0])
+        self.techniques = list(map(lambda x: x[1], self.techniques_with_priority))
 
-    def applyExploits(self, payload: str) -> str:
+    def applyTechniques(self, payload: str) -> str:
         prompt = payload
-        for exploit in self.exploits:
-            prompt = exploit.applyExploit(prompt)
+        for technique in self.techniques:
+            prompt = technique.applyTechnique(prompt)
         return prompt

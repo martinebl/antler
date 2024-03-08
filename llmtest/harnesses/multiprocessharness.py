@@ -29,7 +29,7 @@ class MultiProcessHarness(Harness):
     def runTransformedProbe(args: tuple[Harness, Probe, Transform]):
         harness, probe, transform = args
         generator = harness.generator_type(harness.model, harness.options)
-        answer = generator.generate(transform.applyExploits(probe.getPayload()))
+        answer = generator.generate(transform.applyTechniques(probe.getPayload()))
         return (probe, probe.runDetectors(answer))
 
     def run(self) -> None:

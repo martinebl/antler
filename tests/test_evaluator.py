@@ -7,8 +7,8 @@ from llmtest.result import Result
 from llmtest.transforms import Transform
 from llmtest.probes.illegaldrugs import IllegalDrugs
 from llmtest.probes.cursewordfuck import CurseWordFuck
-from llmtest.exploits.acceptingprefix import AcceptingPrefix
-from llmtest.exploits.refusalsuppression import RefusalSuppression
+from llmtest.techniques.acceptingprefix import AcceptingPrefix
+from llmtest.techniques.refusalsuppression import RefusalSuppression
 
 @pytest.fixture
 def results():
@@ -23,7 +23,7 @@ def probes():
     return [IllegalDrugs(), CurseWordFuck()]
 
 @pytest.fixture
-def exploits():
+def techniques():
     return [AcceptingPrefix(), RefusalSuppression()]
 
 
@@ -36,7 +36,7 @@ def test_returns_empty_evaluation_given_no_results(evaluator):
     expected_evaluation = Evaluation([], {})
 
     assert actual_evaluation.clean_hit_payloads == expected_evaluation.clean_hit_payloads
-    assert actual_evaluation.exploit_scores == actual_evaluation.exploit_scores
+    assert actual_evaluation.technique_scores == actual_evaluation.technique_scores
 
 def test_creates_evaluation_with_payload_of_clean_hits(evaluator, probes):
     res = Result(Transform([]), 2, probes)
@@ -45,10 +45,10 @@ def test_creates_evaluation_with_payload_of_clean_hits(evaluator, probes):
     expected_evaluation = Evaluation(list(map(lambda x: x.payload, probes)), {})
 
     assert actual_evaluation.clean_hit_payloads == expected_evaluation.clean_hit_payloads
-    assert actual_evaluation.exploit_scores == actual_evaluation.exploit_scores
+    assert actual_evaluation.technique_scores == actual_evaluation.technique_scores
     
-def test_creates_evaluation_with_correct_exploit_names(evaluator, exploits):
-    expected_exploit_names = list(map(lambda x: type(x).__name__, exploits))
+def test_creates_evaluation_with_correct_technique_names(evaluator, techniques):
+    expected_technique_names = list(map(lambda x: type(x).__name__, techniques))
     results = [
         Result(Transform([(1, AcceptingPrefix()), (1, RefusalSuppression())]), 2, []),
         Result(Transform([(1, RefusalSuppression()), (1, AcceptingPrefix())]), 2, []),
@@ -57,8 +57,8 @@ def test_creates_evaluation_with_correct_exploit_names(evaluator, exploits):
         ]
     evaluation = evaluator.evaluate(results)
 
-    actual_exploit_names = list(evaluation.exploit_scores.keys())
-    assert Counter(actual_exploit_names) == Counter(expected_exploit_names)
+    actual_technique_names = list(evaluation.technique_scores.keys())
+    assert Counter(actual_technique_names) == Counter(expected_technique_names)
 
 @pytest.mark.parametrize("results, expected_output", [
     (
@@ -107,9 +107,9 @@ def test_creates_evaluation_with_correct_exploit_names(evaluator, exploits):
         {'RefusalSuppression': [1, 0.5, 1], 'AcceptingPrefix': [1, 0.5, 1]}
     ),
 ])
-def test_collects_scores_of_type_exploit_in_list(results, expected_output, evaluator):
+def test_collects_scores_of_type_technique_in_list(results, expected_output, evaluator):
     evaluation = evaluator.evaluate(results)
 
-    assert Counter(list(evaluation.exploit_scores.keys())) == Counter(list(expected_output.keys()))
-    for key in list(evaluation.exploit_scores.keys()):
-        assert Counter(evaluation.exploit_scores[key]) == Counter(expected_output[key])
+    assert Counter(list(evaluation.technique_scores.keys())) == Counter(list(expected_output.keys()))
+    for key in list(evaluation.technique_scores.keys()):
+        assert Counter(evaluation.technique_scores[key]) == Counter(expected_output[key])
