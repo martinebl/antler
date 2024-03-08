@@ -5,9 +5,11 @@ from dotenv import load_dotenv
 from llmtest.generators import Generator
 
 class Replicate(Generator):
+    # Load the environment file only on class definition and not on init
+    load_dotenv()
+
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
-        load_dotenv()
         
 
     def generate(self, prompt: str) -> str:

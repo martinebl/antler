@@ -4,6 +4,10 @@ class Detector:
     def __init__(self):
         pass
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Detector):
+            return self.__dict__ == other.__dict__
+
     def detect(self, answer: str) -> bool:
         raise NotImplementedError("This method should be implemented by subclasses")
         

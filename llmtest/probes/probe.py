@@ -7,6 +7,10 @@ class Probe:
         self.payload = payload
         self.detectors = detectors
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Probe):
+            return self.__dict__ == other.__dict__
+
     def getPayload(self) -> str:
         return self.payload
 

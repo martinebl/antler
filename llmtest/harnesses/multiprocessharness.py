@@ -1,4 +1,5 @@
 from multiprocessing import Pool
+from tqdm import tqdm
 
 from llmtest.harnesses import Harness
 from llmtest.explorers.explorer import Explorer
@@ -37,10 +38,10 @@ class MultiProcessHarness(Harness):
         non_clean_hit_probes: list[Probe] = []
 
         with Pool(self.processes) as pool:
-            print("Running penetration tests ...")
+            print("Running penetration tests")
 
             # Run probes in parallel
-            print("Testing clean payloads")
+            print("Running tests with clean payloads...")
             pool_results = pool.map(MultiProcessHarness.runCleanProbe, [(self, probe) for probe in self.probes] * self.repetitions)
             for probe, hit in pool_results:
                 if hit: clean_hit_probes.append(probe) 
@@ -51,8 +52,8 @@ class MultiProcessHarness(Harness):
             results.append(Result(Transform([]), len(clean_hit_probes), clean_hit_probes))
 
             if len(non_clean_hit_probes) > 0:
-                for i, transform in enumerate(self.explorer):
-                    print("\tTransform %i/%i" % (i+1, len(self.explorer)))
+                print("Running tests with transforms...")
+                for transform in tqdm(self.explorer):
                     hits = 0
                     pool_results = pool.map(MultiProcessHarness.runTransformedProbe, [(self, probe, transform) for probe in non_clean_hit_probes])
 
