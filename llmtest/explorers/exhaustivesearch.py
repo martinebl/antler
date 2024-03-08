@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import itertools
 from llmtest.explorers import Explorer
 from llmtest.techniques import Technique
@@ -8,8 +9,9 @@ class ExhaustiveSearch(Explorer):
     def __init__(self, techniques: list[Technique]) -> None:
         super().__init__(techniques)
 
-    def generateInitialTransforms(self) -> list[Transform]:
-        combos = [ itertools.combinations(self.techniques, i) for i in range(1, len(self.techniques) + 1) ]
+    @staticmethod
+    def generatePermutationsAndCombinations(techniques: list[Technique], min_length: int = 1, max_length: int = 4):
+        combos = [ itertools.combinations(techniques, i) for i in range(min_length, min(len(techniques) + 1, max_length)) ]
         # The list that stores all the permutations, of all the combos
         perms = []
         for batch in combos:
@@ -18,6 +20,9 @@ class ExhaustiveSearch(Explorer):
                 perms.append([ list(perm) for perm in itertools.permutations(combo)])
         
         return [ Transform(list(enumerate(permutation))) for perm_list in perms for permutation in perm_list ]
+
+    def generateInitialTransforms(self) -> list[Transform]:
+        return self.generatePermutationsAndCombinations(self.techniques)
     
     def seedScore(self, result: float) -> None:
         pass

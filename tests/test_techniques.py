@@ -4,6 +4,7 @@ from llmtest.techniques import *
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.addnoise import AddNoise
+from llmtest.techniques.encoding import Encoding
 
 @pytest.fixture
 def prompt():
@@ -46,3 +47,8 @@ def test_addnoise(prompt):
     expexted = ' '.join(prompt)
     actual = AddNoise().applyTechnique(prompt)
     assert expexted == actual
+
+def test_encoding(prompt):
+    expected = "VGhpcyBpcyBhIHByb21wdA==" # Base64 for "This is a prompt"
+    actual = Encoding().applyTechnique(prompt)
+    assert expected == actual

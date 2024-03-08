@@ -3,6 +3,7 @@ import json
 from llmtest.harnesses.linearharness import LinearHarness
 from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest import classfactory
+from llmtest.explorers.classexplorer import ClassExplorer
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 from llmtest.generators.nvidia import Nvidia
 
