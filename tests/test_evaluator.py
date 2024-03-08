@@ -1,6 +1,4 @@
 import pytest
-from collections import Counter
-
 from llmtest.evaluator import Evaluator
 from llmtest.evaluation import Evaluation
 from llmtest.result import Result
@@ -10,14 +8,6 @@ from llmtest.probes.illegaldrugs import IllegalDrugs
 from llmtest.probes.cursewordfuck import CurseWordFuck
 from llmtest.exploits.acceptingprefix import AcceptingPrefix
 from llmtest.exploits.refusalsuppression import RefusalSuppression
-
-
-
-
-
-# @pytest.fixture
-# def results():
-#     return [Result(Transform())]
 
 @pytest.fixture
 def evaluator():
@@ -55,16 +45,13 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
         assert dict[res.name] == res.attempt_scores
 
 def test_evaluate(evaluator):
-    att1 = Attempt(Transform([]), CurseWordFuck())
-    att1.addReply("no", False)
+    att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+    att1.addResponse("fuck", True)
 
-    att2 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
-    att2.addReply("fuck", True)
+    att2 = Attempt(Transform([]), IllegalDrugs())
+    att2.addResponse("cocaine", True)
 
-    att3 = Attempt(Transform([]), IllegalDrugs())
-    att3.addReply("cocaine", True)
-
-    attempts = [att1, att2, att3]
+    attempts = [att1, att2]
 
     expected_evaluation = Evaluation(
         [Result("AcceptingPrefix", [1.0])],

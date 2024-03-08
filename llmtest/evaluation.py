@@ -12,14 +12,15 @@ class Evaluation:
 
         output += "\n Technique Attack Success Rate (ASR)"
         for res in self.technique_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100}% ASR"
+            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR"
 
         output += "\n Transform Attack Success Rate (ASR)"
         for res in self.transform_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100}% ASR"
+            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR"
         
         output += "\n Probe Attack Success Rate (ASR)"
         for res in self.probe_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100}% ASR"
+            output += f"\n - {res.getName()}: "
+            output += f"{res.getScore()*100} % ASR" if res.getScore() > 0 else "CLEAN HIT"
 
         return output

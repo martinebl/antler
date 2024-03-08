@@ -3,6 +3,7 @@ from llmtest.probes import Probe
 from llmtest.evaluator import Evaluator
 from llmtest.explorers import Explorer
 from llmtest.generators import Generator
+from llmtest.attempt import Attempt
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
@@ -21,8 +22,29 @@ class Harness:
         """
         raise NotImplementedError("This method should be implemented in subclasses")
 
-    def evaluateResults(self, results):
+    def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
-        evaluation = evaluator.evaluate(results)
+        evaluation = evaluator.evaluate(attempts)
         print(evaluation)
+
+    """ This method is quadratic and could be optimized """
+    @staticmethod
+    def collapseSameAttempts(attempts):
+        same_indices = []
+        for i in range(len(attempts)):
+            for j in range(i + 1, len(attempts)):
+                if  Attempt.isSame(attempts[i], attempts[j]):
+                    attempts[i].addResponseObject(*attempts[j].getReplies())
+                    same_indices.append(j)
+                    
+        for index in sorted(set(same_indices), reverse=True):
+            del attempts[index]
         
+    @staticmethod
+    def runAttempt(args: tuple[object, Attempt]):
+        harness, attempt = args
+        generator = harness.generator if(hasattr(harness, "generator")) else harness.generator_type(harness.model, harness.options)
+        answer = generator.generate(attempt.getPrompt())
+        detection = attempt.getProbe().runDetectors(answer)
+        attempt.addResponse(answer, detection)
+        return attempt

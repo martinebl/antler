@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-from llmtest.transforms import Transform
-from llmtest.probes import Probe
-
 class Result:
     def __init__(self, name: str, attempt_scores: list[float]) -> None:
         self.name = name

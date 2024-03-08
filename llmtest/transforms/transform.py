@@ -26,3 +26,7 @@ class Transform:
         for exploit in self.exploits:
             str += f"{type(exploit).__name__},"
         return f"({str})"
+    
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Transform):
+            return self.__dict__ == other.__dict__
