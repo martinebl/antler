@@ -12,8 +12,10 @@ class LinearHarness(Harness):
         return [Harness.runAttempt((self, attempt)) for attempt in empty_attempts]
 
     def collectAttempts(self) -> list[Attempt]:
+        print("Running penetration tests")
         all_attempts: list[Attempt] = []
         
+        print("Running tests with clean payloads...")
         # running clean attempts for each probe - only once, no repetitions
         empty_transform_attempts = self.runCleanProbes(self.probes)
         all_attempts.extend(empty_transform_attempts)
@@ -22,15 +24,16 @@ class LinearHarness(Harness):
 
         if len(non_clean_hit_probes) > 0:
             print("Running tests with transforms...")
-            for transform in tqdm(self.explorer):
+            pbar = tqdm(self.explorer, leave=False)
+            for transform in pbar:
                 transform_attempts: list[Attempt] = [Harness.runAttempt((self, Attempt(transform, probe))) for probe in non_clean_hit_probes]
                 transform_score = sum([attempt.getAttemptSuccessRate() for attempt in transform_attempts]) / len(transform_attempts)
                 
                 all_attempts.extend(transform_attempts)
                 self.explorer.seedScore(transform_score)
+                pbar.total = len(self.explorer)
+            pbar.close()
         return all_attempts
 
-    def run(self) -> None:
-        print("Running penetration tests")
-        
+    def run(self) -> None:        
         self.evaluateAttempts(self.collectAttempts())

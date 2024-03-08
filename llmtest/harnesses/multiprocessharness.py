@@ -36,13 +36,16 @@ class MultiProcessHarness(Harness):
             
             if len(non_clean_hit_probes) > 0:
                 print("Running tests with transforms...")
-                for transform in tqdm(self.explorer):
+                pbar = tqdm(self.explorer, leave=False)
+                for transform in pbar:
                     transform_attempts: list[Attempt] = pool.map(Harness.runAttempt, [(self, Attempt(transform, probe)) for probe in non_clean_hit_probes])
                     self.collapseSameAttempts(transform_attempts)
                     
                     attempts.extend(transform_attempts)
                     transform_score = sum([attempt.getAttemptSuccessRate() for attempt in transform_attempts]) / len(transform_attempts)
                     self.explorer.seedScore(transform_score)
+                    pbar.total = len(self.explorer)
+                pbar.close()
         return attempts
 
     def run(self) -> None:

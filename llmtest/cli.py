@@ -58,6 +58,13 @@ def handle() -> None:
         help="The number of times each transformed and clean prompt, will be given to the target model for probes to run on them"
     )
 
+    parser.add_argument(
+        "--explorer",
+        "-e",
+        type=str,
+        help="The name of the explorer class/strategy used to search the space of all transforms"
+    )
+
     args = parser.parse_args()
 
     # Setting default values
@@ -83,6 +90,9 @@ def handle() -> None:
 
     repetitions = 1
 
+    explorer_class = ClassExplorer # Default explorer
+    explorer_path = 'llmtest/explorers'
+
     # Setting given arguments
 
     if args.model:
@@ -98,10 +108,12 @@ def handle() -> None:
         options = args.options
     if args.repetitions:
         repetitions = args.repetitions
+    if args.explorer:
+        explorer_class = classfactory.get_classes_from_folder(explorer_path, [args.explorer.lower()+".py"])[0]
 
     if args.processes == 1:
-        harness = LinearHarness(probes, ExhaustiveSearch(all_techniques), generator_class, model, options, repetitions)
+        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions)
     else:
-        harness = MultiProcessHarness(probes, ExhaustiveSearch(all_techniques), generator_class, model, options, repetitions, args.processes)
+        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions, args.processes)
         
     harness.run()
