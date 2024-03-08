@@ -1,27 +1,59 @@
 #!/usr/bin/env python3
 from llmtest.result import Result
 from llmtest.evaluation import Evaluation
+from llmtest.attempt import Attempt
 
 class Evaluator:
     def __init__(self) -> None:
         self = self
 
-    #Every result = 1 probe
-    def evaluate(self, results: list[Result]) -> Evaluation:
-        clean_hit_payloads = []
-        technique_scores: dict[str, list[float]] = {}
+    def evaluate(self, attempts: list[Attempt]) -> Evaluation:
+        techniques: dict[str, list[float]] = {}
+        transforms: dict[str, list[float]] = {}
+        probes: dict[str, list[float]] = {}
 
-        for res in results:
-            # Checks for empty transformer - The transformer with clean hit prompts
-            if len(res.transform.techniques) == 0:
-                for probe in res.probes:
-                    clean_hit_payloads.append(probe.getPayload())
-                continue
-            
-            for technique in res.transform.techniques:
-                technique_name = type(technique).__name__
-                if(technique_name) in technique_scores:
-                    technique_scores[technique_name].append(res.score)
+        for attempt in attempts:
+
+            # collecting probe scores
+            probe_name = type(attempt.getProbe()).__name__
+            if self.isEmptyTransform(attempt):
+                if self.isCleanHit(attempt):
+                    self.addToDict(probes, probe_name, -1)
+                    continue
                 else:
-                    technique_scores[technique_name] = [res.score]
-        return Evaluation(clean_hit_payloads, technique_scores)
+                    # discards empty transform non-clean probes
+                    continue
+            self.addToDict(probes, probe_name, attempt.getAttemptSuccessRate())
+
+            # collecting transform scores
+            transform_name = str(attempt.getTransform())
+            self.addToDict(transforms, transform_name, attempt.getAttemptSuccessRate())
+
+            # collecting technique scores
+            for technique in attempt.getTransform().getTechniques():
+                technique_name = type(technique).__name__
+                self.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate())
+        
+        technique_results = self.createResultList(techniques)
+        transform_results = self.createResultList(transforms)
+        probe_results = self.createResultList(probes)
+
+        return Evaluation(technique_results, transform_results, probe_results)
+
+
+    def isEmptyTransform(self, attempt: Attempt) -> bool:
+        return attempt.getTransform().isEmpty()
+    
+    def isCleanHit(self, attempt: Attempt) -> bool:
+        return attempt.getAttemptSuccessRate() == 1
+
+
+    def addToDict(self, dict:object, key:str, value:float):
+        if not key in dict: dict[key] = []
+        dict[key].append(value)
+
+    def createResultList(self, dict:dict) -> list[Result]:
+        results = []
+        for name, score_list in dict.items():
+            results.append(Result(name, score_list))
+        return results

@@ -9,6 +9,8 @@ from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.probes.cursewordfuck import CurseWordFuck
 from llmtest.probes.illegaldrugs import IllegalDrugs
+from llmtest.attempt import Attempt
+from llmtest.transforms.transform import Transform
 
 class SleepingGenerator(Generator):
     def generate(self, prompt: str) -> str:
@@ -22,6 +24,16 @@ def run_linear_harness():
 def run_multiprocess_harness():
     harness = MultiProcessHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "123")
     harness.run()
+
+@pytest.fixture
+def linear_harness():
+    return LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "123")
+
+def test_all_attempts_correct_type(linear_harness):
+    attempts = linear_harness.collectAttempts()
+    for attempt in attempts:
+        assert type(attempt) == Attempt
+
 
 def test_not_implemented():
     with pytest.raises(NotImplementedError):
@@ -46,3 +58,30 @@ def test_faster_multiprocess_time():
     end = time.time()
     process_time_2 = end - start
     assert(process_time_1 < process_time_2)
+
+@pytest.mark.parametrize("attempts, result", [
+    (
+        [
+            Attempt(Transform([]), CurseWordFuck(), [
+                {"answer": "fuck", "detection": True}
+            ]),
+            Attempt(Transform([]), CurseWordFuck(), [
+                {"answer": "no", "detection": False}
+            ])
+        ], 
+        [
+            Attempt(Transform([]), CurseWordFuck(), [
+                {"answer": "fuck", "detection": True},
+                {"answer": "no", "detection": False}
+            ])
+        ]
+    )
+])
+
+def test_collapse_attempts(attempts: list[Attempt], result):
+    Harness.collapseSameAttempts(attempts)
+
+    assert len(attempts) == len(result)
+    for i in range(len(attempts)):
+        assert attempts[i] == result[i]
+

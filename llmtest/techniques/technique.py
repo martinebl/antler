@@ -22,5 +22,8 @@ class Technique:
     def applyTechnique(self, prompt: str) -> str:
         raise NotImplementedError("This method should be implemented by subclasses")
     
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, type(self))
+    
 
 

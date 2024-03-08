@@ -52,3 +52,12 @@ def test_encoding(prompt):
     expected = "VGhpcyBpcyBhIHByb21wdA==" # Base64 for "This is a prompt"
     actual = Encoding().applyTechnique(prompt)
     assert expected == actual
+
+def test_equality():
+    acceptingPrefix1 = AcceptingPrefix()
+    acceptingPrefix2 = AcceptingPrefix()
+
+    noise = AddNoise()
+
+    assert acceptingPrefix1 != noise
+    assert acceptingPrefix1 == acceptingPrefix2

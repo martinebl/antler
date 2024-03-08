@@ -14,3 +14,19 @@ class Transform:
         for technique in self.techniques:
             prompt = technique.applyTechnique(prompt)
         return prompt
+    
+    def getTechniques(self) -> list[Technique]:
+        return self.techniques
+    
+    def isEmpty(self) -> bool:
+        return (True if len(self.techniques) == 0 else False)
+    
+    def __str__(self):
+        str = ""
+        for technique in self.techniques:
+            str += f"{type(technique).__name__},"
+        return f"({str})"
+    
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, Transform):
+            return self.__dict__ == other.__dict__
