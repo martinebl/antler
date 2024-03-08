@@ -1,6 +1,6 @@
 import pytest
 from llmtest import classfactory
-from llmtest.techniques import Technique
+from llmtest.techniques import *
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.addnoise import AddNoise
@@ -11,7 +11,7 @@ def prompt():
 
 def test_base_technique_not_implemented(prompt):
     with pytest.raises(NotImplementedError):
-        Technique().applyTechnique(prompt)
+        Technique(TechniqueClass.CONTEXT_ENRICHMENT).applyTechnique(prompt)
 
 @pytest.mark.parametrize("technique", classfactory.instantiate_all_classes_from_folder('llmtest/techniques', ['__init__.py', 'technique.py']))
 def test_technique_alter_prompt(prompt, technique):
