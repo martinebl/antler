@@ -29,6 +29,7 @@ class Harness:
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(attempts)
+        self.log_writer.logReport(str(evaluation))
         evaluation.prettyPrint()
 
     def collectAttempts(self) -> list[Attempt]:
