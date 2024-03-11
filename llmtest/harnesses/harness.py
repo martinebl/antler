@@ -20,12 +20,15 @@ class Harness:
         applies the transforms to the probes and run them on the generator.
         Lastly the probe detectors are run on the given answers, and the results are evaluated.
         """
-        raise NotImplementedError("This method should be implemented in subclasses")
+        self.evaluateAttempts(self.collectAttempts())
 
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(attempts)
         print(evaluation)
+
+    def collectAttempts(self) -> list[Attempt]:
+        raise NotImplementedError("Implement this in subclass")
 
     """ This method is quadratic and could be optimized """
     @staticmethod
@@ -48,6 +51,3 @@ class Harness:
         detection = attempt.getProbe().runDetectors(answer)
         attempt.addResponse(answer, detection)
         return attempt
-    
-    def collectAttempts(self) -> list[Attempt]:
-        return NotImplementedError("Implement this in subclass")

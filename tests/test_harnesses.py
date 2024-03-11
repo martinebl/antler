@@ -35,10 +35,10 @@ def test_all_attempts_correct_type(linear_harness):
         assert type(attempt) == Attempt
 
 
-def test_not_implemented():
+def test_collect_not_implemented():
     with pytest.raises(NotImplementedError):
         harness = Harness([], None, SleepingGenerator, "123")
-        harness.run()
+        harness.collectAttempts()
 
 def test_linear_time_for_linear_harness():
     start = time.time()
