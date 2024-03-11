@@ -48,3 +48,6 @@ class Harness:
         detection = attempt.getProbe().runDetectors(answer)
         attempt.addResponse(answer, detection)
         return attempt
+    
+    def collectAttempts(self) -> list[Attempt]:
+        return NotImplementedError("Implement this in subclass")

@@ -22,15 +22,15 @@ class MultiProcessHarness(Harness):
         return pool.map(Harness.runAttempt, [(self, Attempt(Transform([]), probe)) for probe in self.probes] * self.repetitions)
 
     def collectAttempts(self) -> list[Attempt]:
-        attempts: list[Attempt] = []
+        print("Running penetration tests")
+        all_attempts: list[Attempt] = []
 
         with Pool(self.processes) as pool:
-            print("Running penetration tests")
 
             print("Running tests with clean payloads...")
             empty_transform_attempts: list[Attempt] = self.runCleanProbes(pool)
             self.collapseSameAttempts(empty_transform_attempts)
-            attempts.extend(empty_transform_attempts)
+            all_attempts.extend(empty_transform_attempts)
 
             non_clean_hit_probes = [attempt.getProbe() for attempt in empty_transform_attempts if attempt.getAttemptSuccessRate() < 1] * self.repetitions
             
@@ -41,12 +41,12 @@ class MultiProcessHarness(Harness):
                     transform_attempts: list[Attempt] = pool.map(Harness.runAttempt, [(self, Attempt(transform, probe)) for probe in non_clean_hit_probes])
                     self.collapseSameAttempts(transform_attempts)
                     
-                    attempts.extend(transform_attempts)
+                    all_attempts.extend(transform_attempts)
                     transform_score = sum([attempt.getAttemptSuccessRate() for attempt in transform_attempts]) / len(transform_attempts)
                     self.explorer.seedScore(transform_score)
                     pbar.total = len(self.explorer)
                 pbar.close()
-        return attempts
+        return all_attempts
 
     def run(self) -> None:
         self.evaluateAttempts(self.collectAttempts())
