@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 from enum import Enum
 class TechniqueClass(Enum):
     SOCIAL_ENGINEERING = 1
@@ -24,6 +25,9 @@ class Technique:
     
     def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
+    
+    def toJSON(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
     
 
 

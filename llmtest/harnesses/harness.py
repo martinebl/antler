@@ -4,6 +4,7 @@ from llmtest.evaluator import Evaluator
 from llmtest.explorers import Explorer
 from llmtest.generators import Generator
 from llmtest.attempt import Attempt
+from llmtest.logwriter import LogWriter
 
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
@@ -13,6 +14,7 @@ class Harness:
         self.probes = probes
         self.explorer = explorer
         self.repetitions = repetitions
+        self.log_writer = LogWriter()
     
     def run(self) -> None:
         """
@@ -20,7 +22,9 @@ class Harness:
         applies the transforms to the probes and run them on the generator.
         Lastly the probe detectors are run on the given answers, and the results are evaluated.
         """
-        self.evaluateAttempts(self.collectAttempts())
+        attempts = self.collectAttempts()
+        self.log_writer.logAttempts(attempts)
+        self.evaluateAttempts(attempts)
 
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()

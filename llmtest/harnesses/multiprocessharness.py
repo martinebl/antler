@@ -7,6 +7,7 @@ from llmtest.generators.generator import Generator
 from llmtest.transforms import Transform
 from llmtest.probes import Probe
 from llmtest.attempt import Attempt
+from llmtest.logwriter import LogWriter
 
 class MultiProcessHarness(Harness):
     def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = None) -> None:
@@ -17,6 +18,7 @@ class MultiProcessHarness(Harness):
         self.options = options
         self.repetitions = repetitions
         self.processes = processes
+        self.log_writer = LogWriter()
 
     def runCleanProbes(self, pool):
         return pool.map(Harness.runAttempt, [(self, Attempt(Transform([]), probe)) for probe in self.probes] * self.repetitions)

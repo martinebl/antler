@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import json
 from llmtest.detectors import Detector
 class Probe:
     """Base class for Probe"""

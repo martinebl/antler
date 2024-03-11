@@ -52,3 +52,13 @@ class Attempt:
     
     def __eq__(self, other: object) -> bool:
         return Attempt.isSame(self, other) and self.getReplies() == other.getReplies()
+
+    @staticmethod
+    def toJSON(obj):
+        return {
+            "transform": str(obj.transform),
+            "probe": type(obj.probe).__name__,
+            "prompt": obj.prompt,
+            "Attempt ASR": obj.getAttemptSuccessRate(),
+            "replies": obj.replies
+        }
