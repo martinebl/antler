@@ -16,6 +16,20 @@ class SleepingGenerator(Generator):
     def generate(self, prompt: str) -> str:
         time.sleep(0.5) # Simulate expensive task, while possibly allowing other threads to still work
         return "Heyo this is the best answer you could hope for"
+    
+class SometimesFailingGenerator(Generator):
+    def __init__(self, model: str, options: dict = ...) -> None:
+        super().__init__(model, options)
+        self.fail = False
+
+    def generate(self, prompt: str) -> str:
+        if self.fail:
+            self.fail = False
+            raise(TimeoutError("The connection timed out!"))
+        else:
+            self.fail = True
+            return "This is an answer that might work"
+        
 
 def run_linear_harness():
     harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "123")
@@ -85,3 +99,6 @@ def test_collapse_attempts(attempts: list[Attempt], result):
     for i in range(len(attempts)):
         assert attempts[i] == result[i]
 
+def test_error_handling_harness():
+    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SometimesFailingGenerator, "123", repetitions=3)
+    harness.run()

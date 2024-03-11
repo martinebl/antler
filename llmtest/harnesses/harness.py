@@ -52,7 +52,11 @@ class Harness:
     def runAttempt(args: tuple[object, Attempt]):
         harness, attempt = args
         generator = harness.generator if(hasattr(harness, "generator")) else harness.generator_type(harness.model, harness.options)
-        answer = generator.generate(attempt.getPrompt())
-        detection = attempt.getProbe().runDetectors(answer)
-        attempt.addResponse(answer, detection)
+        # Handle if a connection times out or other network errors
+        try:
+            answer = generator.generate(attempt.getPrompt())
+            detection = attempt.getProbe().runDetectors(answer)
+            attempt.addResponse(answer, detection)
+        except Exception as e:
+            attempt.addResponseWithError(str(e))
         return attempt

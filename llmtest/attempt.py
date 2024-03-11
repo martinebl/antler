@@ -35,13 +35,22 @@ class Attempt:
         return hit_count
     
     def getNumberOfReplies(self) -> int:
-        return len(self.replies)
+        return len([reply for reply in self.replies if reply["answer"] != None])
     
-    def addResponse(self, answer:str, detection:bool):
+    def addResponse(self, answer:str, detection:bool)-> None:
         self.replies.append(
             {
                 "answer": answer,
                 "detection": detection
+            }
+        )
+
+    def addResponseWithError(self, error: str) -> None:
+        self.replies.append(
+            {
+                "answer": None,
+                "detection": None,
+                "error": error
             }
         )
 
