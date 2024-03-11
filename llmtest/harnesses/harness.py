@@ -29,7 +29,7 @@ class Harness:
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(attempts)
-        print(evaluation)
+        evaluation.prettyPrint()
 
     def collectAttempts(self) -> list[Attempt]:
         raise NotImplementedError("Implement this in subclass")

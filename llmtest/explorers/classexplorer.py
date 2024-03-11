@@ -9,6 +9,7 @@ class ClassExplorer(Explorer):
         super().__init__(techniques)
         self.scores: list[tuple[Technique, float]] = []
         self.best_class_techniques: list[Technique] = []
+        self._setMessage("Trying techniques individually...")
 
     def generateInitialTransforms(self) -> list[Transform]:
         """
@@ -28,6 +29,7 @@ class ClassExplorer(Explorer):
             # Handle the selection and transform generation on the last iteration of the single techniques
             if self.index == len(self.techniques) - 1:
                 self.__generateTransformsFromScores()
+                self._setMessage("Trying generated transforms, from best in class techniques...")
     
     def __generateTransformsFromScores(self) -> None:
         #Firstly get all transforms from each class, with the best score

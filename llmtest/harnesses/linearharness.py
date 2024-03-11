@@ -32,6 +32,9 @@ class LinearHarness(Harness):
             print("Running tests with transforms...")
             pbar = tqdm(self.explorer, leave=False)
             for transform in pbar:
+                if self.explorer.hasMessage():
+                    pbar.write(self.explorer.getMessage())
+                    
                 transform_attempts: list[Attempt] = self.runProbeForTransform(transform, non_clean_hit_probes)
                 self.collapseSameAttempts(transform_attempts)
                 
