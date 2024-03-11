@@ -12,7 +12,7 @@ class Evaluation:
         self.probe_results = probe_results
   
     def prettyPrint(self) -> str:
-        print("\n--- REPORT ---")
+        print("\n--------- REPORT ---------")
 
         print("Technique Attack Success Rate (ASR)")
         for res in self.technique_results:
@@ -37,19 +37,19 @@ class Evaluation:
         """
         Needed for the logging of the report. This is without colors
         """
-        output = "\n--- REPORT ---"
+        output = "\n--------- REPORT ---------"
 
         output += "\n Technique Attack Success Rate (ASR)"
         for res in self.technique_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR ({res.getHitCount()}/{res.getAllCount()})"
+            output += f"\n - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})"
 
         output += "\n Transform Attack Success Rate (ASR)"
         for res in self.transform_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR ({res.getHitCount()}/{res.getAllCount()})"
+            output += f"\n - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})"
 
         output += "\n Probe Attack Success Rate (ASR)"
         for res in self.probe_results:
             output += f"\n - {res.getName()}: "
-            output += (f"{res.getScore()*100} % ASR" if res.getScore() > 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
+            output += (f"{res.getScore()*100:.2f} % ASR" if res.getScore() > 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
 
         return output
