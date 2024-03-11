@@ -10,6 +10,6 @@
 #Environment variables
 .env
 
-.json
+*.json
 
-.log
+*.log
