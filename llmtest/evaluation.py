@@ -32,3 +32,24 @@ class Evaluation:
             print(color + f" - {res.getName()}: " +  (f"{res.getScore()*100:.2f} % ASR" if res.getScore() >= 0 else "CLEAN HIT") + f" ({res.getHitCount()}/{res.getAllCount()})")
 
         print(Style.RESET_ALL)
+
+    def __str__(self) -> str:
+        """
+        Needed for the loggin of the report. This is without colors
+        """
+        output = "\n--- REPORT ---"
+
+        output += "\n Technique Attack Success Rate (ASR)"
+        for res in self.technique_results:
+            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR ({res.getHitCount()}/{res.getAllCount()})"
+
+        output += "\n Transform Attack Success Rate (ASR)"
+        for res in self.transform_results:
+            output += f"\n - {res.getName()}: {res.getScore()*100} % ASR ({res.getHitCount()}/{res.getAllCount()})"
+
+        output += "\n Probe Attack Success Rate (ASR)"
+        for res in self.probe_results:
+            output += f"\n - {res.getName()}: "
+            output += (f"{res.getScore()*100} % ASR" if res.getScore() > 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
+
+        return output
