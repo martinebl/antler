@@ -13,9 +13,22 @@ class Explorer:
         self.techniques = techniques
         self.index = -1 # So the first call to __next__ will be on index 0
         self.transforms = self.generateInitialTransforms()
+        self.__hasMessage = False
+        self.__message = ""
 
     def __iter__(self):
         return self
+    
+    def hasMessage(self) -> bool:
+        return self.__hasMessage
+    
+    def getMessage(self) -> str:
+        self.__hasMessage = False
+        return self.__message
+    
+    def _setMessage(self, message: str) -> None:
+        self.__hasMessage = True
+        self.__message = message
 
     def __next__(self) -> Transform:
         self.index+=1
