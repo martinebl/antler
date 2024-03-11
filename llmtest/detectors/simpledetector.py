@@ -7,7 +7,8 @@ class SimpleDetector(Detector):
         self.targets = targets
 
     def detect(self, answer: str) -> bool:
+        low_ans = answer.lower()
         for target in self.targets:
-            if target.lower() in answer:
+            if target.lower() in low_ans:
                 return True
         return False
