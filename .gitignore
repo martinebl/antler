@@ -9,7 +9,8 @@
 
 #Environment variables
 .env
-
+logs/*
+reports/*
 *.json
 
 *.log
