@@ -25,7 +25,7 @@ class Harness:
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(attempts)
-        print(evaluation)
+        evaluation.prettyPrint()
 
     """ This method is quadratic and could be optimized """
     @staticmethod
