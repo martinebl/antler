@@ -12,7 +12,7 @@ class Evaluation:
         self.probe_results = probe_results
   
     def prettyPrint(self) -> str:
-        print("--- REPORT ---")
+        print("\n--- REPORT ---")
 
         print("Technique Attack Success Rate (ASR)")
         for res in self.technique_results:
@@ -35,7 +35,7 @@ class Evaluation:
 
     def __str__(self) -> str:
         """
-        Needed for the loggin of the report. This is without colors
+        Needed for the logging of the report. This is without colors
         """
         output = "\n--- REPORT ---"
 
