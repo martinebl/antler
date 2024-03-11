@@ -8,9 +8,11 @@ class Evaluator:
         self = self
 
     def evaluate(self, attempts: list[Attempt]) -> Evaluation:
-        techniques: dict[str, list[float]] = {}
-        transforms: dict[str, list[float]] = {}
-        probes: dict[str, list[float]] = {}
+        # Each property is of the form dict[entry_name, list[tuple[succes_rate, succesfull_attempts, all_attempts]]]
+        # The success_rate can be deduced from the following two, but is used right now with a negative value, to indicate a clean attempt
+        techniques: dict[str, list[tuple[float, int, int]]] = {}
+        transforms: dict[str, list[tuple[float, int, int]]] = {}
+        probes: dict[str, list[tuple[float, int, int]]] = {}
 
         for attempt in attempts:
 
@@ -18,21 +20,21 @@ class Evaluator:
             probe_name = type(attempt.getProbe()).__name__
             if self.isEmptyTransform(attempt):
                 if self.isCleanHit(attempt):
-                    self.addToDict(probes, probe_name, -1)
+                    self.addToDict(probes, probe_name, -1, attempt.getHitCount(), attempt.getNumberOfReplies())
                     continue
                 else:
                     # discards empty transform non-clean probes
                     continue
-            self.addToDict(probes, probe_name, attempt.getAttemptSuccessRate())
+            self.addToDict(probes, probe_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
 
             # collecting transform scores
             transform_name = str(attempt.getTransform())
-            self.addToDict(transforms, transform_name, attempt.getAttemptSuccessRate())
+            self.addToDict(transforms, transform_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
 
             # collecting technique scores
             for technique in attempt.getTransform().getTechniques():
                 technique_name = type(technique).__name__
-                self.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate())
+                self.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
         
         technique_results = self.createResultList(techniques)
         transform_results = self.createResultList(transforms)
@@ -48,9 +50,9 @@ class Evaluator:
         return attempt.getAttemptSuccessRate() == 1
 
 
-    def addToDict(self, dict:object, key:str, value:float):
+    def addToDict(self, dict: object, key: str, succes_rate: float, succesful_attempts: int, all_attempts: int):
         if not key in dict: dict[key] = []
-        dict[key].append(value)
+        dict[key].append((succes_rate, succesful_attempts, all_attempts))
 
     def createResultList(self, dict:dict) -> list[Result]:
         results = []

@@ -25,6 +25,18 @@ class Attempt:
     def getReplies(self) -> list:
         return self.replies
     
+    def getHitCount(self) -> int:
+        if len(self.replies) == 0: return None
+
+        hit_count = 0
+        for reply in self.replies:
+            if reply["detection"]: hit_count = hit_count + 1
+        
+        return hit_count
+    
+    def getNumberOfReplies(self) -> int:
+        return len(self.replies)
+    
     def addResponse(self, answer:str, detection:bool):
         self.replies.append(
             {
@@ -38,13 +50,9 @@ class Attempt:
 
 
     def getAttemptSuccessRate(self) -> float:
-        if len(self.replies) == 0: return None
-
-        hit_count = 0
-        for reply in self.replies:
-            if reply["detection"]: hit_count = hit_count + 1
-        
-        return hit_count/len(self.replies)
+        if self.getNumberOfReplies() == 0: 
+            return None
+        return self.getHitCount()/self.getNumberOfReplies()
     
     @staticmethod
     def isSame(att1: object, att2: object) -> bool:
