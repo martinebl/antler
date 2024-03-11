@@ -1,4 +1,5 @@
 import json
+import os
 import logging
 from datetime import datetime
 from llmtest.attempt import Attempt
@@ -8,6 +9,12 @@ class LogWriter():
         self.initLoggers()
     
     def initLoggers(self):
+        # check dirs exist
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
+        if not os.path.exists('reports'):
+            os.mkdir('reports')
+
         # create loggers
         self.attempt_logger = logging.getLogger("attempt_logger")
         self.report_logger = logging.getLogger("report_logger")
@@ -16,8 +23,8 @@ class LogWriter():
 
         current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         # create file handlers
-        attempt_file_handler = logging.FileHandler(f"attempts_{current_datetime}.json")
-        report_file_handler = logging.FileHandler(f"report_{current_datetime}.log")
+        attempt_file_handler = logging.FileHandler(f"logs/attempts_{current_datetime}.json")
+        report_file_handler = logging.FileHandler(f"reports/report_{current_datetime}.log")
 
         # create formatters
         formatter = logging.Formatter('%(message)s')
