@@ -47,6 +47,3 @@ class MultiProcessHarness(Harness):
                     pbar.total = len(self.explorer)
                 pbar.close()
         return all_attempts
-
-    def run(self) -> None:
-        self.evaluateAttempts(self.collectAttempts())
