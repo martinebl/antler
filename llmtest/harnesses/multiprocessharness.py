@@ -10,7 +10,7 @@ from llmtest.attempt import Attempt
 from llmtest.logwriter import LogWriter
 
 class MultiProcessHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = None) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = 10) -> None:
         super(MultiProcessHarness, self).__init__(probes, explorer, generator_type, model, options, repetitions)
         self.processes = processes
 
