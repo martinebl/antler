@@ -9,10 +9,12 @@ from llmtest.logwriter import LogWriter
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, model_options: dict = {}, repetitions: int = 1) -> None:
-        self.generator = generator_type(model, model_options)
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1) -> None:
+        self.generator_type = generator_type
+        self.model = model
         self.probes = probes
         self.explorer = explorer
+        self.options = options
         self.repetitions = repetitions
         self.log_writer = LogWriter()
         self.had_error = False
@@ -23,6 +25,8 @@ class Harness:
         applies the transforms to the probes and run them on the generator.
         Lastly the probe detectors are run on the given answers, and the results are evaluated.
         """
+
+        self.log_writer.setLogRunParams(str(self.generator_type), self.model, self.options, self.repetitions)
         attempts = self.collectAttempts()
         self.log_writer.logAttempts(attempts)
         self.evaluateAttempts(attempts)

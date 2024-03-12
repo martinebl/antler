@@ -15,6 +15,8 @@ class LogWriter():
         if not os.path.exists('reports'):
             os.mkdir('reports')
 
+        self.run_params = {}
+
         # create loggers
         self.attempt_logger = logging.getLogger("attempt_logger")
         self.report_logger = logging.getLogger("report_logger")
@@ -36,11 +38,19 @@ class LogWriter():
         self.report_logger.addHandler(report_file_handler)
 
     def logAttempts(self, attempts: list[Attempt]):
-        self.attempt_logger.info(json.dumps(attempts, default=lambda obj: Attempt.toJSON(obj), indent=4))
-
-    def logAttempt(self, attempt: Attempt):
-        self.attempt_logger.info(json.dumps(attempt, default=lambda obj: obj.__dict__, indent=4))
+        attempts_as_dict = [Attempt.toJSON(attempt) for attempt in attempts]
+        self.run_params["attempts"] = attempts_as_dict
+        self.attempt_logger.info(json.dumps(self.run_params, indent=4))
 
     def logReport(self, report: str):
+        self.report_logger.info(f'{self.run_params["generator_type"]}: {self.run_params["model"]}')
         self.report_logger.info(report)
+
+    def setLogRunParams(self, generator_type, model, model_options, repetitions):
+        self.run_params = {
+            "generator_type": generator_type,
+            "model": model,
+            "model_options": model_options,
+            "repetitions": repetitions
+        }
 
