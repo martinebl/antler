@@ -17,7 +17,6 @@ class Harness:
         self.options = options
         self.repetitions = repetitions
         self.log_writer = LogWriter()
-        self.had_error = False
     
     def run(self) -> None:
         """
@@ -67,5 +66,4 @@ class Harness:
             attempt.addResponse(answer, detection)
         except Exception as e:
             attempt.addResponseWithError(str(e))
-            harness.had_error = True
         return attempt
