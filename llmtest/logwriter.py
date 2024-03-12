@@ -46,11 +46,6 @@ class LogWriter():
         self.report_logger.info(f'{self.run_params["generator_type"]}: {self.run_params["model"]}')
         self.report_logger.info(report)
 
-    def setLogRunParams(self, generator_type, model, model_options, repetitions):
-        self.run_params = {
-            "generator_type": generator_type,
-            "model": model,
-            "model_options": model_options,
-            "repetitions": repetitions
-        }
+    def setLogRunParams(self, params: object):
+        self.run_params = params
 

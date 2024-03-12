@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import uuid
+
 from llmtest.transforms import Transform
 from llmtest.probes import Probe
 
@@ -76,5 +78,6 @@ class Attempt:
             "probe": type(obj.probe).__name__,
             "prompt": obj.prompt,
             "Attempt ASR": obj.getAttemptSuccessRate(),
-            "replies": obj.replies
+            "replies": obj.replies,
+            "uuid": str(uuid.uuid4())
         }

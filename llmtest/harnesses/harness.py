@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import time
+
 from llmtest.probes import Probe
 from llmtest.evaluator import Evaluator
 from llmtest.explorers import Explorer
@@ -26,8 +28,23 @@ class Harness:
         Lastly the probe detectors are run on the given answers, and the results are evaluated.
         """
 
-        self.log_writer.setLogRunParams(str(self.generator_type), self.model, self.options, self.repetitions)
+        start_time = time.time()
+
         attempts = self.collectAttempts()
+        
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        hours, remainder = divmod(elapsed_time, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
+
+        self.log_writer.setLogRunParams({
+            "generator_type": self.generator_type,
+            "model": self.model,
+            "model_options": self.options,
+            "repetitions": self.repetitions,
+            "elapsed_time": formatted_time 
+        })
         self.log_writer.logAttempts(attempts)
         self.evaluateAttempts(attempts)
 

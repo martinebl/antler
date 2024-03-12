@@ -14,8 +14,14 @@ class Evaluator:
         transforms: dict[str, list[tuple[float, int, int]]] = {}
         probes: dict[str, list[tuple[float, int, int]]] = {}
 
+        error_replies = 0
+        total_replies = 0
         for attempt in attempts:
 
+            # collecting error replies
+            error_replies += sum(1 for reply in attempt.getReplies() if hasattr(reply, 'error'))
+            total_replies += len(attempt.getReplies())
+            
             # collecting probe scores
             probe_name = type(attempt.getProbe()).__name__
             if self.isEmptyTransform(attempt):
@@ -42,7 +48,7 @@ class Evaluator:
         technique_results = sorted(unsorted_technique_results, key=lambda res: res.getScore(), reverse=True)
         probe_results = sorted(unsorted_probe_results, key=lambda res: res.getScore(), reverse=True)
 
-        return Evaluation(technique_results, unsorted_transform_results, probe_results)
+        return Evaluation(technique_results, unsorted_transform_results, probe_results, error_replies, total_replies)
 
 
     def isEmptyTransform(self, attempt: Attempt) -> bool:

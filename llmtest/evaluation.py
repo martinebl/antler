@@ -6,13 +6,17 @@ class Evaluation:
     # Initialise colorama module. Should only be necessary on Windows
     init()
 
-    def __init__(self, technique_results: list[Result], transform_results: list[Result], probe_results: list[Result]):
+    def __init__(self, technique_results: list[Result], transform_results: list[Result], probe_results: list[Result], error_reply_count: int, total_reply_count: int):
         self.technique_results = technique_results
         self.transform_results = transform_results
         self.probe_results = probe_results
+        self.error_reply_count = error_reply_count
+        self.total_reply_count = total_reply_count
   
     def prettyPrint(self) -> str:
         print("\n--------- REPORT ---------")
+        print(f"Total queries: {self.total_reply_count}")
+        print(f"Total query error rate: {(self.error_reply_count/self.total_reply_count)*100} %")
 
         print("Technique Attack Success Rate (ASR)")
         for res in self.technique_results:
