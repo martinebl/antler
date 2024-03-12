@@ -20,17 +20,17 @@ class Evaluation:
             print(color + f" - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})")
 
         print(Style.RESET_ALL)
-        print("Transform Attack Success Rate (ASR)")
-        for res in self.transform_results:
-            color = Fore.GREEN if res.getScore() >= 0.5 else Fore.YELLOW if res.getScore() > 0 else Fore.RED
-            print(color + f" - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})")
-        
-        print(Style.RESET_ALL)
         print("Probe Attack Success Rate (ASR)")
         for res in self.probe_results:
             color = Fore.GREEN if res.getScore() >= 0.5 or res.getScore() < 0 else Fore.YELLOW if res.getScore() > 0 else Fore.RED if res.getScore() == 0 else Fore.GREEN
             print(color + f" - {res.getName()}: " +  (f"{res.getScore()*100:.2f} % ASR" if res.getScore() >= 0 else "CLEAN HIT") + f" ({res.getHitCount()}/{res.getAllCount()})")
 
+        print(Style.RESET_ALL)
+        print("Transform Attack Success Rate (ASR)")
+        for res in self.transform_results:
+            color = Fore.GREEN if res.getScore() >= 0.5 else Fore.YELLOW if res.getScore() > 0 else Fore.RED
+            print(color + f" - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})")
+        
         print(Style.RESET_ALL)
 
     def __str__(self) -> str:
@@ -43,13 +43,13 @@ class Evaluation:
         for res in self.technique_results:
             output += f"\n - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})"
 
-        output += "\n Transform Attack Success Rate (ASR)"
-        for res in self.transform_results:
-            output += f"\n - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})"
-
         output += "\n Probe Attack Success Rate (ASR)"
         for res in self.probe_results:
             output += f"\n - {res.getName()}: "
             output += (f"{res.getScore()*100:.2f} % ASR" if res.getScore() > 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
+
+        output += "\n Transform Attack Success Rate (ASR)"
+        for res in self.transform_results:
+            output += f"\n - {res.getName()}: {res.getScore()*100:.2f} % ASR ({res.getHitCount()}/{res.getAllCount()})"
 
         return output

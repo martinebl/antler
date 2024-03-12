@@ -36,11 +36,13 @@ class Evaluator:
                 technique_name = type(technique).__name__
                 self.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
         
-        technique_results = self.createResultList(techniques)
-        transform_results = self.createResultList(transforms)
-        probe_results = self.createResultList(probes)
+        unsorted_technique_results = self.createResultList(techniques)
+        unsorted_transform_results = self.createResultList(transforms)
+        unsorted_probe_results = self.createResultList(probes)
+        technique_results = sorted(unsorted_technique_results, key=lambda res: res.getScore(), reverse=True)
+        probe_results = sorted(unsorted_probe_results, key=lambda res: res.getScore(), reverse=True)
 
-        return Evaluation(technique_results, transform_results, probe_results)
+        return Evaluation(technique_results, unsorted_transform_results, probe_results)
 
 
     def isEmptyTransform(self, attempt: Attempt) -> bool:
