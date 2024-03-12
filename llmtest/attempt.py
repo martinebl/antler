@@ -8,7 +8,7 @@ class Attempt:
         self.probe = probe
         self.payload = probe.getPayload()
         self.prompt = self.transform.applyTechniques(probe.getPayload())
-        self.replies = replies
+        self.replies = []
 
     def getTransform(self) -> Transform:
         return self.transform
@@ -26,8 +26,6 @@ class Attempt:
         return self.replies
     
     def getHitCount(self) -> int:
-        if len(self.replies) == 0: return None
-
         hit_count = 0
         for reply in self.replies:
             if reply["detection"]: hit_count = hit_count + 1
@@ -60,8 +58,9 @@ class Attempt:
 
     def getAttemptSuccessRate(self) -> float:
         if self.getNumberOfReplies() == 0: 
-            return None
-        return self.getHitCount()/self.getNumberOfReplies()
+            return 0
+        else:
+            return self.getHitCount()/self.getNumberOfReplies()
     
     @staticmethod
     def isSame(att1: object, att2: object) -> bool:

@@ -15,6 +15,7 @@ class Harness:
         self.explorer = explorer
         self.repetitions = repetitions
         self.log_writer = LogWriter()
+        self.had_error = False
     
     def run(self) -> None:
         """
@@ -37,16 +38,19 @@ class Harness:
 
     """ This method is quadratic and could be optimized """
     @staticmethod
-    def collapseSameAttempts(attempts):
-        same_indices = []
-        for i in range(len(attempts)):
-            for j in range(i + 1, len(attempts)):
-                if  Attempt.isSame(attempts[i], attempts[j]):
-                    attempts[i].addResponseObject(*attempts[j].getReplies())
-                    same_indices.append(j)
-                    
-        for index in sorted(set(same_indices), reverse=True):
-            del attempts[index]
+    def collapseSameAttempts(attempts: list[Attempt]) -> list[Attempt]:
+        local_attempts = attempts.copy()
+        for i in range(len(local_attempts)):
+            first_attempt = local_attempts[i]
+            for j in range(i + 1, len(local_attempts)):
+                second_attempt = local_attempts[j]
+                if Attempt.isSame(first_attempt, second_attempt):
+                    for reply in second_attempt.getReplies():
+                        first_attempt.addResponseObject(reply)
+        key_function = lambda x: type(x.getProbe()).__name__
+        seen = set()
+        return [x for x in local_attempts if key_function(x) not in seen and not seen.add(key_function(x))]
+    
         
     @staticmethod
     def runAttempt(args: tuple[object, Attempt]):
@@ -59,4 +63,5 @@ class Harness:
             attempt.addResponse(answer, detection)
         except Exception as e:
             attempt.addResponseWithError(str(e))
+            harness.had_error = True
         return attempt

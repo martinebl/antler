@@ -31,10 +31,10 @@ class MultiProcessHarness(Harness):
 
             print("Running tests with clean payloads...")
             empty_transform_attempts: list[Attempt] = self.runCleanProbes(pool)
-            self.collapseSameAttempts(empty_transform_attempts)
+            empty_transform_attempts = self.collapseSameAttempts(empty_transform_attempts)
             all_attempts.extend(empty_transform_attempts)
 
-            non_clean_hit_probes = [attempt.getProbe() for attempt in empty_transform_attempts if attempt.getAttemptSuccessRate() < 1] * self.repetitions
+            non_clean_hit_probes = [attempt.getProbe() for attempt in empty_transform_attempts if attempt.getAttemptSuccessRate() != None and attempt.getAttemptSuccessRate() < 1] * self.repetitions
             
             if len(non_clean_hit_probes) > 0:
                 print("Running tests with transforms...")
@@ -44,10 +44,11 @@ class MultiProcessHarness(Harness):
                         pbar.write(self.explorer.getMessage())
                         
                     transform_attempts: list[Attempt] = pool.map(Harness.runAttempt, [(self, Attempt(transform, probe)) for probe in non_clean_hit_probes])
-                    self.collapseSameAttempts(transform_attempts)
+                    transform_attempts = self.collapseSameAttempts(transform_attempts)
                     
                     all_attempts.extend(transform_attempts)
-                    transform_score = sum([attempt.getAttemptSuccessRate() for attempt in transform_attempts]) / len(transform_attempts)
+                    non_failed_attempts = [ attempt for attempt in transform_attempts if attempt.getAttemptSuccessRate() != None]
+                    transform_score = sum([attempt.getAttemptSuccessRate() for attempt in non_failed_attempts ]) / len(non_failed_attempts) if len(non_failed_attempts) != 0 else 0
                     self.explorer.seedScore(transform_score)
                     pbar.total = len(self.explorer)
                 pbar.close()

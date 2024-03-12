@@ -13,6 +13,7 @@ from llmtest.probes.illegaldrugs import IllegalDrugs
     (Attempt(Transform([(1, AddNoise())]), CurseWordFuck()), Attempt(Transform([(1, RefusalSuppression())]), CurseWordFuck()), False),
     (Attempt(Transform([(1, AddNoise())]), CurseWordFuck()), Attempt(Transform([(1, AddNoise())]), IllegalDrugs()), False),
     (Attempt(Transform([(1, AddNoise())]), CurseWordFuck()), Attempt(Transform([(1, AddNoise())]), CurseWordFuck()), True),
+    (Attempt(Transform([(1, AcceptingPrefix())]), IllegalDrugs()), Attempt(Transform([(1, AcceptingPrefix())]), IllegalDrugs()), True),
 ])
 def test_is_same(attempt1, attempt2, result):
     assert Attempt.isSame(attempt1, attempt2) == result

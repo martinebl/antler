@@ -29,6 +29,6 @@ class Transform:
     
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Transform):
-            return self.__dict__ == other.__dict__
+            return self.techniques == other.techniques
         
         

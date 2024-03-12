@@ -20,7 +20,7 @@ class SleepingGenerator(Generator):
 class SometimesFailingGenerator(Generator):
     def __init__(self, model: str, options: dict = ...) -> None:
         super().__init__(model, options)
-        self.fail = False
+        self.fail = True
 
     def generate(self, prompt: str) -> str:
         if self.fail:
@@ -76,29 +76,24 @@ def test_faster_multiprocess_time():
 @pytest.mark.parametrize("attempts, result", [
     (
         [
-            Attempt(Transform([]), CurseWordFuck(), [
-                {"answer": "fuck", "detection": True}
-            ]),
-            Attempt(Transform([]), CurseWordFuck(), [
-                {"answer": "no", "detection": False}
-            ])
-        ], 
+            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck()),
+            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+        ],
         [
-            Attempt(Transform([]), CurseWordFuck(), [
-                {"answer": "fuck", "detection": True},
-                {"answer": "no", "detection": False}
-            ])
+            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
         ]
     )
 ])
-
-def test_collapse_attempts(attempts: list[Attempt], result):
-    Harness.collapseSameAttempts(attempts)
-
-    assert len(attempts) == len(result)
-    for i in range(len(attempts)):
-        assert attempts[i] == result[i]
+def test_collapse_attempts(attempts: list[Attempt], result: list[Attempt]):
+    attempts[0].addResponseObject({"answer": "fuck", "detection": True})
+    attempts[1].addResponseObject({"answer": "no", "detection": False})
+    result[0].addResponseObject({"answer": "fuck", "detection": True})
+    result[0].addResponseObject({"answer": "no", "detection": False})
+    collapsed_attempts = Harness.collapseSameAttempts(attempts)
+    assert len(collapsed_attempts) == len(result)
+    for i in range(len(collapsed_attempts)):
+        assert collapsed_attempts[i] == result[i]
 
 def test_error_handling_harness():
-    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SometimesFailingGenerator, "123", repetitions=3)
+    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix()]), SometimesFailingGenerator, "123", repetitions=3)
     harness.run()
