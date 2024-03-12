@@ -50,7 +50,7 @@ class Evaluation:
         output += "\n Probe Attack Success Rate (ASR)"
         for res in self.probe_results:
             output += f"\n - {res.getName()}: "
-            output += (f"{res.getScore()*100:.2f} % ASR" if res.getScore() > 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
+            output += (f"{res.getScore()*100:.2f} % ASR" if res.getScore() >= 0 else "CLEAN HIT")  + f" ({res.getHitCount()}/{res.getAllCount()})"
 
         output += "\n Transform Attack Success Rate (ASR)"
         for res in self.transform_results:

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 class Result:
-    def __init__(self, name: str, attempt_scores: list[float]) -> None:
+    def __init__(self, name: str, attempt_scores: list[tuple[float, int, int]]) -> None:
         self.name = name
         self.attempt_scores = attempt_scores
         self.score = sum(score[0] for score in self.attempt_scores) / len(self.attempt_scores)
@@ -10,7 +10,7 @@ class Result:
     def getName(self) -> str:
         return self.name
 
-    def getAttemptScores(self) -> list[float]:
+    def getAttemptScores(self) -> list[tuple[float, int, int]]:
         return self.attempt_scores
 
     def getScore(self) -> float:
