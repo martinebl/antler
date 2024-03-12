@@ -5,8 +5,13 @@ from llmtest.harnesses import Harness
 from llmtest.transforms import Transform
 from llmtest.attempt import Attempt
 from llmtest.probes.probe import Probe
+from llmtest.generators.generator import Generator
+from llmtest.explorers.explorer import Explorer
 
 class LinearHarness(Harness):
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1):
+        super(LinearHarness, self).__init__(probes, explorer, generator_type, model, options, repetitions)
+        self.generator = generator_type(model, options)
 
     def runCleanProbes(self, probes):
         empty_attempts = [Attempt(Transform([]), probe) for probe in probes]
