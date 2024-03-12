@@ -25,16 +25,16 @@ def test_add_to_dict_on_empty_adds_entry(evaluator):
     dict = { }
     key = "key"
     val = 1.0
-    evaluator.addToDict(dict, key, val)
+    evaluator.addToDict(dict, key, val, val, val)
 
     assert len(dict.items()) > 0
-    assert dict[key] == [val]
+    assert dict[key] == [(val, val, val)]
 
 def test_create_result_list_makes_list_of_res_from_dict(evaluator):
     dict = {
-        "name1": [1.1, 2.1, 3.1, 4.1, 5.1],
-        "name2": [1.2, 2.2, 3.2, 4.2, 5.2],
-        "name3": [1.3, 2.3, 3.3, 4.3, 5.3]
+        "name1": [(1.1, 1, 1), (2.1, 1, 1), (3.1, 1, 1), (4.1, 1, 1), (5.1, 1, 1)],
+        "name2": [(1.2, 1, 1), (2.2, 1, 1), (3.2, 1, 1), (4.2, 1, 1), (5.2, 1, 1)],
+        "name3": [(1.3, 1, 1), (2.3, 1, 1), (3.3, 1, 1), (4.3, 1, 1), (5.3, 1, 1)]
     }
 
     res_list = evaluator.createResultList(dict)
@@ -54,9 +54,9 @@ def test_evaluate(evaluator):
     attempts = [att1, att2]
 
     expected_evaluation = Evaluation(
-        [Result("AcceptingPrefix", [1.0])],
-        [Result("(AcceptingPrefix,)", [1.0])],
-        [Result("CurseWordFuck", [1.0]), Result("IllegalDrugs", [-1])]
+        [Result("AcceptingPrefix", [(1.0, 1, 1)])],
+        [Result("(AcceptingPrefix,)", [(1.0, 1, 1)])],
+        [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])]
     )
 
     evaluation = evaluator.evaluate(attempts)
