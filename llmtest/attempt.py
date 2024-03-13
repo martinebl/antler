@@ -74,10 +74,10 @@ class Attempt:
     @staticmethod
     def toJSON(obj):
         return {
+            "uuid": str(uuid.uuid4()),
             "transform": str(obj.transform),
             "probe": type(obj.probe).__name__,
             "prompt": obj.prompt,
             "Attempt ASR": obj.getAttemptSuccessRate(),
-            "replies": obj.replies,
-            "uuid": str(uuid.uuid4())
+            "replies": obj.replies
         }
