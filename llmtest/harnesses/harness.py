@@ -38,7 +38,7 @@ class Harness:
         formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
 
         self.log_writer.setLogRunParams({
-            "generator_type": self.generator_type,
+            "generator_type": str(self.generator_type),
             "model": self.model,
             "model_options": self.options,
             "repetitions": self.repetitions,
