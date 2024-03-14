@@ -85,8 +85,8 @@ class Harness:
             techniques = attempt.getTransform().getTechniques()
             techniques.reverse()
             for technique in techniques:
-                if technique.affectedAnswer(answer):
-                    answer = technique.decodeAnswer(answer)
+                if technique.isAnswerAffected(answer):
+                    answer = technique.cleanAffectedAnswer(answer)
 
             detection = attempt.getProbe().runDetectors(answer)
             attempt.addResponse(answer, detection)

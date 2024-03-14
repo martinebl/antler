@@ -70,6 +70,6 @@ def test_equality():
     (Encoding(), "fuck123", False, "fuck123"),
 ])
 def test_affected_answer(technique, answer, did_affect, decoded_answer):
-    assert did_affect == technique.affectedAnswer(answer)
-    temp_answer = technique.decodeAnswer(answer) if technique.affectedAnswer(answer) else answer 
+    assert did_affect == technique.isAnswerAffected(answer)
+    temp_answer = technique.cleanAffectedAnswer(answer) if technique.isAnswerAffected(answer) else answer 
     assert temp_answer == decoded_answer

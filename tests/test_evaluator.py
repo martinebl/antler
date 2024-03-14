@@ -3,6 +3,8 @@ from collections import Counter
 
 from llmtest.evaluator import Evaluator
 from llmtest.evaluation import Evaluation
+from llmtest.attempt import Attempt
+from llmtest.transforms.transform import Transform
 from llmtest.result import Result
 from llmtest.probes.illegaldrugs import IllegalDrugs
 from llmtest.probes.cursewordfuck import CurseWordFuck
@@ -44,27 +46,27 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
         assert type(res) == Result
         assert dict[res.name] == res.attempt_scores
 
-# def test_evaluate(evaluator):
-#     att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
-#     att1.addResponse("fuck", True)
+def test_evaluate(evaluator):
+    att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+    att1.addResponse("fuck", True)
 
-#     att2 = Attempt(Transform([]), IllegalDrugs())
-#     att2.addResponse("cocaine", True)
+    att2 = Attempt(Transform([]), IllegalDrugs())
+    att2.addResponse("cocaine", True)
 
-#     attempts = [att1, att2]
+    attempts = [att1, att2]
 
     expected_evaluation = Evaluation(
         [Result("AcceptingPrefix", [(1.0, 1, 1)])],
         [Result("(AcceptingPrefix,)", [(1.0, 1, 1)])],
         [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])],
-        0, 3        
+        0, 2        
     )
 
-#     evaluation = evaluator.evaluate(attempts)
-#     assert type(evaluation) == Evaluation
+    evaluation = evaluator.evaluate(attempts)
+    assert type(evaluation) == Evaluation
 
-#     # deep comparison
-#     assert str(evaluation) == str(expected_evaluation)
+    # deep comparison
+    assert str(evaluation) == str(expected_evaluation)
 
 @pytest.mark.parametrize("input, expected_output", [
     ("(a,b,c,)", ["a", "b", "c"]),

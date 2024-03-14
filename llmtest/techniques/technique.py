@@ -26,7 +26,8 @@ class Technique:
     def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
     
-    def affectedAnswer(self, prompt: str) -> bool:
+    #def isAnswerAffected
+    def isAnswerAffected(self, prompt: str) -> bool:
         """
         Detect if the specific technique affected the answer in a way that might
         interfere with detection. Examples include encryption, translation or adding of spaces between characters.
@@ -34,7 +35,7 @@ class Technique:
         """
         return False
     
-    def decodeAnswer(self, prompt: str) -> str:
+    def cleanAffectedAnswer(self, prompt: str) -> str:
         """
         The default implementation returns the prompt unchanged.
         """

@@ -11,10 +11,10 @@ class AddNoise(Technique):
     def applyTechnique(self, prompt: str) -> str:
         return ' '.join(prompt)
     
-    def affectedAnswer(self, prompt: str) -> bool:
+    def isAnswerAffected(self, prompt: str) -> bool:
         return True if re.search(r"\w\w", prompt) == None else False
     
-    def decodeAnswer(self, prompt: str) -> str:
+    def cleanAffectedAnswer(self, prompt: str) -> str:
         # Replace tripple spaces with a rare marker, to replace with single space later
         temp = prompt.replace("   ", "½")
         

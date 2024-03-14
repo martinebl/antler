@@ -10,7 +10,7 @@ class Encoding(Technique):
         # Remove the 'b' and enclosing quotes from the resulting string before returning it
         return str(base64.b64encode(prompt.encode('utf-8')))[2:-1]
     
-    def affectedAnswer(self, prompt: str) -> bool:
+    def isAnswerAffected(self, prompt: str) -> bool:
         """
         Detect if the given answer is base64 encoded. This might sometimes give incorrect results
         """
@@ -21,5 +21,5 @@ class Encoding(Technique):
             # If there is an error trying to pass base64, then the answer is clearly not base64
             return False
     
-    def decodeAnswer(self, prompt: str) -> str:
+    def cleanAffectedAnswer(self, prompt: str) -> str:
         return str(base64.b64decode(prompt.encode('utf-8')))[2:-1]
