@@ -2,6 +2,7 @@
 from llmtest.result import Result
 from llmtest.evaluation import Evaluation
 from llmtest.attempt import Attempt
+from collections import Counter
 
 class Evaluator:
     def __init__(self) -> None:
@@ -45,10 +46,11 @@ class Evaluator:
         unsorted_technique_results = self.createResultList(techniques)
         unsorted_transform_results = self.createResultList(transforms)
         unsorted_probe_results = self.createResultList(probes)
+        transform_results = self.sortTransformResults(unsorted_transform_results)
         technique_results = sorted(unsorted_technique_results, key=lambda res: res.getScore(), reverse=True)
         probe_results = sorted(unsorted_probe_results, key=lambda res: res.getScore(), reverse=True)
 
-        return Evaluation(technique_results, unsorted_transform_results, probe_results, error_replies, total_replies)
+        return Evaluation(technique_results, transform_results, probe_results, error_replies, total_replies)
 
 
     def isEmptyTransform(self, attempt: Attempt) -> bool:
@@ -56,7 +58,6 @@ class Evaluator:
     
     def isCleanHit(self, attempt: Attempt) -> bool:
         return attempt.getAttemptSuccessRate() == 1
-
 
     def addToDict(self, dict: object, key: str, succes_rate: float, succesful_attempts: int, all_attempts: int):
         if not key in dict: dict[key] = []
@@ -67,3 +68,21 @@ class Evaluator:
         for name, score_list in dict.items():
             results.append(Result(name, score_list))
         return results
+    
+    def sortTransformResults(self, transform_results: list[Result]):
+        score_sorted = sorted(transform_results, key= lambda x: x.getScore(), reverse=True)
+        combination_sorted = self.sortTransformResByCombination(score_sorted)
+        return combination_sorted
+    
+    def transformResultNameToArray(self, result_name: str) -> str:
+        return result_name.replace('(','').replace(')','').replace(' ', '').split(',')[:-1]
+
+    """ Sorting by combination has the sideeffect of messing length sorting up, since it compares alphabetically, therefore length sorting is applied at the end"""
+    def sortTransformResByCombination(self, results: list[Result]) -> list[Result]:
+        combination_sorted = sorted(results, key= lambda x: sorted(self.transformResultNameToArray(x.getName())))
+        return self.sortTransformResByLen(combination_sorted)
+    
+    def sortTransformResByLen(self, results: list[Result]) -> list[Result]:
+        return sorted(results, key= lambda x: len(self.transformResultNameToArray(x.getName())))
+
+
