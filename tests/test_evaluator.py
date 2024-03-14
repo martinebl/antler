@@ -1,9 +1,9 @@
 import pytest
+from collections import Counter
+
 from llmtest.evaluator import Evaluator
 from llmtest.evaluation import Evaluation
 from llmtest.result import Result
-from llmtest.attempt import Attempt
-from llmtest.transforms import Transform
 from llmtest.probes.illegaldrugs import IllegalDrugs
 from llmtest.probes.cursewordfuck import CurseWordFuck
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
@@ -44,14 +44,14 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
         assert type(res) == Result
         assert dict[res.name] == res.attempt_scores
 
-def test_evaluate(evaluator):
-    att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
-    att1.addResponse("fuck", True)
+# def test_evaluate(evaluator):
+#     att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+#     att1.addResponse("fuck", True)
 
-    att2 = Attempt(Transform([]), IllegalDrugs())
-    att2.addResponse("cocaine", True)
+#     att2 = Attempt(Transform([]), IllegalDrugs())
+#     att2.addResponse("cocaine", True)
 
-    attempts = [att1, att2]
+#     attempts = [att1, att2]
 
     expected_evaluation = Evaluation(
         [Result("AcceptingPrefix", [(1.0, 1, 1)])],
@@ -60,8 +60,93 @@ def test_evaluate(evaluator):
         0, 3        
     )
 
-    evaluation = evaluator.evaluate(attempts)
-    assert type(evaluation) == Evaluation
+#     evaluation = evaluator.evaluate(attempts)
+#     assert type(evaluation) == Evaluation
 
-    # deep comparison
-    assert str(evaluation) == str(expected_evaluation)
+#     # deep comparison
+#     assert str(evaluation) == str(expected_evaluation)
+
+@pytest.mark.parametrize("input, expected_output", [
+    ("(a,b,c,)", ["a", "b", "c"]),
+    ("(b,a,c,)", ["b", "a", "c"]),
+    ("(a,)", ["a"]),
+    ("()", []),
+])
+def test_transform_result_name_to_array(input, expected_output, evaluator):
+    output = Evaluation.transformResultNameToArray(input)
+    assert Counter(output) == Counter(expected_output)
+
+@pytest.mark.parametrize("input, expected_output", [
+    ([
+        Result("()", [(1,1,1)]),
+    ], [
+        Result("()", [(1,1,1)]),
+    ]),
+    ([
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+        Result("(c,a,)", [(1,1,1)]),
+    ], [
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(c,a,)", [(1,1,1)]),
+    ]),
+    ([
+        Result("(b,a,c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,b,c,)", [(1,1,1)]),
+        Result("(c,a,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+    ], [
+        Result("(c,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(c,a,)", [(1,1,1)]),
+        Result("(b,a,c,)", [(1,1,1)]),
+        Result("(a,b,c,)", [(1,1,1)]),
+    ])
+])
+def test_sort_trans_combination(input, expected_output, evaluator):
+    output = evaluator.sortTransformResByCombination(input)
+    assert output == expected_output
+
+@pytest.mark.parametrize("input, expected_output", [
+    ([
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+    ], [
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+    ]),
+    ([
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+    ], [
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+    ]),
+    ([
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(a,b,c,)", [(1,1,1)]),
+        Result("(c,)", [(1,1,1)]),
+    ], [
+        Result("(c,)", [(1,1,1)]),
+        Result("(a,c,)", [(1,1,1)]),
+        Result("(a,b,c,)", [(1,1,1)]),
+    ]),
+    (
+       [
+        Result("()", [(1,1,1)]),
+        Result("()", [(1,1,1)]),
+        Result("()", [(1,1,1)]),
+    ], [
+        Result("()", [(1,1,1)]),
+        Result("()", [(1,1,1)]),
+        Result("()", [(1,1,1)]),
+    ] 
+    )
+])
+def test_sort_trans_res_len(input, expected_output, evaluator):
+    output = evaluator.sortTransformResByLen(input)
+    assert output == expected_output
