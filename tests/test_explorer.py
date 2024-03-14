@@ -7,6 +7,7 @@ from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.addnoise import AddNoise
 from llmtest.techniques.encoding import Encoding
+from llmtest.techniques.convincemissingknowledge import ConvinceMissingKnowledge
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):
@@ -16,10 +17,15 @@ def test_base_explorer_seed_result_not_implemented():
     with pytest.raises(NotImplementedError):
         Explorer([]).seedScore()
 
-def test_exhaustive_search_generation():
-    explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()])
+@pytest.mark.parametrize("explorer, length", [
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), 4),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise()]), 15),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding()]), 64),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding(), ConvinceMissingKnowledge()]), 325),
+])
+def test_exhaustive_search_generation(explorer, length):
     transforms = explorer.generateInitialTransforms()
-    assert(len(transforms) == 4)
+    assert(len(transforms) == length)
 
 def test_exhaustive_search_iteration():
     explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()])
