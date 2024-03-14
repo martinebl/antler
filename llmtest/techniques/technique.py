@@ -26,6 +26,20 @@ class Technique:
     def __eq__(self, other: object) -> bool:
         return isinstance(other, type(self))
     
+    def affectedAnswer(self, prompt: str) -> bool:
+        """
+        Detect if the specific technique affected the answer in a way that might
+        interfere with detection. Examples include encryption, translation or adding of spaces between characters.
+        If this is the case, "decodeAnswer" should be called to restore the answer text to a "readable" format for detection.
+        """
+        return False
+    
+    def decodeAnswer(self, prompt: str) -> str:
+        """
+        The default implementation returns the prompt unchanged.
+        """
+        return prompt
+    
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
     
