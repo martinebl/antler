@@ -79,9 +79,17 @@ class Harness:
         # Handle if a connection times out or other network errors
         try:
             answer = generator.generate(attempt.getPrompt())
+
+            # Run the technique tests, to see if the answer might be encoded or transformed
+            # in a way that will affect detection. Fix it, if this is the case
+            techniques = attempt.getTransform().getTechniques()
+            techniques.reverse()
+            for technique in techniques:
+                if technique.affectedAnswer(answer):
+                    answer = technique.decodeAnswer(answer)
+
             detection = attempt.getProbe().runDetectors(answer)
             attempt.addResponse(answer, detection)
-        # Have to handle both, because the multiprocessharnes is a little different
         except KeyboardInterrupt:
             # Let the keyboard interrupt propagate upwards
             raise

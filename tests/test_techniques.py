@@ -62,13 +62,14 @@ def test_equality():
     assert acceptingPrefix1 != noise
     assert acceptingPrefix1 == acceptingPrefix2
 
-@pytest.mark.parametrize("answer, did_affect, decoded_answer", [
-    ("This is an answer", False, "This is an answer"),
-    ("T h i s   i s   a n   a n s w e r", True, "This is an answer"),
-    ("This is   an answer", False, "This is   an answer"),
+@pytest.mark.parametrize("technique, answer, did_affect, decoded_answer", [
+    (AddNoise(), "This is an answer", False, "This is an answer"),
+    (AddNoise(), "T h i s   i s   a n   a n s w e r", True, "This is an answer"),
+    (AddNoise(), "This is   an answer", False, "This is   an answer"),
+    (Encoding(), "ZnVjaw==", True, "fuck"),
+    (Encoding(), "fuck123", False, "fuck123"),
 ])
-def test_affected_answer(answer, did_affect, decoded_answer):
-    noise = AddNoise()
-    assert did_affect == noise.affectedAnswer(answer)
-    temp_answer = noise.decodeAnswer(answer) if noise.affectedAnswer(answer) else answer 
+def test_affected_answer(technique, answer, did_affect, decoded_answer):
+    assert did_affect == technique.affectedAnswer(answer)
+    temp_answer = technique.decodeAnswer(answer) if technique.affectedAnswer(answer) else answer 
     assert temp_answer == decoded_answer

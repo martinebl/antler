@@ -6,6 +6,8 @@ from llmtest.harnesses.linearharness import LinearHarness
 from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
+from llmtest.techniques.addnoise import AddNoise
+from llmtest.techniques.encoding import Encoding
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.probes.cursewordfuck import CurseWordFuck
 from llmtest.probes.illegaldrugs import IllegalDrugs
@@ -29,6 +31,10 @@ class SometimesFailingGenerator(Generator):
         else:
             self.fail = True
             return "This is an answer that might work"
+        
+class Base64OfSpacesGenerator(Generator):
+    def generate(self, prompt: str) -> str:
+        return "ZiB1IGMgaw==" #base64 of the string "f u c k"
         
 
 def run_linear_harness():
@@ -97,3 +103,9 @@ def test_collapse_attempts(attempts: list[Attempt], result: list[Attempt]):
 def test_error_handling_harness():
     harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix()]), SometimesFailingGenerator, "123", repetitions=3)
     harness.run()
+
+def test_harness_answer_fixing():
+    harness = LinearHarness([], ExhaustiveSearch([]), Base64OfSpacesGenerator, 123)
+    attempt: Attempt = Harness.runAttempt((harness, Attempt(Transform([(1, AddNoise()), (2, Encoding())]), CurseWordFuck())))
+    print(attempt.getReplies())
+    assert attempt.getAttemptSuccessRate() == 1

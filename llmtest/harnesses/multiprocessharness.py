@@ -8,7 +8,6 @@ from llmtest.generators.generator import Generator
 from llmtest.transforms import Transform
 from llmtest.probes import Probe
 from llmtest.attempt import Attempt
-from llmtest.logwriter import LogWriter
 
 class MultiProcessHarness(Harness):
     def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = 10) -> None:
@@ -17,7 +16,7 @@ class MultiProcessHarness(Harness):
     
     @staticmethod
     def initWorker():
-        # Ignore keyboard interrupts
+        # Ignore keyboard interrupts, which means the pool will terminate normally before the program stops
         signal(SIGINT, SIG_IGN)
 
     def runCleanProbes(self, pool):
