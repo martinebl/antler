@@ -55,11 +55,12 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
 
 #     attempts = [att1, att2]
 
-#     expected_evaluation = Evaluation(
-#         [Result("AcceptingPrefix", [(1.0, 1, 1)])],
-#         [Result("(AcceptingPrefix,)", [(1.0, 1, 1)])],
-#         [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])]
-#     )
+    expected_evaluation = Evaluation(
+        [Result("AcceptingPrefix", [(1.0, 1, 1)])],
+        [Result("(AcceptingPrefix,)", [(1.0, 1, 1)])],
+        [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])],
+        0, 3        
+    )
 
 #     evaluation = evaluator.evaluate(attempts)
 #     assert type(evaluation) == Evaluation

@@ -70,8 +70,8 @@ class Harness:
         key_function = lambda x: type(x.getProbe()).__name__
         seen = set()
         return [x for x in local_attempts if key_function(x) not in seen and not seen.add(key_function(x))]
-    
-        
+
+
     @staticmethod
     def runAttempt(args: tuple[object, Attempt]):
         harness, attempt = args
@@ -81,6 +81,10 @@ class Harness:
             answer = generator.generate(attempt.getPrompt())
             detection = attempt.getProbe().runDetectors(answer)
             attempt.addResponse(answer, detection)
+        # Have to handle both, because the multiprocessharnes is a little different
+        except KeyboardInterrupt:
+            # Let the keyboard interrupt propagate upwards
+            raise
         except Exception as e:
             attempt.addResponseWithError(str(e))
         return attempt
