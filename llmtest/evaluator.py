@@ -2,7 +2,6 @@
 from llmtest.result import Result
 from llmtest.evaluation import Evaluation
 from llmtest.attempt import Attempt
-from collections import Counter
 
 class Evaluator:
     def __init__(self) -> None:
@@ -73,16 +72,13 @@ class Evaluator:
         score_sorted = sorted(transform_results, key= lambda x: x.getScore(), reverse=True)
         combination_sorted = self.sortTransformResByCombination(score_sorted)
         return combination_sorted
-    
-    def transformResultNameToArray(self, result_name: str) -> str:
-        return result_name.replace('(','').replace(')','').replace(' ', '').split(',')[:-1]
 
     """ Sorting by combination has the sideeffect of messing length sorting up, since it compares alphabetically, therefore length sorting is applied at the end"""
     def sortTransformResByCombination(self, results: list[Result]) -> list[Result]:
-        combination_sorted = sorted(results, key= lambda x: sorted(self.transformResultNameToArray(x.getName())))
+        combination_sorted = sorted(results, key= lambda x: sorted(Evaluation.transformResultNameToArray(x.getName())))
         return self.sortTransformResByLen(combination_sorted)
     
     def sortTransformResByLen(self, results: list[Result]) -> list[Result]:
-        return sorted(results, key= lambda x: len(self.transformResultNameToArray(x.getName())))
+        return sorted(results, key= lambda x: len(Evaluation.transformResultNameToArray(x.getName())))
 
 

@@ -4,8 +4,6 @@ from collections import Counter
 from llmtest.evaluator import Evaluator
 from llmtest.evaluation import Evaluation
 from llmtest.result import Result
-from llmtest.attempt import Attempt
-from llmtest.transforms import Transform
 from llmtest.probes.illegaldrugs import IllegalDrugs
 from llmtest.probes.cursewordfuck import CurseWordFuck
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
@@ -75,7 +73,7 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
     ("()", []),
 ])
 def test_transform_result_name_to_array(input, expected_output, evaluator):
-    output = evaluator.transformResultNameToArray(input)
+    output = Evaluation.transformResultNameToArray(input)
     assert Counter(output) == Counter(expected_output)
 
 @pytest.mark.parametrize("input, expected_output", [
