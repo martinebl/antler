@@ -56,7 +56,8 @@ def test_evaluate(evaluator):
     expected_evaluation = Evaluation(
         [Result("AcceptingPrefix", [(1.0, 1, 1)])],
         [Result("(AcceptingPrefix,)", [(1.0, 1, 1)])],
-        [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])]
+        [Result("CurseWordFuck", [(1.0, 1, 1)]), Result("IllegalDrugs", [(-1, 1, 1)])],
+        0, 3        
     )
 
     evaluation = evaluator.evaluate(attempts)
