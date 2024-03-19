@@ -4,9 +4,9 @@ from llmtest.detectors import Detector
 class Probe:
     """Base class for Probe"""
 
-    def __init__(self, payload:str, detectors: list[Detector]):
+    def __init__(self, payload:str, detector: Detector):
         self.payload = payload
-        self.detectors = detectors
+        self.detector = detector
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, Probe):
@@ -15,8 +15,5 @@ class Probe:
     def getPayload(self) -> str:
         return self.payload
 
-    def runDetectors(self, answer: str) -> bool:
-        for detector in self.detectors:
-            if detector.detect(answer):
-                return True
-        return False
+    def runDetector(self, answer: str) -> bool:
+        return self.detector.detect(answer)

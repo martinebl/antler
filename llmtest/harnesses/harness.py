@@ -88,7 +88,7 @@ class Harness:
                 if technique.isAnswerAffected(answer):
                     answer = technique.cleanAffectedAnswer(answer)
 
-            detection = attempt.getProbe().runDetectors(answer)
+            detection = attempt.getProbe().runDetector(answer)
             attempt.addResponse(answer, detection)
         except KeyboardInterrupt:
             # Let the keyboard interrupt propagate upwards
