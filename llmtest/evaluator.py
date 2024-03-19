@@ -19,7 +19,7 @@ class Evaluator:
         for attempt in attempts:
 
             # collecting error replies
-            error_replies += sum(1 for reply in attempt.getReplies() if hasattr(reply, 'error'))
+            error_replies += sum(1 for reply in attempt.getReplies() if "error" in reply.keys())
             total_replies += len(attempt.getReplies())
             
             # collecting probe scores
