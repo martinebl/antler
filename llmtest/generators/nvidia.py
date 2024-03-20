@@ -25,7 +25,7 @@ class Nvidia(Generator):
         # if (self.model not in Nvidia.model_uis):
         client = OpenAI(
             base_url = "https://integrate.api.nvidia.com/v1",
-            api_key = "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"
+            api_key = os.getenv("NVIDIA_API_TOKEN")
         )
 
         completion = client.chat.completions.create(
