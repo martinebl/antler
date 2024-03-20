@@ -1,5 +1,5 @@
 import pytest
-from llmtest.detectors import Detector, SimpleDetector, RegexDetector, NotDetector, AndDetector
+from llmtest.detectors import *
 
 @pytest.fixture
 def targets():
@@ -38,4 +38,13 @@ def test_not_detector(answer: str, patterns: list[str], detection: bool):
 ])
 def test_and_detector(answer: str, detectors: list[Detector], detection: bool):
     detector = AndDetector(detectors)
+    assert detector.detect(answer) == detection
+
+@pytest.mark.parametrize("answer, detectors, detection", [
+    ("This is just an answer", [SimpleDetector(["just"]), SimpleDetector(["not", "to", "be", "found"])], True),
+    ("This is just an answer", [SimpleDetector(["nothing"]), SimpleDetector(["here"])], False),
+    ("This is just an answer", [SimpleDetector(["skippidi"]), NotDetector(SimpleDetector(["something", "not", "there"]))], True),
+])
+def test_or_detector(answer: str, detectors: list[Detector], detection: bool):
+    detector = OrDetector(detectors)
     assert detector.detect(answer) == detection
