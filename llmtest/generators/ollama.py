@@ -8,8 +8,15 @@ class Ollama(Generator):
     """
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
+        self.use_custom_client = False
+        if "host" in options.keys():
+            self.use_custom_client = True
+            self.client = ollama.Client(host=options["host"])
 
     def generate(self, prompt:str) -> str:
-        response = ollama.generate(self.model, prompt)
+        if self.use_custom_client:
+            response = self.client.generate(self.model, prompt)
+        else:
+            response = ollama.generate(self.model, prompt)
         return response['response']
 
