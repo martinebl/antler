@@ -81,11 +81,11 @@ def handle() -> None:
     excluded_techniques = ['__init__.py', 'technique.py']
     all_techniques = classfactory.instantiate_all_classes_from_folder(techniques_path, excluded_techniques)
 
-    processes = 10 # Default number of processes
-
     generator_class = Replicate # Defalt generator
     generator_path = 'llmtest/generators'
     exluded_generators = ['__init__.py', 'generator.py']
+
+    processes = 0
 
     options = {} # Default options
 
@@ -114,9 +114,9 @@ def handle() -> None:
     if args.processes:
         processes = args.processes
 
-    if processes == 1:
+    if processes and processes == 1:
         harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions)
     else:
-        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions, processes)
+        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions)
         
     harness.run()

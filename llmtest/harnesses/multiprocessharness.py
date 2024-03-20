@@ -10,10 +10,10 @@ from llmtest.probes import Probe
 from llmtest.attempt import Attempt
 
 class MultiProcessHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1, processes: int = -1) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1) -> None:
         super(MultiProcessHarness, self).__init__(probes, explorer, generator_type, model, options, repetitions)
         MAX_PROCESSES = 20
-        self.processes = processes if processes > 0 else min(len(probes) * repetitions, MAX_PROCESSES )
+        self.processes = min(len(probes) * repetitions, MAX_PROCESSES )
     
     @staticmethod
     def initWorker():
