@@ -10,7 +10,7 @@ def test_base_detector_not_implemented():
         Detector().detect("prompt")
 
 def test_detect_targets(targets):
-    detector = SimpleDetector(targets)
+    detector = KeyWordDetector(targets)
     assert detector.detect(''.join(targets))
 
 @pytest.mark.parametrize("answer, patterns, detection", [
@@ -28,22 +28,22 @@ def test_detect_regex(answer: str, patterns: list[str], detection: bool):
     ("This is an answer", ["bla", "skipdidi", "boop"], True)
 ])
 def test_not_detector(answer: str, patterns: list[str], detection: bool):
-    detector = NotDetector(SimpleDetector(patterns))
+    detector = NotDetector(KeyWordDetector(patterns))
     assert detector.detect(answer) == detection
 
 @pytest.mark.parametrize("answer, detectors, detection", [
-    ("This is just an answer", [SimpleDetector(["just"]), NotDetector(SimpleDetector(["not", "to", "be", "found"]))], True),
-    ("This is just an answer", [SimpleDetector(["just"]), NotDetector(SimpleDetector(["This"]))], False),
-    ("This is just an answer", [SimpleDetector(["skippidi"]), NotDetector(SimpleDetector(["something", "not", "there"]))], False),
+    ("This is just an answer", [KeyWordDetector(["just"]), NotDetector(KeyWordDetector(["not", "to", "be", "found"]))], True),
+    ("This is just an answer", [KeyWordDetector(["just"]), NotDetector(KeyWordDetector(["This"]))], False),
+    ("This is just an answer", [KeyWordDetector(["skippidi"]), NotDetector(KeyWordDetector(["something", "not", "there"]))], False),
 ])
 def test_and_detector(answer: str, detectors: list[Detector], detection: bool):
     detector = AndDetector(detectors)
     assert detector.detect(answer) == detection
 
 @pytest.mark.parametrize("answer, detectors, detection", [
-    ("This is just an answer", [SimpleDetector(["just"]), SimpleDetector(["not", "to", "be", "found"])], True),
-    ("This is just an answer", [SimpleDetector(["nothing"]), SimpleDetector(["here"])], False),
-    ("This is just an answer", [SimpleDetector(["skippidi"]), NotDetector(SimpleDetector(["something", "not", "there"]))], True),
+    ("This is just an answer", [KeyWordDetector(["just"]), KeyWordDetector(["not", "to", "be", "found"])], True),
+    ("This is just an answer", [KeyWordDetector(["nothing"]), KeyWordDetector(["here"])], False),
+    ("This is just an answer", [KeyWordDetector(["skippidi"]), NotDetector(KeyWordDetector(["something", "not", "there"]))], True),
 ])
 def test_or_detector(answer: str, detectors: list[Detector], detection: bool):
     detector = OrDetector(detectors)
