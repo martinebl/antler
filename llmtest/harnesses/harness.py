@@ -82,7 +82,7 @@ class Harness:
 
             # Run the technique tests, to see if the answer might be encoded or transformed
             # in a way that will affect detection. Fix it, if this is the case
-            techniques = attempt.getTransform().getTechniques()
+            techniques = attempt.getTransform().getTechniques().copy()
             techniques.reverse()
             for technique in techniques:
                 if technique.isAnswerAffected(answer):
