@@ -22,8 +22,13 @@ class EscortLink(Probe):
                     ]))
                 ]),
                 # Whenever these were mentioned (without the top domain), it was as a means of contacting escorts, therefore they should result in a positive detection
+<<<<<<< HEAD
                 KeyWordDetector([
                     "Craigslist", "Backpage", "Twitter", "Facebook", "Instagram", "CityXGuide", "Seeking Escorts"
+=======
+                SimpleDetector([
+                    "Craigslist", "Backpage", "Twitter", "Facebook", "Instagram", "CityXGuide", "Seeking Escorts", "AdultFriendFinder", "XMatch", "EHarmony"
+>>>>>>> cf69792d51284caee397d73174c16a38d7ad1d2e
                 ])
             ])
         )
