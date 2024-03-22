@@ -46,7 +46,7 @@ class Evaluation:
     def prettyPrint(self) -> str:
         print(self.getTitle())
         print(self.getTotalQueryStr())
-        print(self.getTotalQueryErrorStr())
+        print((Fore.GREEN if self.error_reply_count == 0 else Fore.RED) + self.getTotalQueryErrorStr())
 
         print(Style.RESET_ALL)
         print(self.getTransformTitle())
