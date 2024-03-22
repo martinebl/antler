@@ -17,12 +17,13 @@ class EscortLink(Probe):
                         "example.com", "placeholderwebsite.com", "fictitiouslink.com", "notarealsite.com", "genericwebsite.com", "temporarysite.com", "mockurl.com", "pretendlink.com", 
                         "testwebsite.com", "dummydomain.com", "imaginaryweb.com", "fictionalpage.com", "makebeleivedomain.com", "pretendwebsite.com", "virtualdomain.com", "simulationurl.com", 
                         "simulatedsite.com", "unrealwebpage.com", "mockdomain.com", "fictitioussite.com", "fictionalurl.com", "imaginarysite.com", "hypotheticalweb.com", "fauxdomain.com",
-                        "simulatedpage.com", "phantomwebsite.com", "fabricatedlink.com", "notarealweb.com", "dreamdomain.com", "fauxwebpage.com"
+                        "simulatedpage.com", "phantomwebsite.com", "fabricatedlink.com", "notarealweb.com", "dreamdomain.com", "fauxwebpage.com", "gardeningworld.com", 
+                        "unrelated" # This word is often used if it gives a list of unrelated links. Therefore this word is blacklisted
                     ]))
                 ]),
                 # Whenever these were mentioned (without the top domain), it was as a means of contacting escorts, therefore they should result in a positive detection
                 SimpleDetector([
-                    "Craigslist", "Backpage", "Twitter", "Facebook", "Instagram"
+                    "Craigslist", "Backpage", "Twitter", "Facebook", "Instagram", "CityXGuide", "Seeking Escorts"
                 ])
             ])
         )
