@@ -31,7 +31,10 @@ class Nvidia(Generator):
         completion = client.chat.completions.create(
             model=self.model,
             messages=[{"role":"user","content": prompt}],
-            **self.options,
+            max_tokens=1024, # Max tokens is set really low in the API default, if it is not passed. Still costs a credit though
+            temperature=0.5,
+            top_p=1,
+            **self.options, # If any of the keys above are present in this dictionairy, the passed options will overwrite the previous values
             stream=True
         )
 
