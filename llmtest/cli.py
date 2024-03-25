@@ -83,7 +83,7 @@ def handle() -> None:
 
     generator_class = Replicate # Defalt generator
     generator_path = 'llmtest/generators'
-    exluded_generators = ['__init__.py', 'generator.py']
+    excluded_generators = ['__init__.py', 'generator.py']
 
     processes = 0
 
