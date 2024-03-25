@@ -5,6 +5,7 @@ from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.addnoise import AddNoise
 from llmtest.techniques.encoding import Encoding
+from llmtest.techniques.nonnaturallanguage import NonNaturalLanguage
 
 @pytest.fixture
 def prompt():
@@ -73,3 +74,23 @@ def test_affected_answer(technique, answer, did_affect, decoded_answer):
     assert did_affect == technique.isAnswerAffected(answer)
     temp_answer = technique.cleanAffectedAnswer(answer) if technique.isAnswerAffected(answer) else answer 
     assert temp_answer == decoded_answer
+
+@pytest.mark.parametrize("answer, result", [
+    ("010010000110010101101100011011000110111100100000011101110110111101110010011011000110010000100001", True),
+    ("0101011101100001011101000110010101110010001000000110100101110011001000000111010001100001011100110111010001111001", True),
+    ("01010111011000010111011230001100101011100100010000001101001011100110010000001110100011000010111001210111010001111001", False),
+    ("I like turtles", False),
+])
+def test_nonnaturalanguage_is_affected(answer, result):
+    nnlanguage = NonNaturalLanguage()
+    assert nnlanguage.isAnswerAffected(answer) == result
+
+@pytest.mark.parametrize("affected_answer, clean_answer", [
+    ("0100100100100000011011000110100101101011011001010010000001110100011101010111001001110100011011000110010101110011", "I like turtles"),
+    ("010010000110010101101100011011000110111100100000010101110110111101110010011011000110010000100001", "Hello World!"),
+    ("010101110110000101110100011001010111001000100000011010010111001100100000011101000110000101110011011101000111100100101110", "Water is tasty."),
+])
+def test_nonnaturalanguage_clean_affected(affected_answer, clean_answer):
+    nnlanguage = NonNaturalLanguage()
+    assert nnlanguage.cleanAffectedAnswer(affected_answer) == clean_answer
+
