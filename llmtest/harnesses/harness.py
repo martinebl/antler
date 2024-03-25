@@ -29,22 +29,24 @@ class Harness:
 
         start_time = time.time()
 
-        attempts = self.collectAttempts()
-        
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        hours, remainder = divmod(elapsed_time, 3600)
-        minutes, seconds = divmod(remainder, 60)
-        formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
-
-        self.log_writer.setLogRunParams({
+        self.log_writer.LogRunParams({
             "generator_type": str(self.generator_type),
             "model": self.model,
             "model_options": self.options,
             "repetitions": self.repetitions,
-            "elapsed_time": formatted_time 
+            # "elapsed_time": formatted_time 
         })
-        self.log_writer.logAttempts(attempts)
+
+        attempts = self.collectAttempts()
+        self.log_writer.fixAttemptFileEnding()
+        
+        # end_time = time.time()
+        # elapsed_time = end_time - start_time
+        # hours, remainder = divmod(elapsed_time, 3600)
+        # minutes, seconds = divmod(remainder, 60)
+        # formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
+
+        
         self.evaluateAttempts(attempts)
 
     def evaluateAttempts(self, attempts):
@@ -96,3 +98,7 @@ class Harness:
         except Exception as e:
             attempt.addResponseWithError(str(e))
         return attempt
+    
+    def logTransformAttempts(self, attempts: list[Attempt]):
+        self.log_writer.logTransformAttempts(attempts)
+        

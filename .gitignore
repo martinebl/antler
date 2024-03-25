@@ -12,5 +12,6 @@
 logs/*
 reports/*
 *.json
+.venv
 
 *.log
