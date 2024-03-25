@@ -66,7 +66,7 @@ def handle() -> None:
     # model = "orca-mini-3b-gguf2-q4_0" 
 
     probes_path = 'llmtest/probes'
-    excluded_probes = ['__init__.py', 'probe.py', 'pedophiliagroups.py']
+    excluded_probes = ['__init__.py', 'probe.py', 'cursewordfuck.py', 'illegaldrugs.py']
     probes = [] # When enough probes are present, it might be too slow to load them all without needing them. Hence the empty start value
 
     # loads all techniques (always needed)
