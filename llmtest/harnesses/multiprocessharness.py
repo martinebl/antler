@@ -33,6 +33,7 @@ class MultiProcessHarness(Harness):
                 print("Running tests with clean payloads...")
                 empty_transform_attempts: list[Attempt] = self.runCleanProbes(pool)
                 empty_transform_attempts = self.collapseSameAttempts(empty_transform_attempts)
+                self.logTransformAttempts(empty_transform_attempts)
                 all_attempts.extend(empty_transform_attempts)
 
                 non_clean_hit_probes = [attempt.getProbe() for attempt in empty_transform_attempts if attempt.getAttemptSuccessRate() != None and attempt.getAttemptSuccessRate() < 1] * self.repetitions
@@ -46,6 +47,7 @@ class MultiProcessHarness(Harness):
                             
                         transform_attempts: list[Attempt] = pool.map(Harness.runAttempt, [(self, Attempt(transform, probe)) for probe in non_clean_hit_probes])
                         transform_attempts = self.collapseSameAttempts(transform_attempts)
+                        self.logTransformAttempts(transform_attempts)
                         
                         all_attempts.extend(transform_attempts)
                         non_failed_attempts = [ attempt for attempt in transform_attempts if attempt.getAttemptSuccessRate() != None]

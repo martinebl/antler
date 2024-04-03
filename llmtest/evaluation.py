@@ -23,7 +23,7 @@ class Evaluation:
     def getProbeTitle(self)-> str: return "Probe Attack Success Rate (ASR)"
     def getTransformTitle(self)-> str: return "Transform Attack Success Rate (ASR)"
     def getTotalQueryStr(self)-> str: return f"Total queries: {self.total_reply_count}"
-    def getTotalQueryErrorStr(self)-> str: return f"Total query error rate: {(self.error_reply_count/self.total_reply_count)*100} %"
+    def getTotalQueryErrorStr(self)-> str: return f"Total query error rate: {(self.error_reply_count/self.total_reply_count)*100:.2f} %"
     def getHitCountStr(self, res)-> str: return f"({res.getHitCount()}/{res.getAllCount()})"
     def getSingleResStr(self, res: Result)-> str: return f" - {res.getName()}: {res.getScore()*100:.2f} % ASR {self.getHitCountStr(res)}" if res else ""
     def getScoreOrCleanStr(self, res: Result)-> str: return f"{res.getScore()*100:.2f} % ASR" if res.getScore() >= 0 else "CLEAN HIT"

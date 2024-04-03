@@ -27,6 +27,7 @@ class LinearHarness(Harness):
             print("Running tests with clean payloads...")
             empty_transform_attempts = self.runCleanProbes(self.probes)
             empty_transform_attempts = self.collapseSameAttempts(empty_transform_attempts)
+            self.logTransformAttempts(empty_transform_attempts)
             all_attempts.extend(empty_transform_attempts)
             
             non_clean_hit_probes = [attempt.getProbe() for attempt in empty_transform_attempts if attempt.getAttemptSuccessRate() != None and attempt.getAttemptSuccessRate() < 1]
@@ -39,6 +40,7 @@ class LinearHarness(Harness):
 
                     transform_attempts: list[Attempt] = self.runProbesForTransform(transform, non_clean_hit_probes)
                     transform_attempts = self.collapseSameAttempts(transform_attempts)
+                    self.logTransformAttempts(transform_attempts)
                     
                     all_attempts.extend(transform_attempts)
                     non_failed_attempts = [ attempt for attempt in transform_attempts if attempt.getAttemptSuccessRate() != None]

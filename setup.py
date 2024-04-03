@@ -8,5 +8,13 @@ setup(
         'console_scripts': [
             'llmtest=llmtest.__main__:main',
         ]
-    }
+    },
+    install_requires=[
+        'ollama',
+        'openai',
+        'replicate',
+        'tqdm',
+        'pytest',
+        'colorama'
+    ]
 )
