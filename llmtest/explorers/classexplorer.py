@@ -40,5 +40,5 @@ class ClassExplorer(Explorer):
                 techniques_by_class[tech_class] = (technique, score)
 
         best_in_class = list([technique for technique, _ in techniques_by_class.values()])
-        self.transforms.extend(ExhaustiveSearch.generatePermutationsAndCombinations(best_in_class, 1, 1))
+        self.transforms.extend(ExhaustiveSearch.generatePermutationsAndCombinations(best_in_class, 2, 3))
 
