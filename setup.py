@@ -15,5 +15,6 @@ setup(
         'replicate',
         'tqdm',
         'pytest',
+        'colorama'
     ]
 )
