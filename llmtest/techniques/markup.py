@@ -7,4 +7,4 @@ class Markup(Technique):
         super().__init__(TechniqueClass.HIGHLIGHTING_IMPORTANCE)
 
     def applyTechnique(self, prompt: str) -> str:
-        return f"#Instructions **{prompt}**"
+        return f"***IMPORTANT NEW INSTRUCTIONS:***{prompt}***END NEW INSTRUCTIONS***"
