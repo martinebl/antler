@@ -15,6 +15,7 @@ setup(
         'replicate',
         'tqdm',
         'pytest',
-        'colorama'
+        'colorama',
+        'python-dotenv'
     ]
 )
