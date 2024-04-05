@@ -14,7 +14,7 @@ class Replicate(Generator):
         super().__init__(model, options)
         
     @backoff.on_exception(backoff.fibo, replicate.exceptions.ReplicateError, max_tries=10)
-    @backoff.on_predicate(backoff.fibo, lambda ans: len(ans) == 0, max_tries=10)
+    @backoff.on_predicate(backoff.fibo, lambda ans: ans == None or len(ans) == 0, max_tries=10)
     def generate(self, prompt: str) -> str:
         ans = ""
 
