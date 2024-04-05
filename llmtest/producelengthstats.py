@@ -17,18 +17,15 @@ def calculate_scores_for_length(attempts):
         Evaluator.addToDict(transform_dict, str(length), transform_result.score, transform_result.hit_count, transform_result.all_count)
 
     # creates rows with all computed averages for each length
-    all_averages = [["Length", "Total avg", "Top 10 avg", "Random 10 avg"]]
+    all_averages = [["Length", "Total avg", "Top 10 avg"]]
     for _, (k, v) in enumerate(transform_dict.items()):
         total_avg = sum(float(num[0]) for num in v) / len(v)
 
         reverse_sorted = sorted(v, reverse=True, key= lambda x: float(x[0]))
         greatest_10 = reverse_sorted[:10]
         top_10_avg = sum(float(num[0]) for num in greatest_10) / len(greatest_10)
-
-        random_10 = random.sample(v, 10)
-        random_10_avg = sum(float(num[0]) for num in random_10) / len(greatest_10)
-
-        all_averages.append([k, total_avg, top_10_avg, random_10_avg])
+        
+        all_averages.append([k, total_avg, top_10_avg])
 
     return all_averages
 
