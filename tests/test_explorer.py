@@ -2,7 +2,7 @@ import pytest
 from llmtest.explorers import Explorer
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.explorers.classexplorer import ClassExplorer
+from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.addnoise import AddNoise
@@ -36,13 +36,13 @@ def test_exhaustive_search_iteration():
         assert(isinstance(transform, Transform))
     assert(count == 4)
 
-def test_classexplorer_search_generation():
-    explorer = ClassExplorer([AcceptingPrefix(), RefusalSuppression()])
+def test_bestinclassExplorer_search_generation():
+    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()])
     transforms = explorer.generateInitialTransforms()
     assert(len(transforms) == 2)
 
-def test_classexplorer_search_normal_iteration():
-    explorer = ClassExplorer([AcceptingPrefix(), RefusalSuppression()])
+def test_bestinclassexplorer_search_normal_iteration():
+    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()])
     count = 0
     for transform in explorer:
         count +=1
@@ -51,8 +51,8 @@ def test_classexplorer_search_normal_iteration():
     assert(count == 4)
     assert(len(explorer.scores) == 2)
 
-def test_classexplorer_removes_bad_technique_in_class():
-    explorer = ClassExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+def test_bestinclassexplorer_removes_bad_technique_in_class():
+    explorer = BestInClassExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
     count = 0
     for transform in explorer:
         count +=1

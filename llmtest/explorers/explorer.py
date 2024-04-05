@@ -46,7 +46,7 @@ class Explorer:
     def generateInitialTransforms(self) -> list[Transform]:
         """
         The function to set the inital list of transforms. Could also be a list with one element.
-        This list is iterated with the __next__ function, and possibly modified by the seedResult function.
+        This list is iterated with the __next__ function, and possibly modified by the seedScore function.
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     

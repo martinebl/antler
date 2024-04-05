@@ -20,6 +20,9 @@ class Technique:
     def __init__(self, tech_class: TechniqueClass) -> None:
         self.techniqueClass = tech_class
 
+    def getTechniqueClass(self) -> TechniqueClass:
+        return self.techniqueClass
+
     def applyTechnique(self, prompt: str) -> str:
         raise NotImplementedError("This method should be implemented by subclasses")
     

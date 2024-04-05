@@ -3,7 +3,7 @@ import json
 from llmtest.harnesses.linearharness import LinearHarness
 from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest import classfactory
-from llmtest.explorers.classexplorer import ClassExplorer
+from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
 from llmtest.generators.replicate import Replicate
 
 def handle() -> None:
@@ -84,7 +84,7 @@ def handle() -> None:
 
     repetitions = 1
 
-    explorer_class = ClassExplorer # Default explorer
+    explorer_class = BestInClassExplorer # Default explorer
     explorer_path = 'llmtest/explorers'
 
     # Setting given arguments
