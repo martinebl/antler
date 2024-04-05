@@ -15,3 +15,5 @@ reports/*
 .venv
 
 *.log
+*.csv
+*.txt

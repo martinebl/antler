@@ -1,4 +1,5 @@
 import json
+import csv
 
 class Filehandler():
     """ Reads the contents of a file and parses it as JSON """
@@ -20,6 +21,25 @@ class Filehandler():
         try:
             with open(file_path, "w") as file:
                 file.write(strings)
+        except PermissionError:
+            print(f"Error: Permission denied for file '{file_path}'.")
+            return None
+        except FileExistsError:
+            print(f"Error: The file '{file_path}' already exists")
+            return None
+        except IsADirectoryError:
+            print(f"Error: The specified path is a directory '{file_path}'.")
+            return None
+        except IOError:
+            print(f"IOError: An error occured saving to '{file_path}'.")
+            return None
+        
+    @staticmethod
+    def write_to_csv(file_path, data):
+        try:
+            with open(file_path, "w", newline='') as file:
+                writer = csv.writer(file)
+                writer.writerows(data)
         except PermissionError:
             print(f"Error: Permission denied for file '{file_path}'.")
             return None

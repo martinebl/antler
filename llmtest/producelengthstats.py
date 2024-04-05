@@ -16,29 +16,25 @@ def calculate_scores_for_length(attempts):
         length = len(Evaluation.transformResultNameToArray(transform_result.name))
         Evaluator.addToDict(transform_dict, str(length), transform_result.score, transform_result.hit_count, transform_result.all_count)
 
-    avg_scores_transform_length = []
-    avg_scores_transform_length_top_ten = []
-    avg_scores_trans_length_random_ten = []
-    for _, (_, v) in enumerate(transform_dict.items()):
-        avg = sum(float(num[0]) for num in v) / len(v)
-        avg_scores_transform_length.append(avg)
+    # creates rows with all computed averages for each length
+    all_averages = [["Length", "Total avg", "Top 10 avg", "Random 10 avg"]]
+    for _, (k, v) in enumerate(transform_dict.items()):
+        total_avg = sum(float(num[0]) for num in v) / len(v)
 
         reverse_sorted = sorted(v, reverse=True, key= lambda x: float(x[0]))
         greatest_10 = reverse_sorted[:10]
-        avg = sum(float(num[0]) for num in greatest_10) / len(greatest_10)
-        avg_scores_transform_length_top_ten.append(avg)
+        top_10_avg = sum(float(num[0]) for num in greatest_10) / len(greatest_10)
 
         random_10 = random.sample(v, 10)
-        avg = sum(float(num[0]) for num in random_10) / len(greatest_10)
-        avg_scores_trans_length_random_ten.append(avg)
+        random_10_avg = sum(float(num[0]) for num in random_10) / len(greatest_10)
 
-    print(avg_scores_transform_length)
-    print(avg_scores_transform_length_top_ten)
-    print(avg_scores_trans_length_random_ten)
+        all_averages.append([k, total_avg, top_10_avg, random_10_avg])
+
+    return all_averages
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script.py <file_path>")
+    if len(sys.argv) != 3:
+        print("Usage: python script.py <input_file_path> <output_file_path>")
         sys.exit(1)
     
     file_path = sys.argv[1]
@@ -46,4 +42,5 @@ if __name__ == "__main__":
     if json_data is not None:
         attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
 
-        calculate_scores_for_length(attempts)
+        length_scores = calculate_scores_for_length(attempts)
+        Filehandler.write_to_csv(sys.argv[2], length_scores)
