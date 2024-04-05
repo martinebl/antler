@@ -1,25 +1,12 @@
 #!/usr/bin/env python3
 import sys
-import json
 import random
 
 from llmtest.evaluation import Evaluation
 from llmtest.evaluator import Evaluator
 from llmtest.jsonparser import JSONParser
+from llmtest.filehandler import Filehandler
 
-""" Reads the contents of a file and parses it as JSON """
-def read_json_file(file_path):
-    try:
-        with open(file_path, 'r') as file:
-            data = json.load(file)
-        return data
-    except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
-        return None
-    except json.JSONDecodeError:
-        print(f"Error: Unable to parse JSON from '{file_path}'.")
-        return None
-    
 def calculate_scores_for_length(attempts):
     eval = Evaluator().evaluate(attempts)
     transform_dict = dict()
@@ -55,7 +42,7 @@ if __name__ == "__main__":
         sys.exit(1)
     
     file_path = sys.argv[1]
-    json_data = read_json_file(file_path)
+    json_data = Filehandler.read_json_file(file_path)
     if json_data is not None:
         attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
 
