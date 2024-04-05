@@ -34,17 +34,16 @@ class Harness:
             "model": self.model,
             "model_options": self.options,
             "repetitions": self.repetitions,
-            # "elapsed_time": formatted_time 
         })
 
         attempts = self.collectAttempts()
         self.log_writer.fixAttemptFileEnding()
         
-        # end_time = time.time()
-        # elapsed_time = end_time - start_time
-        # hours, remainder = divmod(elapsed_time, 3600)
-        # minutes, seconds = divmod(remainder, 60)
-        # formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        hours, remainder = divmod(elapsed_time, 3600)
+        minutes, seconds = divmod(remainder, 60)
+        self.formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
 
         
         self.evaluateAttempts(attempts)
@@ -52,6 +51,7 @@ class Harness:
     def evaluateAttempts(self, attempts):
         evaluator = Evaluator()
         evaluation = evaluator.evaluate(attempts)
+        evaluation.setElapsedTime(self.formatted_time)
         self.log_writer.logReport(str(evaluation))
         evaluation.prettyPrint()
 

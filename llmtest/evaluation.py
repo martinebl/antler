@@ -12,6 +12,10 @@ class Evaluation:
         self.probe_results = probe_results
         self.error_reply_count = error_reply_count
         self.total_reply_count = total_reply_count
+        self.elapsedTime = ""
+
+    def setElapsedTime(self, time_str: str) -> None:
+        self.elapsedTime = time_str
   
 
     @staticmethod
@@ -19,6 +23,7 @@ class Evaluation:
         return result_name.replace('(','').replace(')','').replace(' ', '').split(',')[:-1]
     
     def getTitle(self)-> str: return "--------- REPORT ---------"
+    def getElapsedTime(self)-> str: return f"Elapsed time: {self.elapsedTime}"
     def getTechniqueTitle(self)-> str: return "Technique Attack Success Rate (ASR)"
     def getProbeTitle(self)-> str: return "Probe Attack Success Rate (ASR)"
     def getTransformTitle(self)-> str: return "Transform Attack Success Rate (ASR)"
@@ -45,6 +50,7 @@ class Evaluation:
 
     def prettyPrint(self) -> str:
         print(self.getTitle())
+        print(self.getElapsedTime())
         print(self.getTotalQueryStr())
         print((Fore.GREEN if self.error_reply_count == 0 else Fore.RED) + self.getTotalQueryErrorStr())
 
@@ -75,6 +81,7 @@ class Evaluation:
         """
         output = ""
         output += f"\n {self.getTitle()}"
+        output += f"\n {self.getElapsedTime()}"
         output += f"\n {self.getTotalQueryStr()}"
         output += f"\n {self.getTotalQueryErrorStr()}"
         output += '\n'
