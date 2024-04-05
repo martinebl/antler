@@ -50,6 +50,12 @@ def linear_harness():
     return LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "123")
 
 def test_all_attempts_correct_type(linear_harness):
+    linear_harness.log_writer.LogRunParams({
+        "generator_type": "Testing type",
+        "model": "Test model",
+        "model_options": {},
+        "repetitions": 1,
+    })
     attempts = linear_harness.collectAttempts()
     for attempt in attempts:
         assert type(attempt) == Attempt

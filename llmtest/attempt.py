@@ -5,7 +5,7 @@ from llmtest.transforms import Transform
 from llmtest.probes import Probe
 
 class Attempt:
-    def __init__(self, transform: Transform, probe: Probe, replies=[]) -> None:
+    def __init__(self, transform: Transform, probe: Probe) -> None:
         self.transform = transform
         self.probe = probe
         self.payload = probe.getPayload()

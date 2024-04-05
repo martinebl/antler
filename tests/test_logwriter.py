@@ -15,8 +15,9 @@ def test_logwriter():
         "model_options": {},
         "repetitions": 1,
     })
-    attempt = Attempt(Transform([(1, AcceptingPrefix())]), BuildABomb(), [{"answer": "Bla bla", "detection": False}])
-    log_writer.logTransformAttempts([attempt, attempt])
+    attempt = Attempt(Transform([(1, AcceptingPrefix())]), BuildABomb())
+    log_writer.logTransformAttempts([attempt])
+    log_writer.logTransformAttempts([attempt])
     log_writer.fixAttemptFileEnding()
     try:
         with open(log_writer.attempt_file_path, 'r') as file:
