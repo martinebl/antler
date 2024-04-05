@@ -72,9 +72,9 @@ class LogWriter():
     def LogRunParams(self, params: dict):
         self.run_params = params
         # Hardcoded json for logging the params, with an attempt array with whitespace
-        with open(self.attempt_file_path, "w") as file:
+        with open(self.attempt_file_path, "w", newline="\n") as file:
             file.write("{\n")
             for (key, value) in self.run_params.items():
                 file.write(f"    \"{key}\": {json.dumps(value)},\n")
-            file.write("    \"attempts\": [\n   ]\n}\n")
+            file.write("    \"attempts\": [\n    ]\n}\n\n")
 
