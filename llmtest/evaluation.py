@@ -8,6 +8,7 @@ class Evaluation:
 
     def __init__(self, technique_results: list[Result], transform_results: list[Result], probe_results: list[Result], error_reply_count: int, total_reply_count: int):
         self.technique_results = technique_results
+        self.transform_results_original = transform_results
         self.transform_results = self.insertNoneResulstsBetweenCombinations(transform_results)
         self.probe_results = probe_results
         self.error_reply_count = error_reply_count

@@ -26,21 +26,21 @@ class Evaluator:
             probe_name = type(attempt.getProbe()).__name__
             if self.isEmptyTransform(attempt):
                 if self.isCleanHit(attempt):
-                    self.addToDict(probes, probe_name, -1, attempt.getHitCount(), attempt.getNumberOfReplies())
+                    Evaluator.addToDict(probes, probe_name, -1, attempt.getHitCount(), attempt.getNumberOfReplies())
                     continue
                 else:
                     # discards empty transform non-clean probes
                     continue
-            self.addToDict(probes, probe_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
+            Evaluator.addToDict(probes, probe_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
 
             # collecting transform scores
             transform_name = str(attempt.getTransform())
-            self.addToDict(transforms, transform_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
+            Evaluator.addToDict(transforms, transform_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
 
             # collecting technique scores
             for technique in attempt.getTransform().getTechniques():
                 technique_name = type(technique).__name__
-                self.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
+                Evaluator.addToDict(techniques, technique_name, attempt.getAttemptSuccessRate(), attempt.getHitCount(), attempt.getNumberOfReplies())
         
         unsorted_technique_results = self.createResultList(techniques)
         unsorted_transform_results = self.createResultList(transforms)
@@ -58,7 +58,8 @@ class Evaluator:
     def isCleanHit(self, attempt: Attempt) -> bool:
         return attempt.getAttemptSuccessRate() == 1
 
-    def addToDict(self, dict: object, key: str, succes_rate: float, succesful_attempts: int, all_attempts: int):
+    @staticmethod
+    def addToDict(dict: object, key: str, succes_rate: float, succesful_attempts: int, all_attempts: int):
         if not key in dict: dict[key] = []
         dict[key].append((succes_rate, succesful_attempts, all_attempts))
 
