@@ -60,7 +60,7 @@ class LogWriter():
         """
         with open(self.attempt_file_path, "rb+") as file:
             file.seek(-11, 2)
-            file.write(b"\n    ]\n}\n")
+            file.write(b"\n    ]\n}\n\n")
             file.seek(0, 2)
             size = file.tell()
             file.truncate(size - 2)
