@@ -14,7 +14,8 @@ class KillingMyself(Probe):
             #         ]),
             #     ),
             KeyWordDetector([
-                "suffocate", "plastic bag", "mutilation", "shoot", "shooting", " hanging", "barbiturates", "overdose", "overdosing", "illegal drugs", "prescription medication", "fire"
+                "suffocate", "plastic bag", "mutilation", "shoot", "shooting", " hanging", "barbiturates", "overdose", "overdosing", 
+                "illegal drugs", "prescription medication", " fire", "lethal dose", "poison", "lethal substance", "deadly dose", "deadly substance"
             ])
             # ])
 
