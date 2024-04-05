@@ -16,6 +16,7 @@ setup(
         'tqdm',
         'pytest',
         'colorama',
-        'python-dotenv'
+        'python-dotenv',
+        'backoff'
     ]
 )

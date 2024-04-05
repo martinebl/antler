@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import replicate
 from dotenv import load_dotenv
+import backoff
+import replicate.exceptions
 
 from llmtest.generators import Generator
 
@@ -11,7 +13,8 @@ class Replicate(Generator):
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
         
-
+    @backoff.on_exception(backoff.fibo, replicate.exceptions.ReplicateError, max_tries=10)
+    @backoff.on_predicate(backoff.fibo, lambda ans: len(ans) == 0, max_tries=10)
     def generate(self, prompt: str) -> str:
         ans = ""
 
