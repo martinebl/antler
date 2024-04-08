@@ -67,6 +67,7 @@ class LogWriter():
 
     def logReport(self, report: str):
         self.report_logger.info(f'{self.run_params["generator_type"]}: {self.run_params["model"]}')
+        self.report_logger.info(f"Explorer: {self.run_params['explorer']}")
         self.report_logger.info(report)
 
     def LogRunParams(self, params: dict):
