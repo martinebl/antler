@@ -1,13 +1,17 @@
 import pytest
+
 from llmtest.explorers import Explorer
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
+from llmtest.explorers.simulatedannealing import SimulatedAnnealing
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.addnoise import AddNoise
 from llmtest.techniques.encoding import Encoding
+from llmtest.techniques.obfuscatingcode import ObfuscatingCode
 from llmtest.techniques.convincemissingknowledge import ConvinceMissingKnowledge
+
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):
@@ -60,3 +64,14 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
         assert(isinstance(transform, Transform))
     assert(count == 5) # One for each technique, plus the two permuations of the two best techniques
     assert(len(explorer.scores) == 3)
+
+def test_simulated_annealing_selection():
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
+    count = 0
+    for _ in annealing:
+        annealing.seedScore(count / 4)
+        count += 1
+    print(annealing.scores)
+    print(annealing.best_techniques)
+    assert len(annealing.best_techniques) == 3
+    assert len(annealing.scores) == 4
