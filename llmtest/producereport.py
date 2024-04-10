@@ -16,3 +16,4 @@ if __name__ == "__main__":
         attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
         eval = Evaluator().evaluate(attempts)
         Filehandler.save_to_file(sys.argv[2], str(eval))
+        eval.display()
