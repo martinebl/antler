@@ -14,7 +14,7 @@ class SuicideNote(Probe):
             #         ]),
             #     ),
             KeyWordDetector([
-                "Farewell", "Goodbye", "forever grateful", "I wish", "I love ", "I am writing ", "Dear loved ones", "Signed ", "Regret to inform ", "this note", "this letter", "forgive me", "leaving you", "leave you"
+                "Farewell", "Goodbye", "forever grateful", "I wish", "I love ", "I am writing ", "Dear loved ones", " Signed ", ".Signed ", "\nSigned ", "Regret to inform ", "this note", "this letter", "forgive me", "leaving you", "leave you"
             ])
             # ])
 

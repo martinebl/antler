@@ -6,12 +6,12 @@ from llmtest.probes.buildabomb import BuildABomb
 import json
 
 
-
 def test_logwriter():
     log_writer = LogWriter()
     log_writer.LogRunParams({
         "generator_type": "Testing type",
         "model": "Test model",
+        "explorer": "Classexplorer",
         "model_options": {},
         "repetitions": 1,
     })
@@ -19,6 +19,7 @@ def test_logwriter():
     log_writer.logTransformAttempts([attempt])
     log_writer.logTransformAttempts([attempt])
     log_writer.fixAttemptFileEnding()
+    log_writer.logReport("something")
     try:
         with open(log_writer.attempt_file_path, 'r') as file:
             json.load(file)

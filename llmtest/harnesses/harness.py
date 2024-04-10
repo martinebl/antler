@@ -31,6 +31,7 @@ class Harness:
 
         self.log_writer.LogRunParams({
             "generator_type": str(self.generator_type),
+            "explorer": type(self.explorer).__name__,
             "model": self.model,
             "model_options": self.options,
             "repetitions": self.repetitions,
