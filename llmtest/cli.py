@@ -82,7 +82,7 @@ def handle() -> None:
 
     options = {} # Default options
 
-    repetitions = 1
+    repetitions = 3
 
     explorer_class = BestInClassExplorer # Default explorer
     explorer_path = 'llmtest/explorers'
