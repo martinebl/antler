@@ -25,8 +25,9 @@ class OpenAI(Generator):
             openai.APITimeoutError,
             openai.APIConnectionError,
         ),
-        max_value=70,
+        max_tries=10,
     )
+    @backoff.on_predicate(backoff.fibo, lambda ans: ans == None or len(ans) == 0, max_tries=10)
     def generate(self, prompt:str) -> str:
         client = openai.OpenAI(
             api_key = os.getenv("OPENAI_API_TOKEN")
