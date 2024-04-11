@@ -80,7 +80,7 @@ def test_simulated_annealing_exchange_out_class():
     annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
     # Just for testing. The exchange function uses best_techniques instead of techniques
     annealing.best_techniques = annealing.techniques
-    transform = Transform([(1, AddNoise()), (2, Encoding())])
+    transform = Transform([ AddNoise(), Encoding() ])
     transform = annealing.exchangeFromOutsideClass(transform)
     assert len(transform.getTechniques()) == 2
-    assert Encoding() in transform.getTechniques()
+    assert ConvinceMissingKnowledge() in transform.getTechniques()

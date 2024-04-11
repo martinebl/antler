@@ -5,9 +5,8 @@ class Transform:
     The base class for transforming a prompt, by applying techniques.
     """
 
-    def __init__(self, techniques_with_priority: list[tuple[int, Technique]]) -> None:
-        self.techniques_with_priority = sorted(techniques_with_priority, key=lambda x: x[0])
-        self.techniques = list(map(lambda x: x[1], self.techniques_with_priority))
+    def __init__(self, techniques: list[Technique]) -> None:
+        self.techniques = techniques
 
     def applyTechniques(self, payload: str) -> str:
         prompt = payload

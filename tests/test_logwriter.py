@@ -15,7 +15,7 @@ def test_logwriter():
         "model_options": {},
         "repetitions": 1,
     })
-    attempt = Attempt(Transform([(1, AcceptingPrefix())]), BuildABomb())
+    attempt = Attempt(Transform([ AcceptingPrefix() ]), BuildABomb())
     log_writer.logTransformAttempts([attempt])
     log_writer.logTransformAttempts([attempt])
     log_writer.fixAttemptFileEnding()

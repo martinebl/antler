@@ -15,7 +15,7 @@ class JSONParser:
             instantiated_techniques = []
             if len(techniques) > 0 :
                 instantiated_techniques = [getattr(importlib.import_module(f"llmtest.techniques.{technique.lower()}"), technique)() for technique in techniques]
-            transform = Transform([(1, tech) for tech in instantiated_techniques])
+            transform = Transform([ tech for tech in instantiated_techniques])
             probe = getattr(importlib.import_module(f"llmtest.probes.{entry['probe'].lower()}"), entry['probe'])()
             
             attempt = Attempt(transform, probe)

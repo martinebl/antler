@@ -15,7 +15,7 @@ class BestInClassExplorer(Explorer):
         """
         Generates a list of initial transforms, including only a single technique each.
         """
-        return [ Transform([(1, technique)]) for technique in self.techniques ]
+        return [ Transform([ technique]) for technique in self.techniques ]
     
     def seedScore(self, result: float) -> None:
         """

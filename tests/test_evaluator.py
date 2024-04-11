@@ -47,7 +47,7 @@ def test_create_result_list_makes_list_of_res_from_dict(evaluator):
         assert dict[res.name] == res.attempt_scores
 
 def test_evaluate(evaluator):
-    att1 = Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+    att1 = Attempt(Transform([ AcceptingPrefix() ]), CurseWordFuck())
     att1.addResponse("fuck", True)
 
     att2 = Attempt(Transform([]), IllegalDrugs())
