@@ -125,7 +125,32 @@ class SimulatedAnnealing(Explorer):
 
     
     def __swapNonConsecutive(self, transform: Transform) -> Transform:
-        return transform
+        transform_techniques = transform.getTechniques().copy()
+        # If there is only two techniques, swap them. If there is one, do nothing
+        if len(transform_techniques) <= 2:
+            return self.__swapConsecutive(transform)
+        else:
+            indexes = list(range(len(transform_techniques)))
+            # Construct of dictionairy, with keys as indexes and values as a list of valid index swaps for key index
+            possible_moves = {
+                index:list(filter(
+                    lambda i: i < index -1 or i > index + 1,
+                    indexes
+                ))
+                for index in indexes
+            }
+            possible_moves = dict(filter(lambda pair: len(pair[1]) > 0, possible_moves.items()))
+            a = random.choice(list(possible_moves.keys()))
+            b = random.choice(possible_moves[a])
+            transform_techniques[a], transform_techniques[b] = transform_techniques[b], transform_techniques[a]
+            return Transform(transform_techniques)
+
     
     def __swapConsecutive(self, transform: Transform) -> Transform:
-        return transform
+        transform_techniques = transform.getTechniques().copy()
+        if len(transform_techniques) > 1:
+            index = random.randint(0, len(transform_techniques) - 2) # Don't include the last index, since we can not swap later than the end
+            # Swap the two values
+            transform_techniques[index], transform_techniques[index + 1] = transform_techniques[index + 1], transform_techniques[index]
+
+        return Transform(transform_techniques)
