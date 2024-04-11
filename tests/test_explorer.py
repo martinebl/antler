@@ -102,3 +102,41 @@ def test_simulated_annealing_exchange_from_class():
     new_transform = Transform([EscapeUserPrompt(), NonNaturalLanguage()])
     same_transform = annealing._SimulatedAnnealing__exchangeFromClass(new_transform)
     assert new_transform == same_transform
+
+@pytest.mark.parametrize("transforms, expected", [
+    ([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()], 12),
+    ([AddNoise(), Encoding(), ObfuscatingCode()], 6),
+    ([AddNoise(), Encoding()], 2),
+])
+def test_ghce_increment_transform_length(transforms, expected):
+    ghce = GreedyHillClimbExplorer(transforms)
+    new_transforms = ghce._GreedyHillClimbExplorer__incrementTransformsLength(ghce.transforms)
+    assert(len(new_transforms) == expected)
+
+@pytest.mark.parametrize("transforms, expected", [
+    ([AcceptingPrefix(), AddNoise(), Encoding(), ConvinceMissingKnowledge(), ObfuscatingCode(), EscapeUserPrompt()], 126),
+    ([AcceptingPrefix(), AddNoise(), Encoding(), ConvinceMissingKnowledge(), ObfuscatingCode()], 85),
+    ([AcceptingPrefix(), AddNoise(), Encoding(), ConvinceMissingKnowledge()], 46),
+    ([AcceptingPrefix(), AddNoise(), Encoding()], 15),
+    ([AddNoise(), Encoding()], 4),
+    ([AddNoise()], 1),
+])
+def test_ghce_runs_correct_amount_of_transforms(transforms, expected):
+    explorer = GreedyHillClimbExplorer(transforms)
+    count = 0
+    for transform in explorer:
+        count +=1
+        print(transform)
+        explorer.seedScore(0.1)
+        assert(isinstance(transform, Transform))
+    assert(count == expected)
+
+def test_ghce_stops_at_100_percent_transform():
+    explorer = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+    count = 0
+    for transform in explorer:
+        count +=1
+        print(transform)
+        explorer.seedScore(1)
+        assert(isinstance(transform, Transform))
+    assert(count == 3)
