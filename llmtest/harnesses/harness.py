@@ -55,7 +55,7 @@ class Harness:
         evaluation.setElapsedTime(self.formatted_time)
         self.log_writer.logReport(str(evaluation))
         evaluation.prettyPrint()
-        evaluation.display()
+        evaluation.savefig(f"fig_{self.log_writer.current_datetime}.png")
 
     def collectAttempts(self) -> list[Attempt]:
         raise NotImplementedError("Implement this in subclass")

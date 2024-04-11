@@ -23,10 +23,10 @@ class LogWriter():
         self.attempt_logger.setLevel(logging.INFO)
         self.report_logger.setLevel(logging.INFO)
 
-        current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        self.current_datetime = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         # create file handlers
-        self.attempt_file_path = f"logs/attempts_{current_datetime}.json"
-        report_file_handler = logging.FileHandler(f"reports/report_{current_datetime}.log")
+        self.attempt_file_path = f"logs/attempts_{self.current_datetime}.json"
+        report_file_handler = logging.FileHandler(f"reports/report_{self.current_datetime}.log")
 
         # create formatters
         formatter = logging.Formatter('%(message)s')
