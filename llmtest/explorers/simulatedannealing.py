@@ -26,7 +26,7 @@ class SimulatedAnnealing(Explorer):
         """
         Generates a list of initial transforms, including only a single technique each.
         """
-        return [ Transform([(1, technique)]) for technique in self.techniques ]
+        return [ Transform([ technique ]) for technique in self.techniques ]
     
     def seedScore(self, result: float) -> None:
         """
@@ -69,6 +69,10 @@ class SimulatedAnnealing(Explorer):
         return list([technique for tech_scores in techniques_by_class.values() for technique, _ in tech_scores])
         
     def __chooseNeighbour(self, temperature: float, transform) -> Transform:
+        """
+        Choose one of the 4 defined changes to the current transform. 
+        At low temperatures only small changes are allowed.
+        """
         # Take a sample and scale it down with the temperature "progress"
         sample = random.random() * (temperature/self.start_temperature) 
         # The probabilities of doing the transforms in order: Swap cons, Swap non cons, Exchange in class, Exchange outside class
@@ -78,9 +82,9 @@ class SimulatedAnnealing(Explorer):
             new_transform = self.__exchangeFromOutsideClass(transform)
         elif sample > sum(probabilities[:2]):
             # Exchange a random technique, with one from same class
-            new_transform = self.__exchangeFromSameClass(transform)
+            new_transform = self.__exchangeFromClass(transform)
         elif sample > probabilities[0]:
-            # Swap to random, non consecutive techniques
+            # Swap two random, non consecutive techniques
             new_transform = self.__swapNonConsecutive(transform)
         else:
             # Swap two consecutive techniques
@@ -88,19 +92,37 @@ class SimulatedAnnealing(Explorer):
 
         return new_transform
     
-    def exchangeFromOutsideClass(self, transform: Transform) -> Transform:
+    def __exchangeFromOutsideClass(self, transform: Transform) -> Transform:
         transform_techniques = transform.getTechniques().copy()
         # Choose random index
         index = random.randint(0, len(transform_techniques) - 1)
         tech_class = transform_techniques[index].getTechniqueClass()
-        # Select a random new technique, from 
+        # Select a random new technique, from best_techniques
         new_technique = random.choice(list(filter(lambda x: x.getTechniqueClass() != tech_class, self.best_techniques)))
         # Overwrite the new technique at index
         transform_techniques[index] = new_technique
-        return Transform([ (1, technique) for technique in transform_techniques])
+        return Transform(transform_techniques)
     
-    def __exchangeFromSameClass(self, transform: Transform) -> Transform:
-        return transform
+    def __exchangeFromClass(self, transform: Transform) -> Transform:
+        transform_techniques = transform.getTechniques().copy()
+        # Construct a dictionary, with a list of all possibly swaps keyed by index in transform technique list.
+        possible_moves = { 
+            index:list(filter(
+                lambda tech: tech.getTechniqueClass() == technique.getTechniqueClass() and tech not in transform_techniques, 
+                self.best_techniques
+            )) 
+            for (index, technique) in enumerate(transform_techniques) 
+        }
+        # Filter away all indexes, with no possible swaps
+        possible_moves = dict(filter(lambda pair: len(pair[1]) > 0, possible_moves.items()))
+
+        # If possible, make a swap
+        if len(possible_moves.keys()) > 0:
+            index = random.choice(list(possible_moves.keys()))
+            transform_techniques[index] = random.choice(possible_moves[index])
+        
+        return Transform(transform_techniques)
+
     
     def __swapNonConsecutive(self, transform: Transform) -> Transform:
         return transform

@@ -11,6 +11,8 @@ from llmtest.techniques.addnoise import AddNoise
 from llmtest.techniques.encoding import Encoding
 from llmtest.techniques.obfuscatingcode import ObfuscatingCode
 from llmtest.techniques.convincemissingknowledge import ConvinceMissingKnowledge
+from llmtest.techniques.escapeuserprompt import EscapeUserPrompt
+from llmtest.techniques.nonnaturallanguage import NonNaturalLanguage
 
 
 def test_base_explorer_generate_transforms_not_implemented():
@@ -81,6 +83,20 @@ def test_simulated_annealing_exchange_out_class():
     # Just for testing. The exchange function uses best_techniques instead of techniques
     annealing.best_techniques = annealing.techniques
     transform = Transform([ AddNoise(), Encoding() ])
-    transform = annealing.exchangeFromOutsideClass(transform)
+    transform = annealing._SimulatedAnnealing__exchangeFromOutsideClass(transform)
     assert len(transform.getTechniques()) == 2
     assert ConvinceMissingKnowledge() in transform.getTechniques()
+
+def test_simulated_annealing_exchange_from_class():
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ])
+    # Just for testing. The exchange function uses best_techniques instead of techniques
+    annealing.best_techniques = annealing.techniques
+    transform = Transform([ AddNoise(), Encoding() ])
+    changed_transform = annealing._SimulatedAnnealing__exchangeFromClass(transform)
+    assert len(changed_transform.getTechniques()) == len(transform.getTechniques())
+    assert ObfuscatingCode() in changed_transform.getTechniques()
+    assert transform != changed_transform
+    # These techniques both have only 1 per class
+    new_transform = Transform([EscapeUserPrompt(), NonNaturalLanguage()])
+    same_transform = annealing._SimulatedAnnealing__exchangeFromClass(new_transform)
+    assert new_transform == same_transform
