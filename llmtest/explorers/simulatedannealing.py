@@ -11,12 +11,23 @@ class SimulatedAnnealing(Explorer):
         super().__init__(techniques)
         self.best_techniques: list[Technique] = []
         self.scores: list[tuple[Technique, float]] = []
-        self.start_temperature = 2
-        self.max_iterations = 200
+        self.transform_length = 3
+
+        # Cooling schedule stuff
+        self.start_temperature = 100
+
+        # Iteration stuff
+        self.current_iteration = -1
+        self.max_iterations = 50
+
+        # Restart stuff
         self.current_transform = None # This is the current state
         self.current_score = 0.0 # This is the current "energy"
         self.best_transform = None # Used for restarts, if no better one has been found in a while
         self.best_score = 0.0 # Used for restarts.
+        self.last_improvement = 0
+
+
         self._setMessage("Trying techniques individually...")
 
     def __len__(self) -> int:
@@ -41,11 +52,32 @@ class SimulatedAnnealing(Explorer):
             if self._index == len(self.techniques) - 1:
                 self._setMessage("Starting simulated annealing from top 2 techniques in each class")
                 self.best_techniques = self.__selectBestInClassTechniques()
-                # TODO: Initialise annealing. Probably by creating a random transform, or combining the n best ones
+                # Initialise annealing by creating a random transform
+                self.transforms.append(Transform(list(random.sample(self.best_techniques, self.transform_length))))
 
         else:
             # TODO: Do annealing stuff
-            return
+            self.__handleIteration(result)
+
+    def __handleIteration(self, score: float) -> None:
+        self.current_iteration += 1
+        self.current_transform = self.transforms[self._index]
+        self.current_score = score
+
+        # Keep track of the best found transform so far
+        if self.current_score > self.best_score:
+            self.last_improvement = self.current_score - self.best_score
+            self.best_score = self.current_score
+            self.best_transform = self.current_transform    
+        # Stop when max iterations is reached     
+        if self.current_iteration < self.max_iterations:
+            temperature = self.__cool(self.start_temperature)
+            neigbour: Transform = self.__chooseNeighbour(temperature, self.current_transform)
+            self.transforms.append(neigbour)
+
+    def __cool(self, temperature: float) -> float:
+        return temperature * (1 - (self.current_iteration / self.max_iterations))
+        
 
     def __selectBestInClassTechniques(self) -> list[Technique]:
         """
@@ -79,14 +111,18 @@ class SimulatedAnnealing(Explorer):
         probabilities = [0.2, 0.2, 0.3, 0.3]
         if sample > sum(probabilities[:3]):
             # Exchange a random technique, with one from another class
+            self._setMessage("Exchange from outside class")
             new_transform = self.__exchangeFromOutsideClass(transform)
         elif sample > sum(probabilities[:2]):
+            self._setMessage("Exchange from class")
             # Exchange a random technique, with one from same class
             new_transform = self.__exchangeFromClass(transform)
         elif sample > probabilities[0]:
+            self._setMessage("Swap non consecutive")
             # Swap two random, non consecutive techniques
             new_transform = self.__swapNonConsecutive(transform)
         else:
+            self._setMessage("Swap consecutive")
             # Swap two consecutive techniques
             new_transform = self.__swapConsecutive(transform)
 
