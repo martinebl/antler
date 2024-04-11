@@ -11,7 +11,7 @@ class Explorer:
     
     def __init__(self, techniques: list[Technique]) -> None:
         self.techniques = techniques
-        self.index = -1 # So the first call to __next__ will be on index 0
+        self._index = -1 # So the first call to __next__ will be on index 0
         self.transforms = self.generateInitialTransforms()
         self.__hasMessage = False
         self.__message = ""
@@ -31,9 +31,9 @@ class Explorer:
         self.__message = message
 
     def __next__(self) -> Transform:
-        self.index+=1
+        self._index+=1
         try: # Uglier than counting the list on every run, but way more efficient
-            return self.transforms[self.index]
+            return self.transforms[self._index]
         except IndexError:
             raise StopIteration
         

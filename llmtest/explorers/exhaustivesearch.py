@@ -19,7 +19,7 @@ class ExhaustiveSearch(Explorer):
                 # Append a list of permutations (which are themselves lists of techniques), for the given combination
                 perms.append([ list(perm) for perm in itertools.permutations(combo)])
         
-        return [ Transform(list(enumerate(permutation))) for perm_list in perms for permutation in perm_list ]
+        return [ Transform(permutation) for perm_list in perms for permutation in perm_list ]
 
     def generateInitialTransforms(self) -> list[Transform]:
         return self.generatePermutationsAndCombinations(self.techniques)

@@ -88,11 +88,11 @@ def test_faster_multiprocess_time():
 @pytest.mark.parametrize("attempts, result", [
     (
         [
-            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck()),
-            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+            Attempt(Transform([ AcceptingPrefix() ]), CurseWordFuck()),
+            Attempt(Transform([ AcceptingPrefix() ]), CurseWordFuck())
         ],
         [
-            Attempt(Transform([(1, AcceptingPrefix())]), CurseWordFuck())
+            Attempt(Transform([ AcceptingPrefix() ]), CurseWordFuck())
         ]
     )
 ])
@@ -112,6 +112,6 @@ def test_error_handling_harness():
 
 def test_harness_answer_fixing():
     harness = LinearHarness([], ExhaustiveSearch([]), Base64OfSpacesGenerator, 123)
-    attempt: Attempt = Harness.runAttempt((harness, Attempt(Transform([(1, AddNoise()), (2, Encoding())]), CurseWordFuck())))
+    attempt: Attempt = Harness.runAttempt((harness, Attempt(Transform([AddNoise(), Encoding()]), CurseWordFuck())))
     print(attempt.getReplies())
     assert attempt.getAttemptSuccessRate() == 1

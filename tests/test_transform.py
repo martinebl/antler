@@ -7,9 +7,9 @@ from llmtest.techniques.addnoise import AddNoise
 
 @pytest.mark.parametrize("transform1, transform2, result", [
     (Transform([]), Transform([]), True),
-    (Transform([]), Transform([(1, AcceptingPrefix())]), False),
-    (Transform([(1, RefusalSuppression())]), Transform([(1, AcceptingPrefix())]), False),
-    (Transform([(1, AddNoise())]), Transform([(1, AddNoise())]), True),
+    (Transform([]), Transform([AcceptingPrefix()]), False),
+    (Transform([RefusalSuppression()]), Transform([AcceptingPrefix()]), False),
+    (Transform([AddNoise()]), Transform([AddNoise()]), True),
 ])
 def test_equality(transform1, transform2, result):
     assert (transform1 == transform2) == result

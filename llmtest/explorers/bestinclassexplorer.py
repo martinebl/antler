@@ -15,19 +15,19 @@ class BestInClassExplorer(Explorer):
         """
         Generates a list of initial transforms, including only a single technique in each.
         """
-        return [ Transform([(1, technique)]) for technique in self.techniques ]
+        return [ Transform([ technique]) for technique in self.techniques ]
     
     def seedScore(self, result: float) -> None:
         """
         Is used to keep track of the scores of each technique, and use that to explore the
         remaining possibilities
         """
-        if self.index < len(self.techniques):
+        if self._index < len(self.techniques):
             # Append a tuple of (technique, score) to the scores array, while iterating
             # over all the techniques one at a time
-            self.scores.append((self.transforms[self.index].techniques[0], result))
+            self.scores.append((self.transforms[self._index].techniques[0], result))
             # Handle the selection and transform generation on the last iteration of the single techniques
-            if self.index == len(self.techniques) - 1:
+            if self._index == len(self.techniques) - 1:
                 self.__generateTransformsFromScores()
                 self._setMessage("Trying generated transforms, from best in class techniques...")
     

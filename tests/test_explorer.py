@@ -1,15 +1,21 @@
 import pytest
+
 from llmtest.explorers import Explorer
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
+from llmtest.explorers.simulatedannealing import SimulatedAnnealing
 from llmtest.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
 
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.addnoise import AddNoise
 from llmtest.techniques.encoding import Encoding
+from llmtest.techniques.obfuscatingcode import ObfuscatingCode
 from llmtest.techniques.convincemissingknowledge import ConvinceMissingKnowledge
+from llmtest.techniques.escapeuserprompt import EscapeUserPrompt
+from llmtest.techniques.nonnaturallanguage import NonNaturalLanguage
+
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):
@@ -63,6 +69,36 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
     assert(count == 5) # One for each technique, plus the two permuations of the two best techniques
     assert(len(explorer.scores) == 3)
 
-# def test_ghc_increase_transform_length():
-#     ghce = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
-#     print(ghce.increaseTransformLength(ghce.transforms))
+def test_simulated_annealing_selection():
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
+    count = 0
+    for _ in annealing:
+        annealing.seedScore(count / 4)
+        count += 1
+    print(annealing.scores)
+    print(annealing.best_techniques)
+    assert len(annealing.best_techniques) == 3
+    assert len(annealing.scores) == 4
+
+def test_simulated_annealing_exchange_out_class():
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
+    # Just for testing. The exchange function uses best_techniques instead of techniques
+    annealing.best_techniques = annealing.techniques
+    transform = Transform([ AddNoise(), Encoding() ])
+    transform = annealing._SimulatedAnnealing__exchangeFromOutsideClass(transform)
+    assert len(transform.getTechniques()) == 2
+    assert ConvinceMissingKnowledge() in transform.getTechniques()
+
+def test_simulated_annealing_exchange_from_class():
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ])
+    # Just for testing. The exchange function uses best_techniques instead of techniques
+    annealing.best_techniques = annealing.techniques
+    transform = Transform([ AddNoise(), Encoding() ])
+    changed_transform = annealing._SimulatedAnnealing__exchangeFromClass(transform)
+    assert len(changed_transform.getTechniques()) == len(transform.getTechniques())
+    assert ObfuscatingCode() in changed_transform.getTechniques()
+    assert transform != changed_transform
+    # These techniques both have only 1 per class
+    new_transform = Transform([EscapeUserPrompt(), NonNaturalLanguage()])
+    same_transform = annealing._SimulatedAnnealing__exchangeFromClass(new_transform)
+    assert new_transform == same_transform
