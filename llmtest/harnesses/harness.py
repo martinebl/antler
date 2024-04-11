@@ -45,7 +45,6 @@ class Harness:
         hours, remainder = divmod(elapsed_time, 3600)
         minutes, seconds = divmod(remainder, 60)
         self.formatted_time = "{:02}:{:02}:{:02}".format(int(hours), int(minutes), int(seconds))
-
         
         self.evaluateAttempts(attempts)
 

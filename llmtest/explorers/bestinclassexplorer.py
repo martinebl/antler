@@ -13,7 +13,7 @@ class BestInClassExplorer(Explorer):
 
     def generateInitialTransforms(self) -> list[Transform]:
         """
-        Generates a list of initial transforms, including only a single technique each.
+        Generates a list of initial transforms, including only a single technique in each.
         """
         return [ Transform([(1, technique)]) for technique in self.techniques ]
     

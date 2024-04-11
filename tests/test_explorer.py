@@ -3,6 +3,8 @@ from llmtest.explorers import Explorer
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
+from llmtest.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
+
 from llmtest.techniques.refusalsuppression import RefusalSuppression
 from llmtest.techniques.acceptingprefix import AcceptingPrefix
 from llmtest.techniques.addnoise import AddNoise
@@ -60,3 +62,7 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
         assert(isinstance(transform, Transform))
     assert(count == 5) # One for each technique, plus the two permuations of the two best techniques
     assert(len(explorer.scores) == 3)
+
+# def test_ghc_increase_transform_length():
+#     ghce = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+#     print(ghce.increaseTransformLength(ghce.transforms))
