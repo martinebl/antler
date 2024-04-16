@@ -5,15 +5,15 @@ import math
 from llmtest.explorers import Explorer
 from llmtest.techniques import Technique
 from llmtest.transforms import Transform
-from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 
 class SimulatedAnnealing(Explorer):
     def __init__(self, techniques: list[Technique]) -> None:
-        self.transform_length = 2
+        self.transform_length = 3
         self.scores: list[tuple[Technique, float]] = []
 
         # Cooling schedule stuff
         self.start_temperature = 1
+        self.base_temperature = self.start_temperature
 
         # Iteration stuff
         self.current_iteration = -1
@@ -25,7 +25,7 @@ class SimulatedAnnealing(Explorer):
         self.best_transform = None # Used for restarts, if no better one has been found in a while
         self.best_score = 0.0 # Used for restarts.
         self.last_reset = 0
-        self.max_bad_steps = 10
+        self.max_bad_steps = min(round(self.max_iterations * 0.1), 10) # Take 10% of max_iterations but max 10
 
         self.stop_score = 1 # The satisfying score to end the process, if found before max_iterations
 
@@ -37,8 +37,12 @@ class SimulatedAnnealing(Explorer):
     def generateInitialTransforms(self) -> list[Transform]:
         """
         Generates the initial starting transform randomly
-        """                                                  # The min choice is only there two write the tests easier
-        return [ Transform(list(random.sample(self.techniques, min(self.transform_length, len(self.techniques))))) ]
+        """                                                  
+        return [ self.__generateRandomTransform() ]
+
+
+    def __generateRandomTransform(self) -> Transform:
+        return Transform(list(random.sample(self.techniques, min(self.transform_length, len(self.techniques)))))
 
 
     def seedScore(self, result: float) -> None:
@@ -79,7 +83,7 @@ class SimulatedAnnealing(Explorer):
                 else:
                     self._setMessage("This was worse")
                     if self.current_iteration - self.last_reset > self.max_bad_steps:
-                        self.__reset()
+                        self.__restart()
             else:
                 self._setMessage("Not accepted")
         # Choose new state for next iteration
@@ -87,7 +91,7 @@ class SimulatedAnnealing(Explorer):
 
 
     def __temperature(self) -> float:
-        return self.start_temperature * (1 - (self.current_iteration / self.max_iterations))
+        return self.base_temperature * (1 - (self.current_iteration / self.max_iterations))
     
     
     def __accept(self, delta_score: float, temperature: float) -> bool:
@@ -99,11 +103,24 @@ class SimulatedAnnealing(Explorer):
             return prob >= random.random()
         
     
-    def __reset(self) -> None:
-        self._setMessage("Reset")
+    def __reheat(self, target_fraction: float = 0.6):
+        target_temp = self.start_temperature * target_fraction
+        required_base = target_temp / (1 - (self.current_iteration / self.max_iterations))
+        self.base_temperature = required_base
+
+
+    def __restart(self) -> None:
+        if random.random() < 0.3: # 30 % chance of restarting from a completely random transform
+            self._setMessage("Restart random")
+            self.current_transform = self.__generateRandomTransform()
         # If it has not gotten better for the past max_bad_steps iterations, restart from best transform
-        self.current_score = self.best_score
-        self.current_transform = self.best_transform
+        else:
+            self._setMessage("Restart reheat")
+            self.current_score = self.best_score
+            self.current_transform = self.best_transform
+            # Reheat, but only if cold
+            if self.__temperature() < self.start_temperature * 0.65:
+                self.__reheat(0.65)
         self.last_reset = self.current_iteration
 
 
