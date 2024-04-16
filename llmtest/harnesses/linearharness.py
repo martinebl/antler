@@ -47,6 +47,8 @@ class LinearHarness(Harness):
                     transform_score = sum([attempt.getAttemptSuccessRate() for attempt in non_failed_attempts ]) / len(non_failed_attempts) if len(non_failed_attempts) != 0 else 0
                     self.explorer.seedScore(transform_score)
                     pbar.total = len(self.explorer)
+                    if self.explorer.hasMessage():
+                        pbar.write(self.explorer.getMessage())
                 pbar.close()
         except KeyboardInterrupt:
             print("User interrupted, terminating early")
