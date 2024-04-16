@@ -8,7 +8,7 @@ class GreedyHillClimbExplorer(Explorer):
         super().__init__(techniques)
         self.scores: list[tuple[Transform, float]] = []
         self.TRANSFORM_LENGTH_CAP = 5
-        self.AMOUNT_OF_TOP_CANDIDATES = 10
+        self.AMOUNT_OF_TOP_CANDIDATES = 2
         self.transform_length = 1
 
     def generateInitialTransforms(self) -> list[Transform]:
