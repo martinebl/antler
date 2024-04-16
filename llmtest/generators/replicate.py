@@ -10,6 +10,14 @@ class Replicate(Generator):
     # Load the environment file only on class definition and not on init
     load_dotenv()
 
+    # Models
+    # mistralai/mixtral-8x7b-instruct-v0.1
+    # mistralai/mistral-7b-v0.1
+    # mistralai/mistral-7b-instruct-v0.2
+    # meta/llama-2-70b-chat
+    # meta/llama-2-7b-chat
+
+
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
         
