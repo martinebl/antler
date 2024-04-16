@@ -10,8 +10,10 @@ class OpenAI(Generator):
     # Load the environment file only on class definition and not on init
     load_dotenv()
     
-    # model: gpt-3.5-turbo
-    
+    # Models
+    # gpt-3.5-turbo
+    # gpt-4-turbo-2024-04-09
+
     def __init__(self, model: str, options: dict = {}) -> None:
         super().__init__(model, options)
 
