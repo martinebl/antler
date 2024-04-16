@@ -1,105 +1,112 @@
 #!/usr/bin/env python3
 import random
+import math
 
 from llmtest.explorers import Explorer
-from llmtest.techniques import Technique, TechniqueClass
+from llmtest.techniques import Technique
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
 
 class SimulatedAnnealing(Explorer):
     def __init__(self, techniques: list[Technique]) -> None:
-        super().__init__(techniques)
-        self.best_techniques: list[Technique] = []
+        self.transform_length = 2
         self.scores: list[tuple[Technique, float]] = []
-        self.transform_length = 3
 
         # Cooling schedule stuff
-        self.start_temperature = 100
+        self.start_temperature = 1
 
         # Iteration stuff
         self.current_iteration = -1
-        self.max_iterations = 50
-
-        # Restart stuff
+        self.max_iterations = 100
         self.current_transform = None # This is the current state
         self.current_score = 0.0 # This is the current "energy"
+
+        # Restart stuff
         self.best_transform = None # Used for restarts, if no better one has been found in a while
         self.best_score = 0.0 # Used for restarts.
-        self.last_improvement = 0
+        self.last_reset = 0
+        self.max_bad_steps = 10
 
+        self.stop_score = 1 # The satisfying score to end the process, if found before max_iterations
 
-        self._setMessage("Trying techniques individually...")
+        super().__init__(techniques)
 
     def __len__(self) -> int:
-        return self.max_iterations + len(self.techniques)
+        return self.max_iterations
 
     def generateInitialTransforms(self) -> list[Transform]:
         """
-        Generates a list of initial transforms, including only a single technique each.
-        """
-        return [ Transform([ technique ]) for technique in self.techniques ]
-    
-    def seedScore(self, result: float) -> None:
-        """
-        Is used to keep track of the scores of each technique, and use that to explore the
-        remaining possibilities
-        """
-        if self._index < len(self.techniques):
-            # Append a tuple of (technique, score) to the scores array, while iterating
-            # over all the techniques one at a time
-            self.scores.append((self.transforms[self._index].techniques[0], result))
-            # Handle the selection and transform generation on the last iteration of the single techniques
-            if self._index == len(self.techniques) - 1:
-                self._setMessage("Starting simulated annealing from top 2 techniques in each class")
-                self.best_techniques = self.__selectBestInClassTechniques()
-                # Initialise annealing by creating a random transform
-                self.transforms.append(Transform(list(random.sample(self.best_techniques, self.transform_length))))
+        Generates the initial starting transform randomly
+        """                                                  # The min choice is only there two write the tests easier
+        return [ Transform(list(random.sample(self.techniques, min(self.transform_length, len(self.techniques))))) ]
 
-        else:
-            # TODO: Do annealing stuff
-            self.__handleIteration(result)
+
+    def seedScore(self, result: float) -> None:
+        self.__handleIteration(result)
+
 
     def __handleIteration(self, score: float) -> None:
         self.current_iteration += 1
-        self.current_transform = self.transforms[self._index]
-        self.current_score = score
-
-        # Keep track of the best found transform so far
-        if self.current_score > self.best_score:
-            self.last_improvement = self.current_score - self.best_score
-            self.best_score = self.current_score
-            self.best_transform = self.current_transform    
-        # Stop when max iterations is reached     
-        if self.current_iteration < self.max_iterations:
-            temperature = self.__cool(self.start_temperature)
-            neigbour: Transform = self.__chooseNeighbour(temperature, self.current_transform)
-            self.transforms.append(neigbour)
-
-    def __cool(self, temperature: float) -> float:
-        return temperature * (1 - (self.current_iteration / self.max_iterations))
+        if score >= self.stop_score:
+            self._setMessage("Found satisfying score, terminating early")
+            return
+        if self.current_iteration == self.max_iterations:
+            return
         
+        temperature = self.__temperature()
+        new_transform = self.transforms[self.current_iteration]
+        # Special case of first run
+        if self.current_iteration == 0:
+            self.current_score = score
+            self.current_transform = new_transform
+            self.best_score = score
+            self.best_transform = self.current_transform
+            self.last_reset = self.current_iteration
+            self._setMessage("Handled first run")
+        # Handle all other runs
+        else:
+            delta_score = score - self.current_score
+            if self.__accept(delta_score, temperature):
+                self.current_score = score
+                self.current_transform = new_transform
 
-    def __selectBestInClassTechniques(self) -> list[Technique]:
-        """
-        Get the top two techniques from each class
-        """
-        techniques_by_class = { tech_class:[] for tech_class in TechniqueClass }
-        for technique, score in self.scores:
-            tech_class = technique.getTechniqueClass()
-            # Always append if list is empty
-            if len(techniques_by_class[tech_class]) == 0:
-                techniques_by_class[tech_class].append((technique, score))
-            # Insert on appropriate place in the list, if necessary
+                # Handle restart logic
+                if score >= self.best_score:
+                    self._setMessage("Improvement!" if score > self.best_score else "Same score")
+                    self.best_score = score
+                    self.best_transform = new_transform
+                    self.last_reset = self.current_iteration
+                else:
+                    self._setMessage("This was worse")
+                    if self.current_iteration - self.last_reset > self.max_bad_steps:
+                        self.__reset()
             else:
-                if techniques_by_class[tech_class][0][1] < score:
-                    techniques_by_class[tech_class].insert(0, (technique, score))
-                    techniques_by_class[tech_class] = techniques_by_class[tech_class][:2]
-                elif techniques_by_class[tech_class][1][1] < score:
-                    techniques_by_class[tech_class][1] = (technique, score)
+                self._setMessage("Not accepted")
+        # Choose new state for next iteration
+        self.transforms.append(self.__chooseNeighbour(temperature, self.current_transform))
 
 
-        return list([technique for tech_scores in techniques_by_class.values() for technique, _ in tech_scores])
+    def __temperature(self) -> float:
+        return self.start_temperature * (1 - (self.current_iteration / self.max_iterations))
+    
+    
+    def __accept(self, delta_score: float, temperature: float) -> bool:
+        if delta_score > 0:
+            # Auto accept, if the new state is better
+            return True
+        else:
+            prob = math.exp(delta_score/temperature)
+            return prob >= random.random()
         
+    
+    def __reset(self) -> None:
+        self._setMessage("Reset")
+        # If it has not gotten better for the past max_bad_steps iterations, restart from best transform
+        self.current_score = self.best_score
+        self.current_transform = self.best_transform
+        self.last_reset = self.current_iteration
+
+
     def __chooseNeighbour(self, temperature: float, transform) -> Transform:
         """
         Choose one of the 4 defined changes to the current transform. 
@@ -108,44 +115,52 @@ class SimulatedAnnealing(Explorer):
         # Take a sample and scale it down with the temperature "progress"
         sample = random.random() * (temperature/self.start_temperature) 
         # The probabilities of doing the transforms in order: Swap cons, Swap non cons, Exchange in class, Exchange outside class
-        probabilities = [0.2, 0.2, 0.3, 0.3]
+        probabilities = [0.05, 0.15, 0.35, 0.45]
         if sample > sum(probabilities[:3]):
             # Exchange a random technique, with one from another class
-            self._setMessage("Exchange from outside class")
+            self._setMessage(self._Explorer__message + " : Exchange from outside class")
             new_transform = self.__exchangeFromOutsideClass(transform)
         elif sample > sum(probabilities[:2]):
-            self._setMessage("Exchange from class")
+            self._setMessage(self._Explorer__message + " : Exchange from class")
             # Exchange a random technique, with one from same class
             new_transform = self.__exchangeFromClass(transform)
         elif sample > probabilities[0]:
-            self._setMessage("Swap non consecutive")
+            self._setMessage(self._Explorer__message + " : Swap non consecutive")
             # Swap two random, non consecutive techniques
             new_transform = self.__swapNonConsecutive(transform)
         else:
-            self._setMessage("Swap consecutive")
+            self._setMessage(self._Explorer__message + " : Swap consecutive")
             # Swap two consecutive techniques
             new_transform = self.__swapConsecutive(transform)
 
         return new_transform
     
+    
     def __exchangeFromOutsideClass(self, transform: Transform) -> Transform:
+        """
+        The highest distance change, that changes a random technique with one from a different class
+        """
         transform_techniques = transform.getTechniques().copy()
         # Choose random index
         index = random.randint(0, len(transform_techniques) - 1)
         tech_class = transform_techniques[index].getTechniqueClass()
-        # Select a random new technique, from best_techniques
-        new_technique = random.choice(list(filter(lambda x: x.getTechniqueClass() != tech_class, self.best_techniques)))
+        # Select a random new technique, from techniques
+        new_technique = random.choice(list(filter(lambda x: x.getTechniqueClass() != tech_class and x not in transform_techniques, self.techniques)))
         # Overwrite the new technique at index
         transform_techniques[index] = new_technique
         return Transform(transform_techniques)
     
+    
     def __exchangeFromClass(self, transform: Transform) -> Transform:
+        """
+        The second highest distance change, that changes a random technique with one from the same class that is not already included
+        """
         transform_techniques = transform.getTechniques().copy()
         # Construct a dictionary, with a list of all possibly swaps keyed by index in transform technique list.
         possible_moves = { 
             index:list(filter(
                 lambda tech: tech.getTechniqueClass() == technique.getTechniqueClass() and tech not in transform_techniques, 
-                self.best_techniques
+                self.techniques
             )) 
             for (index, technique) in enumerate(transform_techniques) 
         }
@@ -161,6 +176,9 @@ class SimulatedAnnealing(Explorer):
 
     
     def __swapNonConsecutive(self, transform: Transform) -> Transform:
+        """
+        The second smallest distance change, that swaps the order of any two non consecutive techniques in the transform
+        """
         transform_techniques = transform.getTechniques().copy()
         # If there is only two techniques, swap them. If there is one, do nothing
         if len(transform_techniques) <= 2:
@@ -183,6 +201,9 @@ class SimulatedAnnealing(Explorer):
 
     
     def __swapConsecutive(self, transform: Transform) -> Transform:
+        """
+        The smallest distance change, that swaps the order of two consecutive techniques in the transform
+        """
         transform_techniques = transform.getTechniques().copy()
         if len(transform_techniques) > 1:
             index = random.randint(0, len(transform_techniques) - 2) # Don't include the last index, since we can not swap later than the end

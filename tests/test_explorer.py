@@ -67,21 +67,8 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
     assert(count == 5) # One for each technique, plus the two permuations of the two best techniques
     assert(len(explorer.scores) == 3)
 
-def test_simulated_annealing_selection():
-    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
-    count = 0
-    for _ in annealing:
-        annealing.seedScore(count / 4)
-        count += 1
-    print(annealing.scores)
-    print(annealing.best_techniques)
-    assert len(annealing.best_techniques) == 3
-    assert len(annealing.scores) == 4
-
 def test_simulated_annealing_exchange_out_class():
     annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
-    # Just for testing. The exchange function uses best_techniques instead of techniques
-    annealing.best_techniques = annealing.techniques
     transform = Transform([ AddNoise(), Encoding() ])
     transform = annealing._SimulatedAnnealing__exchangeFromOutsideClass(transform)
     assert len(transform.getTechniques()) == 2
@@ -89,8 +76,6 @@ def test_simulated_annealing_exchange_out_class():
 
 def test_simulated_annealing_exchange_from_class():
     annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ])
-    # Just for testing. The exchange function uses best_techniques instead of techniques
-    annealing.best_techniques = annealing.techniques
     transform = Transform([ AddNoise(), Encoding() ])
     changed_transform = annealing._SimulatedAnnealing__exchangeFromClass(transform)
     assert len(changed_transform.getTechniques()) == len(transform.getTechniques())
