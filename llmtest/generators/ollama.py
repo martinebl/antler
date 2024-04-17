@@ -8,8 +8,8 @@ class Ollama(Generator):
     Use the locally running ollama instance. Will only work if the specified model
     is being served, on an active ollama instance.
     """
-    def __init__(self, model: str, options: dict = {}) -> None:
-        super().__init__(model, options)
+    def __init__(self, model: str, api_key: str = None, options: dict = {}) -> None:
+        super().__init__(model, api_key, options)
         self.client = ollama.Client(options["host"] if "host" in options.keys() else "127.0.0.1:11434", timeout=30)
 
     @backoff.on_exception(backoff.fibo, TimeoutError, max_tries=10)

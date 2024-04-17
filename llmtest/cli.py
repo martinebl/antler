@@ -33,7 +33,13 @@ def handle() -> None:
         "--family",
         "-f",
         type=str,
-        help="Specify which Generator family (class) to use for running the target LLM"
+        help="Specify which Generator family (class) to use for running the target LLM. Examples: 'openai' and 'ollama'"
+    )
+
+    parser.add_argument(
+        "--api_key",
+        type=str,
+        help="Specify the API key, for the given generator family, if needed"
     )
 
     parser.add_argument(
@@ -74,6 +80,8 @@ def handle() -> None:
     excluded_techniques = ['__init__.py', 'technique.py']
     all_techniques = classfactory.instantiate_all_classes_from_folder(techniques_path, excluded_techniques)
 
+    api_key = None # Default api key is none
+
     generator_class = Replicate # Defalt generator
     generator_path = 'llmtest/generators'
     excluded_generators = ['__init__.py', 'generator.py']
@@ -96,8 +104,13 @@ def handle() -> None:
     if not args.probe:
         # Use all probes if no probe is specified
         probes = classfactory.instantiate_all_classes_from_folder(probes_path, excluded_probes)
+    if args.api_key:
+        api_key = args.api_key
     if args.family:
         generator_class = classfactory.get_classes_from_folder(generator_path, [args.family.lower()+'.py'])[0] # Should only return 1
+        if generator_class.needsApiKey() and api_key == None:
+            print("Error: The needed API key was not present, neither in the environment nor as a parameter.")
+            exit(1)
     if args.options:
         options = args.options
     if args.repetitions:
@@ -108,8 +121,8 @@ def handle() -> None:
         processes = args.processes
 
     if processes and processes == 1:
-        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions)
+        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions)
     else:
-        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, model, options, repetitions)
+        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions)
         
     harness.run()

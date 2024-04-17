@@ -34,7 +34,7 @@ class Technique:
         """
         Detect if the specific technique affected the answer in a way that might
         interfere with detection. Examples include encryption, translation or adding of spaces between characters.
-        If this is the case, "decodeAnswer" should be called to restore the answer text to a "readable" format for detection.
+        If this is the case, "cleanAffectedAnswer" should be called to restore the answer text to a "readable" format for detection.
         """
         return False
     

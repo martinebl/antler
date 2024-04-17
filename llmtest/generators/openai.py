@@ -14,8 +14,12 @@ class OpenAI(Generator):
     # gpt-3.5-turbo
     # gpt-4-turbo-2024-04-09
 
-    def __init__(self, model: str, options: dict = {}) -> None:
-        super().__init__(model, options)
+    @staticmethod
+    def needsApiKey() -> bool:
+        return os.getenv("OPENAI_API_TOKEN") == None
+
+    def __init__(self, model: str, api_key: str = None, options: dict = {}) -> None:
+        super().__init__(model, api_key, options)
 
 
     @backoff.on_exception(
@@ -32,7 +36,8 @@ class OpenAI(Generator):
     @backoff.on_predicate(backoff.fibo, lambda ans: ans == None or len(ans) == 0, max_tries=10)
     def generate(self, prompt:str) -> str:
         client = openai.OpenAI(
-            api_key = os.getenv("OPENAI_API_TOKEN")
+            # Always use the given api key, and only the environment variable as backup
+            api_key = os.getenv("OPENAI_API_TOKEN") if self.api_key == None else self.api_key
         )
         completion = client.chat.completions.create(
             model=self.model,

@@ -1,9 +1,7 @@
 #!/usr/bin/env python3
 from dotenv import load_dotenv
 from openai import OpenAI
-import requests
 import os
-import json
 
 from llmtest.generators import Generator
 
@@ -17,15 +15,20 @@ class Nvidia(Generator):
     #     "8f4118ba-60a8-4e6b-8574-e38a4067a4a3" # Mixtral 8x7B Instruct 
     # ]
 
-    def __init__(self, model: str, options: dict = {}) -> None:
-        super().__init__(model, options)
+    @staticmethod
+    def needsApiKey() -> bool:
+        return os.getenv("NVIDIA_API_TOKEN") == None
+
+    def __init__(self, model: str, api_key: str = None, options: dict = {}) -> None:
+        super().__init__(model, api_key, options)
 
     def generate(self, prompt: str) -> str:
         ans = ""
         # if (self.model not in Nvidia.model_uis):
         client = OpenAI(
             base_url = "https://integrate.api.nvidia.com/v1",
-            api_key = os.getenv("NVIDIA_API_TOKEN")
+                        # Always use the given api key, and only the environment variable as backup
+            api_key = os.getenv("NVIDIA_API_TOKEN") if self.api_key == None else self.api_key
         )
 
         completion = client.chat.completions.create(
