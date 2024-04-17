@@ -71,7 +71,8 @@ def handle() -> None:
 
     # loads all techniques (always needed)
     techniques_path = 'llmtest/techniques'
-    excluded_techniques = ['__init__.py', 'technique.py']
+    #excluded_techniques = ['__init__.py', 'technique.py']
+    excluded_techniques = ['__init__.py', 'technique.py', 'threaten.py', 'taggingprefix.py', 'sympathy.py', 'stressingimportance.py', 'obfuscatingcode.py', 'nonnaturallanguage.py', 'markup.py', 'indirectrequest.py', 'ignoreinstructions.py', 'escapeuserprompt.py', 'encoding.py', 'defineability.py', 'convincemissingknowledge.py', 'addnoise.py']
     all_techniques = classfactory.instantiate_all_classes_from_folder(techniques_path, excluded_techniques)
 
     generator_class = Replicate # Defalt generator

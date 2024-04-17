@@ -13,3 +13,9 @@ from llmtest.techniques.addnoise import AddNoise
 ])
 def test_equality(transform1, transform2, result):
     assert (transform1 == transform2) == result
+
+def test_is_same_combination():
+    own = Transform([AcceptingPrefix(), AddNoise()])
+    other = Transform([AddNoise(), AcceptingPrefix()])
+
+    assert own.isSameCombination(other)

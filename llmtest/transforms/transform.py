@@ -30,4 +30,13 @@ class Transform:
         if isinstance(other, Transform):
             return self.techniques == other.techniques
         
+    """ Tests is two transforms consists of the same combination of techniques"""
+    def isSameCombination(self, other):
+        own = sorted(self.techniques, key= lambda x: str(x))
+        foreign = sorted(other.getTechniques(), key= lambda x: str(x))
+        return own == foreign
+
+
+
+        
         
