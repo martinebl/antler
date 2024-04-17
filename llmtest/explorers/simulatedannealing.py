@@ -66,7 +66,6 @@ class SimulatedAnnealing(Explorer):
             self.best_score = score
             self.best_transform = self.current_transform
             self.last_reset = self.current_iteration
-            self._setMessage("Handled first run")
         # Handle all other runs
         else:
             delta_score = score - self.current_score
@@ -76,16 +75,14 @@ class SimulatedAnnealing(Explorer):
 
                 # Handle restart logic
                 if score >= self.best_score:
-                    self._setMessage("Improvement!" if score > self.best_score else "Same score")
+                    if score > self.best_score:
+                        self._setMessage(f"Found new best score: {score*100:.2f}%")
                     self.best_score = score
                     self.best_transform = new_transform
                     self.last_reset = self.current_iteration
                 else:
-                    self._setMessage("This was worse")
                     if self.current_iteration - self.last_reset > self.max_bad_steps:
                         self.__restart()
-            else:
-                self._setMessage("Not accepted")
         # Choose new state for next iteration
         self.transforms.append(self.__chooseNeighbour(temperature, self.current_transform))
 
@@ -111,11 +108,9 @@ class SimulatedAnnealing(Explorer):
 
     def __restart(self) -> None:
         if random.random() < 0.3: # 30 % chance of restarting from a completely random transform
-            self._setMessage("Restart random")
             self.current_transform = self.__generateRandomTransform()
         # If it has not gotten better for the past max_bad_steps iterations, restart from best transform
         else:
-            self._setMessage("Restart reheat")
             self.current_score = self.best_score
             self.current_transform = self.best_transform
             # Reheat, but only if cold
@@ -135,18 +130,14 @@ class SimulatedAnnealing(Explorer):
         probabilities = [0.05, 0.15, 0.35, 0.45]
         if sample > sum(probabilities[:3]):
             # Exchange a random technique, with one from another class
-            self._setMessage(self._Explorer__message + " : Exchange from outside class")
             new_transform = self.__exchangeFromOutsideClass(transform)
         elif sample > sum(probabilities[:2]):
-            self._setMessage(self._Explorer__message + " : Exchange from class")
             # Exchange a random technique, with one from same class
             new_transform = self.__exchangeFromClass(transform)
         elif sample > probabilities[0]:
-            self._setMessage(self._Explorer__message + " : Swap non consecutive")
             # Swap two random, non consecutive techniques
             new_transform = self.__swapNonConsecutive(transform)
         else:
-            self._setMessage(self._Explorer__message + " : Swap consecutive")
             # Swap two consecutive techniques
             new_transform = self.__swapConsecutive(transform)
 
