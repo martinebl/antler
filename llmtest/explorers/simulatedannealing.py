@@ -76,7 +76,7 @@ class SimulatedAnnealing(Explorer):
                 # Handle restart logic
                 if score >= self.best_score:
                     if score > self.best_score:
-                        self._setMessage(f"Found new best score: {score*100:.2f}%")
+                        self._setMessage(f"Found new best score: {score*100:.2f} %")
                     self.best_score = score
                     self.best_transform = new_transform
                     self.last_reset = self.current_iteration
