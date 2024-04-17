@@ -54,7 +54,7 @@ class SimulatedAnnealing(Explorer):
         if score >= self.stop_score:
             self._setMessage("Found satisfying score, terminating early")
             return
-        if self.current_iteration == self.max_iterations:
+        if self.current_iteration == (self.max_iterations - 1):
             return
         
         temperature = self.__temperature()
