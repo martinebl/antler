@@ -77,8 +77,8 @@ def handle() -> None:
 
     # loads all techniques (always needed)
     techniques_path = 'llmtest/techniques'
-    excluded_techniques = ['__init__.py', 'technique.py']
-    #excluded_techniques = ['__init__.py', 'technique.py', 'threaten.py', 'taggingprefix.py', 'sympathy.py', 'stressingimportance.py', 'obfuscatingcode.py', 'nonnaturallanguage.py', 'markup.py', 'indirectrequest.py', 'ignoreinstructions.py', 'escapeuserprompt.py', 'encoding.py', 'defineability.py', 'convincemissingknowledge.py', 'addnoise.py']
+    #excluded_techniques = ['__init__.py', 'technique.py']
+    excluded_techniques = ['__init__.py', 'technique.py', 'threaten.py', 'taggingprefix.py', 'sympathy.py', 'stressingimportance.py', 'obfuscatingcode.py', 'nonnaturallanguage.py', 'markup.py', 'indirectrequest.py', 'ignoreinstructions.py', 'escapeuserprompt.py', 'encoding.py', 'defineability.py', 'convincemissingknowledge.py', 'addnoise.py', 'ignoretraining.py', 'repetition.py', 'altertext.py', 'refusalsuppression.py', 'describinganswerformat.py', 'limitingoutput.py']
     all_techniques = classfactory.instantiate_all_classes_from_folder(techniques_path, excluded_techniques)
 
     api_key = None # Default api key is none
