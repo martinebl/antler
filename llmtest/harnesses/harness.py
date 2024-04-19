@@ -11,8 +11,9 @@ from llmtest.logwriter import LogWriter
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1) -> None:
         self.generator_type = generator_type
+        self.api_key = api_key
         self.model = model
         self.probes = probes
         self.explorer = explorer
@@ -77,7 +78,7 @@ class Harness:
     @staticmethod
     def runAttempt(args: tuple[object, Attempt]):
         harness, attempt = args
-        generator = harness.generator if(hasattr(harness, "generator")) else harness.generator_type(harness.model, harness.options)
+        generator = harness.generator if(hasattr(harness, "generator")) else harness.generator_type(harness.model, harness.api_key, harness.options)
         # Handle if a connection times out or other network errors
         try:
             answer = generator.generate(attempt.getPrompt())

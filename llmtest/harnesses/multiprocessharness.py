@@ -10,8 +10,8 @@ from llmtest.probes import Probe
 from llmtest.attempt import Attempt
 
 class MultiProcessHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1) -> None:
-        super(MultiProcessHarness, self).__init__(probes, explorer, generator_type, model, options, repetitions)
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1) -> None:
+        super(MultiProcessHarness, self).__init__(probes, explorer, generator_type, api_key, model, options, repetitions)
         MAX_PROCESSES = 20
         self.processes = min(len(probes) * repetitions, MAX_PROCESSES )
     
@@ -54,6 +54,8 @@ class MultiProcessHarness(Harness):
                         transform_score = sum([attempt.getAttemptSuccessRate() for attempt in non_failed_attempts ]) / len(non_failed_attempts) if len(non_failed_attempts) != 0 else 0
                         self.explorer.seedScore(transform_score)
                         pbar.total = len(self.explorer)
+                        if self.explorer.hasMessage():
+                            pbar.write(self.explorer.getMessage())
                     pbar.close()
         except KeyboardInterrupt:
             print("User interrupted, terminating early")

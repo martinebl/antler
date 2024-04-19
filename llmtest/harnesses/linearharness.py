@@ -9,9 +9,9 @@ from llmtest.generators.generator import Generator
 from llmtest.explorers.explorer import Explorer
 
 class LinearHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], model: str, options: dict = {}, repetitions: int = 1):
-        super(LinearHarness, self).__init__(probes, explorer, generator_type, model, options, repetitions)
-        self.generator = generator_type(model, options)
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1):
+        super(LinearHarness, self).__init__(probes, explorer, generator_type, api_key, model, options, repetitions)
+        self.generator = generator_type(model, api_key, options)
 
     def runCleanProbes(self, probes):
         empty_attempts = [Attempt(Transform([]), probe) for probe in (probes * self.repetitions)] 
@@ -47,6 +47,8 @@ class LinearHarness(Harness):
                     transform_score = sum([attempt.getAttemptSuccessRate() for attempt in non_failed_attempts ]) / len(non_failed_attempts) if len(non_failed_attempts) != 0 else 0
                     self.explorer.seedScore(transform_score)
                     pbar.total = len(self.explorer)
+                    if self.explorer.hasMessage():
+                        pbar.write(self.explorer.getMessage())
                 pbar.close()
         except KeyboardInterrupt:
             print("User interrupted, terminating early")

@@ -70,21 +70,8 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
     assert(count == 5) # One for each technique, plus the two permuations of the two best techniques
     assert(len(explorer.scores) == 3)
 
-def test_simulated_annealing_selection():
-    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
-    count = 0
-    for _ in annealing:
-        annealing.seedScore(count / 4)
-        count += 1
-    print(annealing.scores)
-    print(annealing.best_techniques)
-    assert len(annealing.best_techniques) == 3
-    assert len(annealing.scores) == 4
-
 def test_simulated_annealing_exchange_out_class():
     annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
-    # Just for testing. The exchange function uses best_techniques instead of techniques
-    annealing.best_techniques = annealing.techniques
     transform = Transform([ AddNoise(), Encoding() ])
     transform = annealing._SimulatedAnnealing__exchangeFromOutsideClass(transform)
     assert len(transform.getTechniques()) == 2
@@ -92,8 +79,6 @@ def test_simulated_annealing_exchange_out_class():
 
 def test_simulated_annealing_exchange_from_class():
     annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ])
-    # Just for testing. The exchange function uses best_techniques instead of techniques
-    annealing.best_techniques = annealing.techniques
     transform = Transform([ AddNoise(), Encoding() ])
     changed_transform = annealing._SimulatedAnnealing__exchangeFromClass(transform)
     assert len(changed_transform.getTechniques()) == len(transform.getTechniques())
@@ -104,6 +89,26 @@ def test_simulated_annealing_exchange_from_class():
     same_transform = annealing._SimulatedAnnealing__exchangeFromClass(new_transform)
     assert new_transform == same_transform
 
+def test_simulated_annealing_swap_non_consecutive():
+    annealing = SimulatedAnnealing([])
+    transform = Transform([ AddNoise(), Encoding(), EscapeUserPrompt() ])
+    swapped_transform = annealing._SimulatedAnnealing__swapNonConsecutive(transform)
+    assert swapped_transform == Transform([ EscapeUserPrompt(), Encoding(), AddNoise()])
+    new_transform = Transform([ AddNoise(), Encoding(), EscapeUserPrompt(), ConvinceMissingKnowledge() ])
+    new_swapped = annealing._SimulatedAnnealing__swapNonConsecutive(new_transform)
+    assert len(new_swapped.getTechniques()) == len(new_transform.getTechniques())
+    assert all(tech in new_swapped.getTechniques() for tech in new_transform.getTechniques())
+
+def test_simulated_annealing_swap_consecutive():
+    annealing = SimulatedAnnealing([])
+    transform = Transform([ AddNoise(), Encoding() ])
+    swapped_transform = annealing._SimulatedAnnealing__swapConsecutive(transform)
+    assert swapped_transform == Transform([Encoding(), AddNoise()])
+    new_transform = Transform([ AddNoise(), Encoding(), ObfuscatingCode() ])
+    swapped_new = annealing._SimulatedAnnealing__swapConsecutive(new_transform)
+    assert len(swapped_new.getTechniques()) == len(new_transform.getTechniques())
+    assert all(tech in swapped_new.getTechniques() for tech in new_transform.getTechniques())
+    
 @pytest.mark.parametrize("transforms, expected", [
     ([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()], 12),
     ([AddNoise(), Encoding(), ObfuscatingCode()], 6),
