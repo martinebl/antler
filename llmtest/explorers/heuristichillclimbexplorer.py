@@ -57,19 +57,6 @@ class HeuristicHillClimbExplorer(Explorer):
         new_transform = Transform(techniques)
         return new_transform
 
-    def preLoadHeuristic(self) -> list[Transform]:
-        file_path = "named_logs/mistral_exhaustivesearch.json"
-        json_data = Filehandler.read_json_file(file_path)
-        if json_data is not None:
-            attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
-
-            eval: Evaluation = Evaluator().evaluate(attempts)
-            scores: list[tuple[Transform, float]] = [(JSONParser.transform_name_to_transform(res.getName()), res.getScore()) for res in eval.transform_results_original]
-            
-            return [self.setupHeuristic(scores)]
-
-        print("Heuristic DID NOT preload")
-
     def setupHeuristic(self, scores: list[tuple[Transform, float]]) -> Transform:
         self.__heuristic = sorted([tup for tup in scores if len(tup[0].getTechniques()) == 2], key= lambda x: x[1], reverse= True)
         startingPoint = self.selectStartingPoint()
@@ -94,8 +81,6 @@ class HeuristicHillClimbExplorer(Explorer):
                     return
                 return
             
-            print(f"{self.transforms[self._index]} Score: {result}")
-            print(f"LAST {self.__last[0]} - Score: {self.__last[1]}")
             if(result >= 1):
                 self._setMessage(f"Local maximum found {self.transforms[self._index]}")
                 return
@@ -118,3 +103,19 @@ class HeuristicHillClimbExplorer(Explorer):
                 self.transforms.append(new_transform)
 
             self._setMessage(f"Trying transform {self.transforms[self._index]}")
+
+    def preLoadHeuristic(self) -> list[Transform]:
+        """
+        Used to load in heuristic from a file instead of an active run
+        """
+        file_path = "named_logs/mistral_exhaustivesearch.json"
+        json_data = Filehandler.read_json_file(file_path)
+        if json_data is not None:
+            attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
+
+            eval: Evaluation = Evaluator().evaluate(attempts)
+            scores: list[tuple[Transform, float]] = [(JSONParser.transform_name_to_transform(res.getName()), res.getScore()) for res in eval.transform_results_original]
+            
+            return [self.setupHeuristic(scores)]
+
+        print("Heuristic DID NOT preload")
