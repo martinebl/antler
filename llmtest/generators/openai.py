@@ -43,6 +43,7 @@ class OpenAI(Generator):
             model=self.model,
             messages=[
                 {"role": "user", "content": prompt}
-            ]
+            ],
+            **self.options
         )
         return completion.choices[0].message.content
