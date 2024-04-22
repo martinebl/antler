@@ -16,7 +16,7 @@ class OpenAI(Generator):
 
     @staticmethod
     def needsApiKey() -> bool:
-        return os.getenv("OPENAI_API_TOKEN") == None
+        return os.getenv("OPENAI_API_KEY") == None
 
     def __init__(self, model: str, api_key: str = None, options: dict = {}) -> None:
         super().__init__(model, api_key, options)

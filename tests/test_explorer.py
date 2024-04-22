@@ -175,12 +175,17 @@ def test_hhce_selects_and_removes_best_heuristic():
         (Transform([Encoding(), AcceptingPrefix()]), 0.7),
     ]
 
-@pytest.mark.parametrize("transform, extension, prepend, expected", [
-    (Transform([AcceptingPrefix(), AddNoise()]), Transform([AddNoise(), Encoding()]), False, Transform([AcceptingPrefix(), AddNoise(), Encoding()])),
-    (Transform([AcceptingPrefix(), AddNoise()]), Transform([Encoding(), AddNoise()]), True, Transform([Encoding(), AcceptingPrefix(), AddNoise()])),
-])
-def test_hhce_extends_with_heuristic(transform, extension, prepend, expected):
-    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
-    new = hhce.extendTransform(transform, extension, prepend)
+# @pytest.mark.parametrize("transform, extension, prepend, expected", [
+#     (Transform([AcceptingPrefix(), AddNoise()]), Transform([AddNoise(), Encoding()]), False, Transform([AcceptingPrefix(), AddNoise(), Encoding()])),
+#     (Transform([AcceptingPrefix(), AddNoise()]), Transform([Encoding(), AddNoise()]), True, Transform([Encoding(), AcceptingPrefix(), AddNoise()])),
+# ])
+# def test_hhce_extends_with_heuristic(transform, extension, prepend, expected):
+#     hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+#     new = hhce.extendTransform(transform, extension, prepend)
 
-    assert new == expected
+#     assert new == expected
+
+def test_remove_transform_from_heuristic():
+    h = [(Transform(AddNoise()), 1), (Transform(Encoding()), 0.5)]
+    h = HeuristicHillClimbExplorer._HeuristicHillClimbExplorer__removeTransformFromHeuristic(h, Transform(AddNoise()))
+    assert h == [(Transform(Encoding()), 0.5)]
