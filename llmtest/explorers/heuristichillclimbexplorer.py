@@ -84,7 +84,6 @@ class HeuristicHillClimbExplorer(Explorer):
 
 
     def seedScore(self, result: float) -> None:
-        print(len(self.__candidate_heuristic))
         """
         Is used to keep track of the scores of each technique, and use that to explore the
         remaining possibilities
@@ -126,11 +125,8 @@ class HeuristicHillClimbExplorer(Explorer):
             extension = self.__findBestExtension(self.__candidate_heuristic, fresh_candidate_scoring[0])
         
         if extension is None: return
-        print(len(self.__candidate_heuristic))
         self.__candidate_heuristic = self.__removeTransformFromHeuristic(self.__candidate_heuristic, extension)
-        print(len(self.__candidate_heuristic))
 
         new_transform = self.__extendTransform(current_candidate, extension)
         self.transforms.append(new_transform)
-        print(len(self.__candidate_heuristic))
         self._setMessage(f"Trying transform {new_transform} from {current_candidate} & {extension}")
