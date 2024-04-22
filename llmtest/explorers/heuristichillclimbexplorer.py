@@ -3,53 +3,37 @@ from llmtest.explorers import Explorer
 from llmtest.techniques import Technique
 from llmtest.transforms import Transform
 from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.jsonparser import JSONParser
-from llmtest.filehandler import Filehandler
-
-from llmtest.evaluator import Evaluator
-from llmtest.evaluation import Evaluation
-
-import sys
 
 class HeuristicHillClimbExplorer(Explorer):
     def __init__(self, techniques: list[Technique]) -> None:
         self.__scores: list[tuple[Transform, float]] = []
         self.__isHeuristicDone = False
-        self.__heuristic: list[tuple[Transform, float]] = []
-        self.__RUN_LIMIT = 130
+
+        self.__HEURISTIC: list[tuple[Transform, float]] = []
+        self.__static_candidate_index = 0
+        self.__MAX_CANDIDATE = 3
+        self.__candidate_heuristic: list[tuple[Transform, float]] = []
+
+        self.__RUN_LIMIT = 700
+
+        self.__last_scoring: tuple[Transform, float] = (Transform([]), -1)
         super().__init__(techniques)
 
     def setHeuristic(self, heuristic: list[tuple[Transform, float]]):
-        self.__heuristic = heuristic
+        self.__candidate_heuristic = heuristic
 
     def getHeuristic(self) -> list[tuple[Transform, float]]:
-        return self.__heuristic
+        return self.__candidate_heuristic
 
     def generateInitialTransforms(self) -> list[Transform]:
         """
         Generates a list of initial transforms, including only a single technique in each.
         """ 
-        #return self.preLoadHeuristic()
+        self._setMessage(f"Constructing heuristic...")
         return ExhaustiveSearch.generatePermutationsAndCombinations(self.techniques, 2, 2)
-    
-    def selectStartingPoint(self) -> tuple[Transform, float]:
-        starting_point = self.__heuristic.pop(0)
-        self.__heuristic = [tup for tup in self.__heuristic if not starting_point[0].isSameCombination(tup[0])]
-        return starting_point
 
-    def selectBestHeuristic(self, transform: Transform) -> tuple[Transform, bool]:
-        bestMatchIndex = sys.maxsize
-        prepend = False
-        for technique in transform.getTechniques():
-            next_occurence = next((i for i, tup in enumerate(self.__heuristic) if technique in tup[0].getTechniques()), sys.maxsize)
-            if bestMatchIndex > next_occurence:
-                bestMatchIndex = next_occurence
-                prepend = False if technique == self.__heuristic[bestMatchIndex][0].getTechniques()[0] else True 
-        if bestMatchIndex == sys.maxsize or len(self.__heuristic) == 0:
-            return None
-        return (self.__heuristic.pop(bestMatchIndex)[0], prepend)
-
-    def extendTransform(self, transform: Transform, extension: Transform, prepend: bool):
+    def __extendTransform(self, transform: Transform, extension: Transform) -> Transform:
+        prepend: bool = False if extension.getTechniques()[0] in transform.getTechniques() else True
         if prepend:
             techniques = [extension.getTechniques()[0]] + transform.getTechniques()
         else:
@@ -57,65 +41,92 @@ class HeuristicHillClimbExplorer(Explorer):
         new_transform = Transform(techniques)
         return new_transform
 
-    def setupHeuristic(self, scores: list[tuple[Transform, float]]) -> Transform:
-        self.__heuristic = sorted([tup for tup in scores if len(tup[0].getTechniques()) == 2], key= lambda x: x[1], reverse= True)
-        startingPoint = self.selectStartingPoint()
-        self.__last: tuple[Transform, float] = startingPoint
-        transform = startingPoint[0]
-        extension, prepend = self.selectBestHeuristic(transform)
-        start_transform = self.extendTransform(transform, extension, prepend)
-        return start_transform
+    def __initializeHeuristic(self, scores: list[tuple[Transform, float]]) -> None:
+        self.__HEURISTIC = sorted([tup for tup in scores if len(tup[0].getTechniques()) == 2], key= lambda x: x[1], reverse= True)
+    
+    def __isGlobalMax(self, score: float) -> bool:
+        return score >= 1
+
+    def __initialTransformsForHeuristicFinished(self) -> bool:
+        return self._index == len(self.transforms) - 1
+
+    def __getCurrentCandidate(self) -> tuple[Transform, float]:
+        return self.__HEURISTIC[self.__static_candidate_index]
+
+    def __removeAllCandidates(self, heuristic: list[tuple[Transform, float]], candidate_index):
+        return heuristic[candidate_index+1:]
+
+    @staticmethod
+    def __removeSameCombinationTransforms(heuristic: list[tuple[Transform, float]], transform:Transform):
+        return [tup for tup in heuristic if not transform.isSameCombination(tup[0])]
+    
+    @staticmethod
+    def __removeTransformFromHeuristic(heuristic:list[tuple[Transform, float]], transform:Transform):
+        return [scoring for scoring in heuristic if scoring[0] != transform]
+
+    def __initializeFreshCandidate(self):
+        transform, score = self.__getCurrentCandidate()
+        self.__candidate_heuristic = self.__HEURISTIC.copy()
+        self.__candidate_heuristic = self.__removeAllCandidates(self.__candidate_heuristic, self.__static_candidate_index)
+        self.__candidate_heuristic = HeuristicHillClimbExplorer.__removeSameCombinationTransforms(self.__candidate_heuristic, transform)
+        return (transform, score)
+
+    def __setLastScoring(self, scoring: tuple[Transform, float]) -> None:
+        self.__last_scoring = scoring
+
+    def __findBestExtension(self, heuristic:list[tuple[Transform, float]], candidate_transform: Transform) -> Transform:
+        for transform in [scoring[0] for scoring in heuristic]:
+            for technique in candidate_transform.getTechniques():
+                if technique in transform.getTechniques():
+                    extension = transform
+                    return extension
+        return None
+
 
     def seedScore(self, result: float) -> None:
         """
         Is used to keep track of the scores of each technique, and use that to explore the
         remaining possibilities
         """
-        if self._index < len(self.transforms) and self._index < self.__RUN_LIMIT:
-            if not self.__isHeuristicDone:
-                self.__scores.append((self.transforms[self._index], result))
-                if self._index == len(self.transforms) - 1:
-                    self.__isHeuristicDone = True
-                    start_transform = self.setupHeuristic(self.__scores)
-                    self.transforms.append(start_transform)
-                    return
-                return
-            
-            if(result >= 1):
-                self._setMessage(f"Local maximum found {self.transforms[self._index]}")
-                return
-            if(result >= self.__last[1]):
-                self.__last = (self.transforms[self._index], result)
-                tuple = self.selectBestHeuristic(self.transforms[self._index])
-                if not tuple: 
-                    self._setMessage(f"Exhausted search - exiting")
-                    return 
-                extension, prepend = tuple
-                new_transform = self.extendTransform(self.transforms[self._index], extension, prepend)
-                self.transforms.append(new_transform)
+        if self._index >= self.__RUN_LIMIT: return
+
+        last_transform, last_score = self.__last_scoring
+        current_transform: Transform = self.transforms[self._index]
+        current_score: float = result
+        current_scoring: tuple[Transform, float] = (current_transform, current_score)
+        new_transform: Transform
+
+        if not self.__isHeuristicDone:
+            self.__scores.append((current_transform, current_score))
+            if self.__initialTransformsForHeuristicFinished():
+                self.__initializeHeuristic(self.__scores)
+                self.__isHeuristicDone = True
+                current_transform, current_score = self.__initializeFreshCandidate()
             else:
-                tuple = self.selectBestHeuristic(self.__last[0])
-                if not tuple: 
-                    self._setMessage(f"Exhausted search - exiting")
-                    return 
-                extension, prepend = tuple
-                new_transform = self.extendTransform(self.__last[0], extension, prepend)
-                self.transforms.append(new_transform)
+                return
 
-            self._setMessage(f"Trying transform {self.transforms[self._index]}")
+        if self.__isGlobalMax(current_score): 
+            self._setMessage(f"Maximum found {current_transform}")
+            return 
+        
+        current_candidate: Transform
+        if current_score > last_score:
+            current_candidate = current_transform
+            self.__setLastScoring(current_scoring)
+        else:
+            current_candidate = last_transform
+        extension = self.__findBestExtension(self.__candidate_heuristic, current_candidate)
 
-    def preLoadHeuristic(self) -> list[Transform]:
-        """
-        Used to load in heuristic from a file instead of an active run
-        """
-        file_path = "named_logs/mistral_exhaustivesearch.json"
-        json_data = Filehandler.read_json_file(file_path)
-        if json_data is not None:
-            attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
+        while extension is None and self.__static_candidate_index < self.__MAX_CANDIDATE:
+            self.__static_candidate_index += 1
+            fresh_candidate_scoring = self.__initializeFreshCandidate()
+            self.__setLastScoring(fresh_candidate_scoring)
+            current_candidate = fresh_candidate_scoring[0]
+            extension = self.__findBestExtension(self.__candidate_heuristic, fresh_candidate_scoring[0])
+        
+        if extension is None: return
+        self.__candidate_heuristic = self.__removeTransformFromHeuristic(self.__candidate_heuristic, extension)
 
-            eval: Evaluation = Evaluator().evaluate(attempts)
-            scores: list[tuple[Transform, float]] = [(JSONParser.transform_name_to_transform(res.getName()), res.getScore()) for res in eval.transform_results_original]
-            
-            return [self.setupHeuristic(scores)]
-
-        print("Heuristic DID NOT preload")
+        new_transform = self.__extendTransform(current_candidate, extension)
+        self.transforms.append(new_transform)
+        self._setMessage(f"Trying transform {new_transform} from {current_candidate} & {extension}")
