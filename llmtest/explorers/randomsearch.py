@@ -26,7 +26,6 @@ class RandomSearch(Explorer):
         return [self.__generateRandomTransform()]
     
     def seedScore(self, score: float) -> None:
-        self._setMessage(f"Got hit rate: {score*100:.2f} %")
         self.current_iteration += 1
         if self.current_iteration >= (self.max_iterations - 1):
             return
