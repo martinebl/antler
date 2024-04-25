@@ -50,7 +50,7 @@ class Explorer:
         """
         raise NotImplementedError("This method should be implemented by subclasses")
     
-    def seedScore(self, result: float) -> None:
+    def seedScore(self, score: float) -> None:
         """
         In the case of actual optimisation of exploration, this function is used to run the
         acquisition function of the bayesian optimisation, and append the next transform to
