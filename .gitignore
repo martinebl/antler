@@ -11,9 +11,11 @@
 .env
 logs/*
 reports/*
+named_logs/*
 *.json
 .venv
 
+*.zip
 *.log
 *.csv
 *.txt
