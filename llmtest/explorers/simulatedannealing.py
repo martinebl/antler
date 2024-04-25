@@ -8,7 +8,7 @@ from llmtest.transforms import Transform
 
 class SimulatedAnnealing(Explorer):
     def __init__(self, techniques: list[Technique]) -> None:
-        self.transform_length = 3
+        self.transform_length = 4
         self.scores: list[tuple[Technique, float]] = []
 
         # Cooling schedule stuff
@@ -17,7 +17,7 @@ class SimulatedAnnealing(Explorer):
 
         # Iteration stuff
         self.current_iteration = -1
-        self.max_iterations = 100
+        self.max_iterations = 700
         self.current_transform = None # This is the current state
         self.current_score = 0.0 # This is the current "energy"
 
@@ -54,7 +54,7 @@ class SimulatedAnnealing(Explorer):
         if score >= self.stop_score:
             self._setMessage("Found satisfying score, terminating early")
             return
-        if self.current_iteration == (self.max_iterations - 1):
+        if self.current_iteration >= (self.max_iterations - 1):
             return
         
         temperature = self.__temperature()

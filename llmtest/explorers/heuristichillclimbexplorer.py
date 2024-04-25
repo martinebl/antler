@@ -77,9 +77,13 @@ class HeuristicHillClimbExplorer(Explorer):
     def __findBestExtension(self, heuristic:list[tuple[Transform, float]], candidate_transform: Transform) -> Transform:
         for transform in [scoring[0] for scoring in heuristic]:
             for technique in candidate_transform.getTechniques():
-                if technique in transform.getTechniques():
+                if technique == transform.getTechniques()[0] and transform.getTechniques()[1] not in candidate_transform.getTechniques():
                     extension = transform
                     return extension
+                if technique == transform.getTechniques()[1] and transform.getTechniques()[0] not in candidate_transform.getTechniques():
+                    extension = transform
+                    return extension
+
         return None
 
 
