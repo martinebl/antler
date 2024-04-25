@@ -58,9 +58,6 @@ def plot_graph(data, name):
     plt.title(name)
     plt.show()
 
-
-
-
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python script.py <input_file_path>")
@@ -73,5 +70,3 @@ if __name__ == "__main__":
         scorings = createScorings(attempts)
         data = createData(scorings)
         plot_graph(data, sys.argv[1])
-
-        #Filehandler.write_to_csv(sys.argv[2], length_scores)
