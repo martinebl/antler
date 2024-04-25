@@ -55,8 +55,10 @@ def plot_graph(data, name):
     # Set y-axis limit
     plt.ylim(0, 1)
     plt.ylabel("ASR [0-1]")
-    plt.title(name)
-    plt.show()
+    plt.title(name.split("\\")[-1].split("/")[-1])
+
+    path = '.'.join(name.split(".")[:-1])
+    plt.savefig(path + ".png")
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
