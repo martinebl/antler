@@ -21,7 +21,6 @@ class LinearHarness(Harness):
         return [Harness.runAttempt((self, Attempt(transform, probe))) for probe in (probes * self.repetitions)]
 
     def collectAttempts(self) -> list[Attempt]:
-        print("Running penetration tests")
         all_attempts: list[Attempt] = []
         try:
             print("Running tests with clean payloads...")

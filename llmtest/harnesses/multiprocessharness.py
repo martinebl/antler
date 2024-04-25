@@ -24,7 +24,6 @@ class MultiProcessHarness(Harness):
         return pool.map(Harness.runAttempt, [(self, Attempt(Transform([]), probe)) for probe in self.probes] * self.repetitions)
 
     def collectAttempts(self) -> list[Attempt]:
-        print("Running penetration tests")
         all_attempts: list[Attempt] = []
 
         try:
