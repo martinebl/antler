@@ -39,7 +39,7 @@ class MultiProcessHarness(Harness):
                 
                 if len(non_clean_hit_probes) > 0:
                     print("Running tests with transforms...")
-                    pbar = tqdm(self.explorer, leave=False)
+                    pbar = tqdm(self.explorer, leave=False, unit="tr")
                     for transform in pbar:
                         if self.explorer.hasMessage():
                             pbar.write(self.explorer.getMessage())
