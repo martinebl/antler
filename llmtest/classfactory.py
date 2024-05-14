@@ -3,24 +3,26 @@ import os
 import importlib
 from pathlib import Path
 
-def instantiate_all_classes_from_folder(relative_folder_path, excluded: list[str]) -> list[object]:
+basedir = Path(__file__).parents[0]
+
+def instantiate_all_classes_from_folder(folder: str, excluded: list[str]) -> list[object]:
 
     # Step 1: Identify the files in the folder
-    files = [f for f in os.listdir(Path.cwd() / relative_folder_path) if f.endswith(".py") and f not in (excluded)]
-    objects = instantiate_classes_from_folder(relative_folder_path, files)
+    files = [f for f in os.listdir(basedir / folder) if f.endswith(".py") and f not in (excluded)]
+    objects = instantiate_classes_from_folder(folder, files)
 
     return objects
 
-def get_classes_from_folder(relative_folder_path, included: list[str]):
+def get_classes_from_folder(folder: str, included: list[str]):
     objects = []
 
     # Step 1: Identify the files in the folder
-    files = [f for f in os.listdir(Path.cwd() / relative_folder_path) if f.endswith(".py") and f in (included)]
+    files = [f for f in os.listdir(basedir / folder) if f.endswith(".py") and f in (included)]
 
     for file in files:
         # Step 2: Import modules dynamically
         module_name = file[:-3]  # remove '.py' extension
-        relative_module_path = f"{relative_folder_path.replace('/', '.')}.{module_name}"
+        relative_module_path = f"llmtest.{folder}.{module_name}"
 
         try:
             module = importlib.import_module(relative_module_path)
@@ -39,5 +41,5 @@ def get_classes_from_folder(relative_folder_path, included: list[str]):
 
     return objects
 
-def instantiate_classes_from_folder(relative_folder_path, included: list[str]):
-    return [ class_obj() for class_obj in get_classes_from_folder(relative_folder_path, included)]
+def instantiate_classes_from_folder(folder, included: list[str]):
+    return [ class_obj() for class_obj in get_classes_from_folder(folder, included)]
