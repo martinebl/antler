@@ -19,11 +19,11 @@ pip install LLMTEST
 The supported LLM's are currently restricted to Replicate API, OpenAI and Ollama. 
 
 #### Command line Options
-* `--family, -f`            The target provider. Examples: openai, ollama, replicate
+* `--provider, -p`          The target provider. Examples: openai, ollama, replicate
 * `--model, -m`             The target model. Examples: gpt-3.5-turbo, 'llama2:7b'
 * `--explorer, -e`          The explorer strategy. Examples: simulatedannealing, randomsearch. Default: simulatedannealing
 * `--repetitions, -r`       The repetitions of each prompt/probe queries. Default: 3
-* `--processes, -p`         The number of processes CURRENTLY INCORRECT
+* `--processes, -P`         The number of processes CURRENTLY INCORRECT
 * `--api_key`               The api_key for the target provider. Optional for locally running LLMs.
 * `--options, -o`           The options for the target provider, in json format. 
 
