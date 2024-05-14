@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import sys
-import random
 
 from llmtest.evaluation import Evaluation
 from llmtest.evaluator import Evaluator

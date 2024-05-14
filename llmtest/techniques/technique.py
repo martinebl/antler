@@ -16,7 +16,7 @@ class TechniqueClass(Enum):
 
 
 class Technique:
-    """Base class for applying an technique to a prompt/payload"""
+    """Base class for applying a technique to a prompt"""
     def __init__(self, tech_class: TechniqueClass) -> None:
         self.techniqueClass = tech_class
 
