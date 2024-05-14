@@ -1,0 +1,43 @@
+[build-system]
+requires      = ["setuptools>=69.1.1", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmtest"
+version = "0.1.0"
+authors = [
+  { name = "M. Borup-Larsen" },
+  { name = "C. Christoffersen" }
+]
+license = { file = "LICENSE" }
+description = "Prompt injection generator"
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3.11",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "ollama>=0.1.7",
+    "openai>=1.11.1",
+    "replicate>=0.24.0",
+    "tqdm>=4.66.1",
+    "colorama>=0.4.3",
+    "python-dotenv>=1.0.1",
+    "backoff>=2.2.1"
+]
+
+[project.optional-dependencies]
+tests = [
+  "pytest>=8.0.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/martinebl/thesis"
+# "Bug Tracker" = "https://github.com/martinebl/thesis/issues"
+
+[project.scripts]
+llmtest = "llmtest.__main__:main"
+
+[tool.setuptools]
+packages = ["llmtest"]

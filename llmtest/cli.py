@@ -1,7 +1,5 @@
 import argparse
 import json
-import os
-from pathlib import Path
 from llmtest.harnesses.linearharness import LinearHarness
 from llmtest.harnesses.multiprocessharness import MultiProcessHarness
 from llmtest import classfactory
