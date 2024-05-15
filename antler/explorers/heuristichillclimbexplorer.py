@@ -22,6 +22,9 @@ class HeuristicHillClimbExplorer(Explorer):
     def setHeuristic(self, heuristic: list[tuple[Transform, float]]):
         self.__candidate_heuristic = heuristic
 
+    def setNoneCandidateHeuristic(self, heuristic: list[tuple[Transform, float]]):
+        self.__HEURISTIC = heuristic
+
     def getHeuristic(self) -> list[tuple[Transform, float]]:
         return self.__candidate_heuristic
 
