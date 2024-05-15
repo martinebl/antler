@@ -1,5 +1,5 @@
 import pytest
-from llmtest.detectors import *
+from antler.detectors import *
 
 @pytest.fixture
 def targets():

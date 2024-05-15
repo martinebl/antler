@@ -4,10 +4,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import Patch
 
-from llmtest.filehandler import Filehandler
-from llmtest.evaluation import Evaluation
-from llmtest.evaluator import Evaluator
-from llmtest.jsonparser import JSONParser
+from antler.filehandler import Filehandler
+from antler.evaluation import Evaluation
+from antler.evaluator import Evaluator
+from antler.jsonparser import JSONParser
 
 def savefig(eval: Evaluation, path: str):
     colors = ['blue', 'green', 'red', 'cyan', 'magenta', 'yellow', 'black', 'white', 'orange','purple']

@@ -1,18 +1,18 @@
 import time
 import pytest
-from llmtest.generators import Generator
-from llmtest.harnesses import Harness
-from llmtest.harnesses.linearharness import LinearHarness
-from llmtest.harnesses.multiprocessharness import MultiProcessHarness
-from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.addnoise import AddNoise
-from llmtest.techniques.encoding import Encoding
-from llmtest.techniques.refusalsuppression import RefusalSuppression
-from llmtest.probes.cursewordfuck import CurseWordFuck
-from llmtest.probes.illegaldrugs import IllegalDrugs
-from llmtest.attempt import Attempt
-from llmtest.transforms.transform import Transform
+from antler.generators import Generator
+from antler.harnesses import Harness
+from antler.harnesses.linearharness import LinearHarness
+from antler.harnesses.multiprocessharness import MultiProcessHarness
+from antler.explorers.exhaustivesearch import ExhaustiveSearch
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.addnoise import AddNoise
+from antler.techniques.encoding import Encoding
+from antler.techniques.refusalsuppression import RefusalSuppression
+from antler.probes.cursewordfuck import CurseWordFuck
+from antler.probes.illegaldrugs import IllegalDrugs
+from antler.attempt import Attempt
+from antler.transforms.transform import Transform
 
 class SleepingGenerator(Generator):
     def generate(self, prompt: str) -> str:

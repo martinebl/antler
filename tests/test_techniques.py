@@ -1,11 +1,11 @@
 import pytest
-from llmtest import classfactory
-from llmtest.techniques import *
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.refusalsuppression import RefusalSuppression
-from llmtest.techniques.addnoise import AddNoise
-from llmtest.techniques.encoding import Encoding
-from llmtest.techniques.nonnaturallanguage import NonNaturalLanguage
+from antler import classfactory
+from antler.techniques import *
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.refusalsuppression import RefusalSuppression
+from antler.techniques.addnoise import AddNoise
+from antler.techniques.encoding import Encoding
+from antler.techniques.nonnaturallanguage import NonNaturalLanguage
 
 @pytest.fixture
 def prompt():
@@ -15,7 +15,7 @@ def test_base_technique_not_implemented(prompt):
     with pytest.raises(NotImplementedError):
         Technique(TechniqueClass.CONTEXT_ENRICHMENT).applyTechnique(prompt)
 
-@pytest.mark.parametrize("technique", classfactory.instantiate_all_classes_from_folder('llmtest/techniques', ['__init__.py', 'technique.py']))
+@pytest.mark.parametrize("technique", classfactory.instantiate_all_classes_from_folder('antler/techniques', ['__init__.py', 'technique.py']))
 def test_technique_alter_prompt(prompt, technique):
     new_prompt = technique.applyTechnique(prompt)
     assert prompt != new_prompt

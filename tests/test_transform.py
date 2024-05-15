@@ -1,8 +1,8 @@
 import pytest
-from llmtest.transforms import Transform
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.refusalsuppression import RefusalSuppression
-from llmtest.techniques.addnoise import AddNoise
+from antler.transforms import Transform
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.refusalsuppression import RefusalSuppression
+from antler.techniques.addnoise import AddNoise
 
 
 @pytest.mark.parametrize("transform1, transform2, result", [

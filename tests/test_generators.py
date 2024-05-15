@@ -2,7 +2,7 @@ import pytest
 import random
 import backoff
 
-from llmtest.generators import Generator
+from antler.generators import Generator
 
 class SometimesFailingEmptyGenerator(Generator):
     def __init__(self, model: str, options: dict = ...) -> None:

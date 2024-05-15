@@ -1,15 +1,15 @@
 import pytest
 from collections import Counter
 
-from llmtest.evaluator import Evaluator
-from llmtest.evaluation import Evaluation
-from llmtest.attempt import Attempt
-from llmtest.transforms.transform import Transform
-from llmtest.result import Result
-from llmtest.probes.illegaldrugs import IllegalDrugs
-from llmtest.probes.cursewordfuck import CurseWordFuck
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.refusalsuppression import RefusalSuppression
+from antler.evaluator import Evaluator
+from antler.evaluation import Evaluation
+from antler.attempt import Attempt
+from antler.transforms.transform import Transform
+from antler.result import Result
+from antler.probes.illegaldrugs import IllegalDrugs
+from antler.probes.cursewordfuck import CurseWordFuck
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.refusalsuppression import RefusalSuppression
 
 @pytest.fixture
 def evaluator():

@@ -1,11 +1,11 @@
 import pytest
-from llmtest.transforms import Transform
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.refusalsuppression import RefusalSuppression
-from llmtest.techniques.addnoise import AddNoise
-from llmtest.attempt import Attempt
-from llmtest.probes.cursewordfuck import CurseWordFuck
-from llmtest.probes.illegaldrugs import IllegalDrugs
+from antler.transforms import Transform
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.refusalsuppression import RefusalSuppression
+from antler.techniques.addnoise import AddNoise
+from antler.attempt import Attempt
+from antler.probes.cursewordfuck import CurseWordFuck
+from antler.probes.illegaldrugs import IllegalDrugs
 
 
 @pytest.mark.parametrize("attempt1, attempt2, result", [

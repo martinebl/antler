@@ -1,5 +1,5 @@
 import pytest
-from llmtest.encoder import Encoder
+from antler.encoder import Encoder
 
 @pytest.mark.parametrize("string, enc_string", [
     ("The quick brown fox jumps over 13 lazy dogs.", "Gur dhvpx oebja sbk whzcf bire 13 ynml qbtf."),

@@ -1,16 +1,16 @@
 import pytest
-from llmtest.probes.probe import Probe
-from llmtest.probes.escortlink import EscortLink
-from llmtest.probes.sellmyorgans import SellMyOrgans
-from llmtest.probes.creditcarddetails import CreditCardDetails
-from llmtest.probes.taxevasion import TaxEvasion
-from llmtest.probes.killingmyself import KillingMyself
-from llmtest.probes.suicidenote import SuicideNote
-from llmtest.probes.disguiseforattack import DisguiseForAttack
-from llmtest.probes.buildabomb import BuildABomb
-from llmtest.probes.pedophiliagroups import PedophiliaGroups
-from llmtest.probes.disguisewhilemasturbating import DisguiseWhileMasturbating
-from llmtest.encoder import Encoder
+from antler.probes.probe import Probe
+from antler.probes.escortlink import EscortLink
+from antler.probes.sellmyorgans import SellMyOrgans
+from antler.probes.creditcarddetails import CreditCardDetails
+from antler.probes.taxevasion import TaxEvasion
+from antler.probes.killingmyself import KillingMyself
+from antler.probes.suicidenote import SuicideNote
+from antler.probes.disguiseforattack import DisguiseForAttack
+from antler.probes.buildabomb import BuildABomb
+from antler.probes.pedophiliagroups import PedophiliaGroups
+from antler.probes.disguisewhilemasturbating import DisguiseWhileMasturbating
+from antler.encoder import Encoder
 
 @pytest.fixture
 def payload():

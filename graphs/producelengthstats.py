@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 import sys
 
-from llmtest.evaluation import Evaluation
-from llmtest.evaluator import Evaluator
-from llmtest.jsonparser import JSONParser
-from llmtest.filehandler import Filehandler
+from antler.evaluation import Evaluation
+from antler.evaluator import Evaluator
+from antler.jsonparser import JSONParser
+from antler.filehandler import Filehandler
 
 def calculate_scores_for_length(attempts):
     eval = Evaluator().evaluate(attempts)

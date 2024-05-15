@@ -1,8 +1,8 @@
-from llmtest.logwriter import LogWriter
-from llmtest.attempt import Attempt
-from llmtest.transforms import Transform
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.probes.buildabomb import BuildABomb
+from antler.logwriter import LogWriter
+from antler.attempt import Attempt
+from antler.transforms import Transform
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.probes.buildabomb import BuildABomb
 import json
 
 

@@ -1,21 +1,21 @@
 import pytest
 
-from llmtest.explorers import Explorer
-from llmtest.transforms import Transform
-from llmtest.explorers.exhaustivesearch import ExhaustiveSearch
-from llmtest.explorers.bestinclassexplorer import BestInClassExplorer
-from llmtest.explorers.simulatedannealing import SimulatedAnnealing
-from llmtest.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
-from llmtest.explorers.heuristichillclimbexplorer import HeuristicHillClimbExplorer
+from antler.explorers import Explorer
+from antler.transforms import Transform
+from antler.explorers.exhaustivesearch import ExhaustiveSearch
+from antler.explorers.bestinclassexplorer import BestInClassExplorer
+from antler.explorers.simulatedannealing import SimulatedAnnealing
+from antler.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
+from antler.explorers.heuristichillclimbexplorer import HeuristicHillClimbExplorer
 
-from llmtest.techniques.refusalsuppression import RefusalSuppression
-from llmtest.techniques.acceptingprefix import AcceptingPrefix
-from llmtest.techniques.addnoise import AddNoise
-from llmtest.techniques.encoding import Encoding
-from llmtest.techniques.obfuscatingcode import ObfuscatingCode
-from llmtest.techniques.convincemissingknowledge import ConvinceMissingKnowledge
-from llmtest.techniques.escapeuserprompt import EscapeUserPrompt
-from llmtest.techniques.nonnaturallanguage import NonNaturalLanguage
+from antler.techniques.refusalsuppression import RefusalSuppression
+from antler.techniques.acceptingprefix import AcceptingPrefix
+from antler.techniques.addnoise import AddNoise
+from antler.techniques.encoding import Encoding
+from antler.techniques.obfuscatingcode import ObfuscatingCode
+from antler.techniques.convincemissingknowledge import ConvinceMissingKnowledge
+from antler.techniques.escapeuserprompt import EscapeUserPrompt
+from antler.techniques.nonnaturallanguage import NonNaturalLanguage
 
 
 def test_base_explorer_generate_transforms_not_implemented():

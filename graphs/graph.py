@@ -4,9 +4,9 @@ import statistics
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from llmtest.jsonparser import JSONParser
-from llmtest.filehandler import Filehandler
-from llmtest.attempt import Attempt
+from antler.jsonparser import JSONParser
+from antler.filehandler import Filehandler
+from antler.attempt import Attempt
 
 def createScorings(attempts: list[Attempt]):
     scorings: list[tuple[str, float]] = []
