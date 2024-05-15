@@ -1,6 +1,6 @@
 # Antler: A python tool for automatically generating prompt injections
 
-*ANalytical Tool for evaluating Large language model Efficiency in Repelling  malicious instructions*
+*ANalytical Tool for evaluating Llm Efficiency in Repelling  malicious instructions*
 
 The antler tool is an automatic tool for generating and evaluating prompt injection attacks against a target LLM.
 It is designed to aid LLM red teamers test models and applications.
@@ -32,7 +32,7 @@ The supported LLM's are currently restricted to Replicate API, OpenAI and Ollama
 
 Example of run parameters:
 ```bash
-antler -f openai -m gpt-3.5-turbo --api_key SECRET_TOKEN
+antler -p openai -m gpt-3.5-turbo --api_key SECRET_TOKEN
 ```
 
 

@@ -6,4 +6,5 @@ antler/techniques
 antler/transforms
 
 include *.toml
+include *.md
 recursive-include antler *.py
