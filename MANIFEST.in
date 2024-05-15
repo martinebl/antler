@@ -1,0 +1,9 @@
+antler/detectors
+antler/explorers
+antler/generators
+antler/harnesses
+antler/techniques
+antler/transforms
+
+include *.toml
+recursive-include antler *.py
