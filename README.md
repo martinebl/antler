@@ -1,9 +1,9 @@
-# LLMTEST: A python tool for automatically generating prompt injections
-The LLMTEST tool is an automatic tool for generating and evaluating prompt injection attacks against a target LLM.
+# Antler: A python tool for automatically generating prompt injections
+The antler tool is an automatic tool for generating and evaluating prompt injection attacks against a target LLM.
 It is designed to aid LLM red teamers test models and applications.
 
 ## Introduction
-Built as part of a thesis project, the LLMTEST tool attempts to find a combination and permutation of prompt injection techniques identified in [PAPER REFERENCE] that can successfully jailbreak a given target model.
+Built as part of a thesis project, the antler tool attempts to find a combination and permutation of prompt injection techniques identified in [PAPER REFERENCE] that can successfully jailbreak a given target model.
 The successfulness of a jailbreak is evaluated by feeding the target LLM different probe questions, wrapped in the prompts constructed by the techniques.
 The probes have been sampled from the SimpleSafetyTests framework [INSERT REFERENCE]. Each probe has been paired with detectors, mostly string matching of keywords, to automatically detect a malicous answer for the given probe.
 
@@ -12,7 +12,7 @@ Other options are Greedy Hill climb, and Random search.
 
 ## Installation
 ```bash
-pip install LLMTEST
+pip install antler
 ```
 
 ## Geting started
@@ -29,7 +29,7 @@ The supported LLM's are currently restricted to Replicate API, OpenAI and Ollama
 
 Example of run parameters:
 ```bash
-LLMTEST -f openai -m gpt-3.5-turbo --api_key SECRET_TOKEN
+antler -f openai -m gpt-3.5-turbo --api_key SECRET_TOKEN
 ```
 
 
