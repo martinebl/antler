@@ -15,7 +15,7 @@ def test_base_technique_not_implemented(prompt):
     with pytest.raises(NotImplementedError):
         Technique(TechniqueClass.CONTEXT_ENRICHMENT).applyTechnique(prompt)
 
-@pytest.mark.parametrize("technique", classfactory.instantiate_all_classes_from_folder('antler/techniques', ['__init__.py', 'technique.py']))
+@pytest.mark.parametrize("technique", classfactory.instantiate_all_classes_from_folder('techniques', ['__init__.py', 'technique.py']))
 def test_technique_alter_prompt(prompt, technique):
     new_prompt = technique.applyTechnique(prompt)
     assert prompt != new_prompt
