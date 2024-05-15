@@ -11,7 +11,7 @@ from antler.logwriter import LogWriter
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1) -> None:
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1, max_queries: int = 10) -> None:
         self.generator_type = generator_type
         self.api_key = api_key
         self.model = model
@@ -20,6 +20,7 @@ class Harness:
         self.options = options
         self.repetitions = repetitions
         self.log_writer = LogWriter()
+        self.max_queries = max_queries
     
     def run(self) -> None:
         """

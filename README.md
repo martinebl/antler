@@ -26,6 +26,7 @@ The supported LLM providers are currently restricted to Replicate, OpenAI and Ol
 * `--provider, -p`          The target provider. Examples: openai, ollama, replicate
 * `--model, -m`             The target model. Examples: gpt-3.5-turbo, 'llama2:7b'
 * `--explorer, -e`          The explorer strategy. Examples: simulatedannealing, randomsearch. Default: simulatedannealing
+* `--max`                   The maximum amount of queries to run, against the target LLM. Default: 10. 
 * `--repetitions, -r`       The repetitions of each prompt/probe queries. Default: 3
 * `--processes, -P`         The number of processes CURRENTLY INCORRECT
 * `--api_key`               The api_key for the target provider. Optional for locally running LLMs.

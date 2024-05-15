@@ -9,8 +9,8 @@ from antler.generators.generator import Generator
 from antler.explorers.explorer import Explorer
 
 class LinearHarness(Harness):
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1):
-        super(LinearHarness, self).__init__(probes, explorer, generator_type, api_key, model, options, repetitions)
+    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1, max_queries: int = 10):
+        super(LinearHarness, self).__init__(probes, explorer, generator_type, api_key, model, options, repetitions, max_queries)
         self.generator = generator_type(model, api_key, options)
 
     def runCleanProbes(self, probes):

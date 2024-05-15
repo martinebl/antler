@@ -31,6 +31,12 @@ def handle() -> None:
     )
 
     parser.add_argument(
+        "--max",
+        type=int,
+        help="The maximum amount of queries to run. Default: 10"
+    )
+
+    parser.add_argument(
         "-P",
         "--processes",
         type=int,
@@ -86,6 +92,8 @@ def handle() -> None:
 
     explorer_class = SimulatedAnnealing # Default explorer
 
+    max_queries = 10
+
     # Setting given arguments
 
     if args.model:
@@ -102,14 +110,16 @@ def handle() -> None:
         explorer_class = classfactory.get_classes_from_folder('explorers', [args.explorer.lower()+".py"])[0]
     if args.processes:
         processes = args.processes
+    if args.max:
+        max_queries = args.max
 
     if generator_class.needsApiKey() and api_key == None:
         print("Error: The required API key was not present, neither in the environment nor as a parameter.")
         exit(1)
 
     if processes and processes == 1:
-        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions)
+        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions, max_queries)
     else:
-        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions)
+        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions, max_queries)
         
     harness.run()
