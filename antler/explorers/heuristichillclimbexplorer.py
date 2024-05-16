@@ -5,7 +5,7 @@ from antler.transforms import Transform
 from antler.explorers.exhaustivesearch import ExhaustiveSearch
 
 class HeuristicHillClimbExplorer(Explorer):
-    def __init__(self, techniques: list[Technique]) -> None:
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
         self.__scores: list[tuple[Transform, float]] = []
         self.__isHeuristicDone = False
 
@@ -14,10 +14,8 @@ class HeuristicHillClimbExplorer(Explorer):
         self.__MAX_CANDIDATE = 3
         self.__candidate_heuristic: list[tuple[Transform, float]] = []
 
-        self.__RUN_LIMIT = 700
-
         self.__last_scoring: tuple[Transform, float] = (Transform([]), -1)
-        super().__init__(techniques)
+        super().__init__(techniques, max_transforms)
 
     def setHeuristic(self, heuristic: list[tuple[Transform, float]]):
         self.__candidate_heuristic = heuristic
@@ -95,7 +93,6 @@ class HeuristicHillClimbExplorer(Explorer):
         Is used to keep track of the scores of each technique, and use that to explore the
         remaining possibilities
         """
-        if self._index >= self.__RUN_LIMIT: return
 
         last_transform, last_score = self.__last_scoring
         current_transform: Transform = self.transforms[self._index]

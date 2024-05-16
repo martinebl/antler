@@ -4,8 +4,8 @@ from antler.techniques import Technique
 from antler.transforms import Transform
 
 class GreedyHillClimbExplorer(Explorer):
-    def __init__(self, techniques: list[Technique]) -> None:
-        super().__init__(techniques)
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
+        super().__init__(techniques, max_transforms)
         self.scores: list[tuple[Transform, float]] = []
         self.TRANSFORM_LENGTH_CAP = 20
         self.AMOUNT_OF_TOP_CANDIDATES = 3
@@ -13,7 +13,6 @@ class GreedyHillClimbExplorer(Explorer):
 
         # Iteration stuff
         self.current_iteration = -1
-        self.max_iterations = 100
 
         self.stop_score = 1
 
@@ -35,7 +34,7 @@ class GreedyHillClimbExplorer(Explorer):
             # remove queued transforms
             self.transforms = []
             return
-        if self.current_iteration >= (self.max_iterations - 1):
+        if self.current_iteration >= (self.max_transforms - 1):
             # remove queued transforms
             self.transforms = []
             return

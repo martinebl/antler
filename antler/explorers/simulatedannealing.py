@@ -7,7 +7,7 @@ from antler.techniques import Technique
 from antler.transforms import Transform
 
 class SimulatedAnnealing(Explorer):
-    def __init__(self, techniques: list[Technique]) -> None:
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
         self.transform_length = 4
         self.scores: list[tuple[Technique, float]] = []
 
@@ -17,7 +17,6 @@ class SimulatedAnnealing(Explorer):
 
         # Iteration stuff
         self.current_iteration = -1
-        self.max_iterations = 350
         self.current_transform = None # This is the current state
         self.current_score = 0.0 # This is the current "energy"
 
@@ -25,14 +24,11 @@ class SimulatedAnnealing(Explorer):
         self.best_transform = None # Used for restarts, if no better one has been found in a while
         self.best_score = 0.0 # Used for restarts.
         self.last_reset = 0
-        self.max_bad_steps = min(round(self.max_iterations * 0.1), 10) # Take 10% of max_iterations but max 10
+        self.max_bad_steps = min(round(max_transforms * 0.1), 10) # Take 10% of max_transforms but max 10
 
-        self.stop_score = 1 # The satisfying score to end the process, if found before max_iterations
+        self.stop_score = 1 # The satisfying score to end the process, if found before max_transforms
 
-        super().__init__(techniques)
-
-    def __len__(self) -> int:
-        return self.max_iterations
+        super().__init__(techniques, max_transforms)
 
     def generateInitialTransforms(self) -> list[Transform]:
         """
@@ -53,8 +49,6 @@ class SimulatedAnnealing(Explorer):
         self.current_iteration += 1
         if score >= self.stop_score:
             self._setMessage("Found satisfying score, terminating early")
-            return
-        if self.current_iteration >= (self.max_iterations - 1):
             return
         
         temperature = self.__temperature()
@@ -88,7 +82,7 @@ class SimulatedAnnealing(Explorer):
 
 
     def __temperature(self) -> float:
-        return self.base_temperature * (1 - (self.current_iteration / self.max_iterations))
+        return self.base_temperature * (1 - (self.current_iteration / self.max_transforms))
     
     
     def __accept(self, delta_score: float, temperature: float) -> bool:
@@ -102,7 +96,7 @@ class SimulatedAnnealing(Explorer):
     
     def __reheat(self, target_fraction: float = 0.6):
         target_temp = self.start_temperature * target_fraction
-        required_base = target_temp / (1 - (self.current_iteration / self.max_iterations))
+        required_base = target_temp / (1 - (self.current_iteration / self.max_transforms))
         self.base_temperature = required_base
 
 

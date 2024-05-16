@@ -2,6 +2,7 @@
 import time
 
 from antler.probes import Probe
+from antler.techniques import Technique
 from antler.evaluator import Evaluator
 from antler.explorers import Explorer
 from antler.generators import Generator
@@ -11,12 +12,13 @@ from antler.logwriter import LogWriter
 class Harness:
     """ This is the base harness class, that coordinates probes, transformers and generators """
 
-    def __init__(self, probes: list[Probe], explorer: Explorer, generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1, max_queries: int = 10) -> None:
+    def __init__(self, probes: list[Probe], explorer_type: type[Explorer], techniques: list[Technique], generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1, max_queries: int = 10) -> None:
         self.generator_type = generator_type
         self.api_key = api_key
         self.model = model
         self.probes = probes
-        self.explorer = explorer
+        self.explorer_type = explorer_type
+        self.techniques = techniques
         self.options = options
         self.repetitions = repetitions
         self.log_writer = LogWriter()
@@ -32,8 +34,8 @@ class Harness:
         start_time = time.time()
 
         self.log_writer.LogRunParams({
-            "generator_type": str(self.generator_type),
-            "explorer": type(self.explorer).__name__,
+            "generator_type": self.generator_type.__name__,
+            "explorer": self.explorer_type.__name__,
             "model": self.model,
             "model_options": self.options,
             "repetitions": self.repetitions,

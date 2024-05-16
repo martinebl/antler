@@ -6,8 +6,8 @@ from antler.transforms import Transform
 
 class ExhaustiveSearch(Explorer):
     """ This explorer class explores the space exhaustively. Only for use early, where few techniques are present """
-    def __init__(self, techniques: list[Technique]) -> None:
-        super().__init__(techniques)
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
+        super().__init__(techniques, max_transforms)
 
     @staticmethod
     def generatePermutationsAndCombinations(techniques: list[Technique], min_length: int = 1, max_length: int = 5):

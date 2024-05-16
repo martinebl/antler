@@ -9,12 +9,13 @@ class Explorer:
     so the list can be manipulated while iterating it.
     """
     
-    def __init__(self, techniques: list[Technique]) -> None:
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
         self.techniques = techniques
         self._index = -1 # So the first call to __next__ will be on index 0
         self.transforms = self.generateInitialTransforms()
         self.__hasMessage = False
         self.__message = ""
+        self.max_transforms = max_transforms
 
     def __iter__(self):
         return self
@@ -32,13 +33,15 @@ class Explorer:
 
     def __next__(self) -> Transform:
         self._index+=1
+        if (self._index >= (self.max_transforms)):
+            raise StopIteration
         try: # Uglier than counting the list on every run, but way more efficient
             return self.transforms[self._index]
         except IndexError:
             raise StopIteration
         
     def __len__(self) -> int:
-        return len(self.transforms)
+        return self.max_transforms
         
     def getTransforms(self):
         return self.transforms

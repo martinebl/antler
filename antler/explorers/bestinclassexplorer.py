@@ -5,11 +5,14 @@ from antler.transforms import Transform
 from antler.explorers.exhaustivesearch import ExhaustiveSearch
 
 class BestInClassExplorer(Explorer):
-    def __init__(self, techniques: list[Technique]) -> None:
-        super().__init__(techniques)
+    def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
+        super().__init__(techniques, max_transforms)
         self.scores: list[tuple[Technique, float]] = []
         self.best_class_techniques: list[Technique] = []
         self._setMessage("Trying techniques individually...")
+
+    def __len__(self) -> int:
+        return min(self.max_transforms, len(self.transforms))
 
     def generateInitialTransforms(self) -> list[Transform]:
         """

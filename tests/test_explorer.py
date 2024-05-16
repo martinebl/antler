@@ -20,24 +20,24 @@ from antler.techniques.nonnaturallanguage import NonNaturalLanguage
 
 def test_base_explorer_generate_transforms_not_implemented():
     with pytest.raises(NotImplementedError):
-        Explorer([]).generateInitialTransforms()
+        Explorer([], 100).generateInitialTransforms()
 
 def test_base_explorer_seed_result_not_implemented():
     with pytest.raises(NotImplementedError):
-        Explorer([]).seedScore()
+        Explorer([], 100).seedScore()
 
 @pytest.mark.parametrize("explorer, length", [
-    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), 4),
-    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise()]), 15),
-    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding()]), 64),
-    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding(), ConvinceMissingKnowledge()]), 325),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()], 100), 4),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise()], 100), 15),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding()], 100), 64),
+    (ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression(), AddNoise(), Encoding(), ConvinceMissingKnowledge()], 100), 325),
 ])
 def test_exhaustive_search_generation(explorer, length):
     transforms = explorer.generateInitialTransforms()
     assert(len(transforms) == length)
 
 def test_exhaustive_search_iteration():
-    explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()])
+    explorer = ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()], 100)
     count = 0
     for transform in explorer:
         count +=1
@@ -46,12 +46,12 @@ def test_exhaustive_search_iteration():
     assert(count == 4)
 
 def test_bestinclassExplorer_search_generation():
-    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()])
+    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()], 100)
     transforms = explorer.generateInitialTransforms()
     assert(len(transforms) == 2)
 
 def test_bestinclassexplorer_search_normal_iteration():
-    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()])
+    explorer = BestInClassExplorer([AcceptingPrefix(), RefusalSuppression()], 100)
     count = 0
     for transform in explorer:
         count +=1
@@ -61,7 +61,7 @@ def test_bestinclassexplorer_search_normal_iteration():
     assert(len(explorer.scores) == 2)
 
 def test_bestinclassexplorer_removes_bad_technique_in_class():
-    explorer = BestInClassExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+    explorer = BestInClassExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     count = 0
     for transform in explorer:
         count +=1
@@ -71,14 +71,14 @@ def test_bestinclassexplorer_removes_bad_technique_in_class():
     assert(len(explorer.scores) == 3)
 
 def test_simulated_annealing_exchange_out_class():
-    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()])
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge()], 100)
     transform = Transform([ AddNoise(), Encoding() ])
     transform = annealing._SimulatedAnnealing__exchangeFromOutsideClass(transform)
     assert len(transform.getTechniques()) == 2
     assert ConvinceMissingKnowledge() in transform.getTechniques()
 
 def test_simulated_annealing_exchange_from_class():
-    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ])
+    annealing = SimulatedAnnealing([AddNoise(), Encoding(), ObfuscatingCode(), ConvinceMissingKnowledge(), EscapeUserPrompt(), NonNaturalLanguage() ], 100)
     transform = Transform([ AddNoise(), Encoding() ])
     changed_transform = annealing._SimulatedAnnealing__exchangeFromClass(transform)
     assert len(changed_transform.getTechniques()) == len(transform.getTechniques())
@@ -90,7 +90,7 @@ def test_simulated_annealing_exchange_from_class():
     assert new_transform == same_transform
 
 def test_simulated_annealing_swap_non_consecutive():
-    annealing = SimulatedAnnealing([])
+    annealing = SimulatedAnnealing([], 100)
     transform = Transform([ AddNoise(), Encoding(), EscapeUserPrompt() ])
     swapped_transform = annealing._SimulatedAnnealing__swapNonConsecutive(transform)
     assert swapped_transform == Transform([ EscapeUserPrompt(), Encoding(), AddNoise()])
@@ -100,7 +100,7 @@ def test_simulated_annealing_swap_non_consecutive():
     assert all(tech in new_swapped.getTechniques() for tech in new_transform.getTechniques())
 
 def test_simulated_annealing_swap_consecutive():
-    annealing = SimulatedAnnealing([])
+    annealing = SimulatedAnnealing([], 100)
     transform = Transform([ AddNoise(), Encoding() ])
     swapped_transform = annealing._SimulatedAnnealing__swapConsecutive(transform)
     assert swapped_transform == Transform([Encoding(), AddNoise()])
@@ -115,12 +115,12 @@ def test_simulated_annealing_swap_consecutive():
     ([AddNoise(), Encoding()], 2),
 ])
 def test_ghce_increment_transform_length(transforms, expected):
-    ghce = GreedyHillClimbExplorer(transforms)
+    ghce = GreedyHillClimbExplorer(transforms, 100)
     new_transforms = ghce._GreedyHillClimbExplorer__incrementTransformsLength(ghce.transforms)
     assert(len(new_transforms) == expected)
 
 def test_ghce_stops_at_100_percent_transform():
-    explorer = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+    explorer = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     count = 0
     for transform in explorer:
         count +=1
@@ -130,7 +130,7 @@ def test_ghce_stops_at_100_percent_transform():
     assert(count == 1)
 
 def test_hhce_selects_correct_starting_point():
-    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     hhce.setNoneCandidateHeuristic([
         (Transform([AcceptingPrefix(), AddNoise()]), 1),
         (Transform([AddNoise(), AcceptingPrefix()]), 1),
@@ -142,7 +142,7 @@ def test_hhce_selects_correct_starting_point():
 
 
 def test_hhce_selects_and_removes_best_heuristic():
-    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()])
+    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     hhce.setNoneCandidateHeuristic([
         (Transform([AcceptingPrefix(), AddNoise()]), 1),
         (Transform([AddNoise(), AcceptingPrefix()]), 1),

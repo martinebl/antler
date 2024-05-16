@@ -31,9 +31,10 @@ def handle() -> None:
     )
 
     parser.add_argument(
+        "-M",
         "--max",
         type=int,
-        help="The maximum amount of queries to run. Default: 10"
+        help="The maximum amount of queries to run. Default: 100"
     )
 
     parser.add_argument(
@@ -92,7 +93,7 @@ def handle() -> None:
 
     explorer_class = SimulatedAnnealing # Default explorer
 
-    max_queries = 10
+    max_queries = 100
 
     # Setting given arguments
 
@@ -118,8 +119,8 @@ def handle() -> None:
         exit(1)
 
     if processes and processes == 1:
-        harness = LinearHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions, max_queries)
+        harness = LinearHarness(probes, explorer_class, all_techniques, generator_class, api_key, model, options, repetitions, max_queries)
     else:
-        harness = MultiProcessHarness(probes, explorer_class(all_techniques), generator_class, api_key, model, options, repetitions, max_queries)
+        harness = MultiProcessHarness(probes, explorer_class, all_techniques, generator_class, api_key, model, options, repetitions, max_queries)
         
     harness.run()

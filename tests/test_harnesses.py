@@ -38,16 +38,16 @@ class Base64OfSpacesGenerator(Generator):
         
 
 def run_linear_harness():
-    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "key", "123")
+    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch, [AcceptingPrefix(), RefusalSuppression()], SleepingGenerator, "key", "123")
     harness.run()
 
 def run_multiprocess_harness():
-    harness = MultiProcessHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "key", "123")
+    harness = MultiProcessHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch, [AcceptingPrefix(), RefusalSuppression()], SleepingGenerator, "key", "123")
     harness.run()
 
 @pytest.fixture
 def linear_harness():
-    return LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix(), RefusalSuppression()]), SleepingGenerator, "key", "123")
+    return LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch, [AcceptingPrefix(), RefusalSuppression()], SleepingGenerator, "key", "123")
 
 def test_all_attempts_correct_type(linear_harness):
     linear_harness.log_writer.LogRunParams({
@@ -63,7 +63,7 @@ def test_all_attempts_correct_type(linear_harness):
 
 def test_collect_not_implemented():
     with pytest.raises(NotImplementedError):
-        harness = Harness([], None, SleepingGenerator, "key", "model")
+        harness = Harness([], None, [], SleepingGenerator, "key", "model")
         harness.collectAttempts()
 
 def test_linear_time_for_linear_harness():
@@ -107,11 +107,11 @@ def test_collapse_attempts(attempts: list[Attempt], result: list[Attempt]):
         assert collapsed_attempts[i] == result[i]
 
 def test_error_handling_harness():
-    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch([AcceptingPrefix()]), SometimesFailingGenerator, "key", "123", repetitions=3)
+    harness = LinearHarness([CurseWordFuck(), IllegalDrugs()], ExhaustiveSearch, [AcceptingPrefix()], SometimesFailingGenerator, "key", "123", repetitions=3)
     harness.run()
 
 def test_harness_answer_fixing():
-    harness = LinearHarness([], ExhaustiveSearch([]), Base64OfSpacesGenerator, "key", "123")
+    harness = LinearHarness([], ExhaustiveSearch, [], Base64OfSpacesGenerator, "key", "123")
     attempt: Attempt = Harness.runAttempt((harness, Attempt(Transform([AddNoise(), Encoding()]), CurseWordFuck())))
     print(attempt.getReplies())
     assert attempt.getAttemptSuccessRate() == 1
