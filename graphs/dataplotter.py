@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def handle_data(df, model_name):
+def handle_data(df: pd.DataFrame, model_name):
     df.plot(marker='o', linestyle='-')
     plt.xticks(range(1, len(df.index)+1), df.index)
     plt.ylabel("Average ASR [0-1]")
