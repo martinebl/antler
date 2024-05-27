@@ -36,6 +36,7 @@ if __name__ == "__main__":
         attempts = JSONParser.parse_json_as_attempts(json_data["attempts"])
         scorings = createScorings(attempts)
         
-        filtered_scorings = list(filter(lambda x: x[1] >= 0.5, scorings))
+        avg_score = sum(map(lambda x: x[1], scorings)) / len(scorings)
+        filtered_scorings = list(filter(lambda x: x[1] >= avg_score, scorings))
         for score in sorted(filtered_scorings, key= lambda x: x[1], reverse=True)[:25]:
             print(f'{score[1]} - {score[0]}')
