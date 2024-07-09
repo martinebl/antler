@@ -4,6 +4,8 @@ from antler.harnesses.linearharness import LinearHarness
 from antler.harnesses.multiprocessharness import MultiProcessHarness
 from antler import classfactory
 from antler.explorers.simulatedannealing import SimulatedAnnealing
+from antler.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
+from antler.explorers.randomsearch import RandomSearch
 from antler.generators.openai import OpenAI
 
 def handle() -> None:
@@ -91,7 +93,7 @@ def handle() -> None:
 
     repetitions = 3 # Default repetitions
 
-    explorer_class = SimulatedAnnealing # Default explorer
+    explorer_class = None # Default explorer set later
 
     max_queries = 100
 
@@ -107,12 +109,24 @@ def handle() -> None:
         options = args.options
     if args.repetitions:
         repetitions = args.repetitions
-    if args.explorer:
-        explorer_class = classfactory.get_classes_from_folder('explorers', [args.explorer.lower()+".py"])[0]
-    if args.processes:
-        processes = args.processes
     if args.max:
         max_queries = args.max
+    if args.explorer:
+        explorer_class = classfactory.get_classes_from_folder('explorers', [args.explorer.lower()+".py"])[0]
+    else: # If no explorer is given, choose one based on the amount of queries
+        if max_queries <= 1000:
+            explorer_class = RandomSearch
+            print("Low amount of queries (<= 1000), using Random search")
+        elif max_queries <= 3000:
+            explorer_class = SimulatedAnnealing
+            print("Medium amount of queries (> 1000), using Simulated annealing")
+        else:
+            explorer_class = GreedyHillClimbExplorer 
+            print("High amount of queries (> 3000), using Greedy hill climb")
+    if args.processes:
+        processes = args.processes
+    
+
 
     if generator_class.needsApiKey() and api_key == None:
         print("Error: The required API key was not present, neither in the environment nor as a parameter.")
