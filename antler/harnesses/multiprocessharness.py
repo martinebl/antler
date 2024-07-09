@@ -13,7 +13,7 @@ from antler.attempt import Attempt
 class MultiProcessHarness(Harness):
     def __init__(self, probes: list[Probe], explorer_type: type[Explorer], techniques: list[Technique], generator_type: type[Generator], api_key: str, model: str, options: dict = {}, repetitions: int = 1, max_queries: int = 10) -> None:
         super(MultiProcessHarness, self).__init__(probes, explorer_type, techniques, generator_type, api_key, model, options, repetitions, max_queries)
-        MAX_PROCESSES = 20
+        MAX_PROCESSES = 30
         self.processes = min(len(probes) * repetitions, MAX_PROCESSES )
     
     @staticmethod
