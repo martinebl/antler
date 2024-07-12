@@ -33,10 +33,12 @@ pip install -e .
 The currently supported LLM providers are: Replicate, OpenAI and Ollama. 
 
 **Replicate**
+
 When using the replicate provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "REPLICATE_API_TOKEN".
 The full model name, including the provider is required, e.g. "mistralai/mixtral-8x7b-instruct-v0.1".
 
 **OpenAI**
+
 When using the openai provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "OPENAI_API_TOKEN".
 
 <!-- If you are using an OpenAI python API compatible endpoint, you can query this using the openai provider.
@@ -44,6 +46,7 @@ For the openai provider class, to send requests to a non default link, either th
 This link should be of the form "host:port" e.g. "localhost:11434". -->
 
 **Ollama**
+
 When using the ollama provider no API key is needed. It is required to have an accessible ollama instance running. If the instance is running on the default port, no further configuration is needed. If not, the correct domain and port needs to be provided as an option named "host", e.g. `--options '{"host":"127.0.0.1:11434"}'`.
 Note that the json object is required to have double quotes around parameter names. 
 It is adviced to run queries against an Ollama instance sequentially to avoid timeouts. This is done by specifying `--processes 1`.
@@ -67,15 +70,15 @@ antler -p ollama -m mistral -r 1 -P 1 --options '{"host":"127.0.0.1:11434"}'
 ```
 
 #### Sample run and results
-![Gif](https://github.com/martinebl/antler/blob/a8bd5d5b2ec26e4e561a92942128b1fb32ff8c6c/resources/sample-run.gif)
+![Sample run gif](https://github.com/martinebl/antler/blob/43057eb832e657d46e4fefddbe959e039b0ea84a/resources/sample-run.gif)
 
 The gif above shows a sample run at 2x speed.
 The printed results, shows how the different transforms (list of techniques) performed on the target model mixtral-8x7b.
 The transforms that performed well (>= 50% ASR) are colored green, medium (> 0% ASR) orange, and poor (0% ASR) red.
-The average ASR's of each technique and probe is also displayed.
+The average ASR's of each technique and probe are also displayed.
 
-When running the program two folders will be created in the current directory: reports and logs.
-In the logs file, will be a json file containing all prompts sent to the model paired with all the different answers recieved to said prompts.
-In the reports file a txt version of the printed report in the terminal is stored.
+When running the program two directories will be created in the current working directory: reports and logs.
+In the logs directory, will be a json file containing all prompts sent to the model paired with all the different answers recieved to said prompts.
+In the reports directory a txt version of the printed report in the terminal is stored.
 
 Authored by M. Borup-Larsen and C. Christoffersen
