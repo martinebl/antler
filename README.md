@@ -31,9 +31,11 @@ pip install -e .
 ```
 ## Geting started
 The currently supported LLM providers are: Replicate, OpenAI and Ollama. 
+
 **Replicate**
 When using the replicate provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "REPLICATE_API_TOKEN".
 The full model name, including the provider is required, e.g. "mistralai/mixtral-8x7b-instruct-v0.1".
+
 **OpenAI**
 When using the openai provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "OPENAI_API_TOKEN".
 
@@ -70,6 +72,7 @@ antler -p ollama -m mistral -r 1 -P 1 --options '{"host":"127.0.0.1:11434"}'
 The gif above shows a sample run at 2x speed.
 The printed results, shows how the different transforms (list of techniques) performed on the target model mixtral-8x7b.
 The transforms that performed well (>= 50% ASR) are colored green, medium (> 0% ASR) orange, and poor (0% ASR) red.
+The average ASR's of each technique and probe is also displayed.
 
 When running the program two folders will be created in the current directory: reports and logs.
 In the logs file, will be a json file containing all prompts sent to the model paired with all the different answers recieved to said prompts.
