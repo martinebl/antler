@@ -70,7 +70,7 @@ antler -p ollama -m mistral -r 1 -P 1 --options '{"host":"127.0.0.1:11434"}'
 ```
 
 #### Sample run and results
-![Sample run gif](https://github.com/martinebl/antler/blob/43057eb832e657d46e4fefddbe959e039b0ea84a/resources/sample-run.gif)
+![](https://raw.githubusercontent.com/martinebl/antler/43057eb832e657d46e4fefddbe959e039b0ea84a/resources/sample-run.gif)
 
 The gif above shows a sample run at 2x speed.
 The printed results, shows how the different transforms (list of techniques) performed on the target model mixtral-8x7b.

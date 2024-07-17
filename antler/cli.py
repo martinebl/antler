@@ -29,7 +29,7 @@ def handle() -> None:
         "-e",
         "--explorer",
         type=str,
-        help="The explorer strategy. Examples: simulatedannealing, randomsearch. Default: simulatedannealing"
+        help="The explorer strategy. Examples: simulatedannealing, randomsearch. Default depends on max queries"
     )
 
     parser.add_argument(
@@ -43,7 +43,7 @@ def handle() -> None:
         "-P",
         "--processes",
         type=int,
-        help="When present and = 1, uses the linear (sequential) harness, instead of the multiprocessing one. Good for local LLM's, that can't process multiple queries at a time."
+        help="The number of processes to run in parallel. Currently only has an effect when = 1, activating sequential querying"
     )
 
     parser.add_argument(
