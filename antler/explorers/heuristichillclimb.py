@@ -4,7 +4,7 @@ from antler.techniques import Technique
 from antler.transforms import Transform
 from antler.explorers.exhaustivesearch import ExhaustiveSearch
 
-class HeuristicHillClimbExplorer(Explorer):
+class HeuristicHillClimb(Explorer):
     def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
         self.__scores: list[tuple[Transform, float]] = []
         self.__isHeuristicDone = False
@@ -69,7 +69,7 @@ class HeuristicHillClimbExplorer(Explorer):
         transform, score = self.__getCurrentCandidate()
         self.__candidate_heuristic = self.__HEURISTIC.copy()
         self.__candidate_heuristic = self.__removeAllCandidates(self.__candidate_heuristic, self.__static_candidate_index)
-        self.__candidate_heuristic = HeuristicHillClimbExplorer.__removeSameCombinationTransforms(self.__candidate_heuristic, transform)
+        self.__candidate_heuristic = HeuristicHillClimb.__removeSameCombinationTransforms(self.__candidate_heuristic, transform)
         return (transform, score)
 
     def __setLastScoring(self, scoring: tuple[Transform, float]) -> None:

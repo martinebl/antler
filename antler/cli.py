@@ -4,7 +4,7 @@ from antler.harnesses.linearharness import LinearHarness
 from antler.harnesses.multiprocessharness import MultiProcessHarness
 from antler import classfactory
 from antler.explorers.simulatedannealing import SimulatedAnnealing
-from antler.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
+from antler.explorers.greedyhillclimb import GreedyHillClimb
 from antler.explorers.randomsearch import RandomSearch
 from antler.generators.openai import OpenAI
 
@@ -121,7 +121,7 @@ def handle() -> None:
             explorer_class = SimulatedAnnealing
             print("Medium amount of queries (> 1000), using Simulated annealing")
         else:
-            explorer_class = GreedyHillClimbExplorer 
+            explorer_class = GreedyHillClimb
             print("High amount of queries (> 3000), using Greedy hill climb")
     if args.processes:
         processes = args.processes

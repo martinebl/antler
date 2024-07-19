@@ -5,8 +5,8 @@ from antler.transforms import Transform
 from antler.explorers.exhaustivesearch import ExhaustiveSearch
 from antler.explorers.bestinclassexplorer import BestInClassExplorer
 from antler.explorers.simulatedannealing import SimulatedAnnealing
-from antler.explorers.greedyhillclimbexplorer import GreedyHillClimbExplorer
-from antler.explorers.heuristichillclimbexplorer import HeuristicHillClimbExplorer
+from antler.explorers.greedyhillclimb import GreedyHillClimb
+from antler.explorers.heuristichillclimb import HeuristicHillClimb
 
 from antler.techniques.refusalsuppression import RefusalSuppression
 from antler.techniques.acceptingprefix import AcceptingPrefix
@@ -115,12 +115,12 @@ def test_simulated_annealing_swap_consecutive():
     ([AddNoise(), Encoding()], 2),
 ])
 def test_ghce_increment_transform_length(transforms, expected):
-    ghce = GreedyHillClimbExplorer(transforms, 100)
-    new_transforms = ghce._GreedyHillClimbExplorer__incrementTransformsLength(ghce.transforms)
+    ghce = GreedyHillClimb(transforms, 100)
+    new_transforms = ghce._GreedyHillClimb__incrementTransformsLength(ghce.transforms)
     assert(len(new_transforms) == expected)
 
 def test_ghce_stops_at_100_percent_transform():
-    explorer = GreedyHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
+    explorer = GreedyHillClimb([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     count = 0
     for transform in explorer:
         count +=1
@@ -130,28 +130,28 @@ def test_ghce_stops_at_100_percent_transform():
     assert(count == 1)
 
 def test_hhce_selects_correct_starting_point():
-    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
+    hhce = HeuristicHillClimb([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     hhce.setNoneCandidateHeuristic([
         (Transform([AcceptingPrefix(), AddNoise()]), 1),
         (Transform([AddNoise(), AcceptingPrefix()]), 1),
         (Transform([AddNoise(), Encoding()]), 0.8),
         (Transform([Encoding(), AcceptingPrefix()]), 0.7),
     ])
-    transform, score = hhce._HeuristicHillClimbExplorer__initializeFreshCandidate()
+    transform, score = hhce._HeuristicHillClimb__initializeFreshCandidate()
     assert transform == Transform([AcceptingPrefix(), AddNoise()]) and score == 1
 
 
 def test_hhce_selects_and_removes_best_heuristic():
-    hhce = HeuristicHillClimbExplorer([AcceptingPrefix(), AddNoise(), Encoding()], 100)
+    hhce = HeuristicHillClimb([AcceptingPrefix(), AddNoise(), Encoding()], 100)
     hhce.setNoneCandidateHeuristic([
         (Transform([AcceptingPrefix(), AddNoise()]), 1),
         (Transform([AddNoise(), AcceptingPrefix()]), 1),
         (Transform([AddNoise(), Encoding()]), 0.8),
         (Transform([Encoding(), AcceptingPrefix()]), 0.7),
     ])
-    transform, score =  hhce._HeuristicHillClimbExplorer__initializeFreshCandidate()
-    nx = hhce._HeuristicHillClimbExplorer__findBestExtension(hhce._HeuristicHillClimbExplorer__candidate_heuristic, transform)
-    heuristic = hhce._HeuristicHillClimbExplorer__removeTransformFromHeuristic(hhce._HeuristicHillClimbExplorer__candidate_heuristic, nx)
+    transform, score =  hhce._HeuristicHillClimb__initializeFreshCandidate()
+    nx = hhce._HeuristicHillClimb__findBestExtension(hhce._HeuristicHillClimb__candidate_heuristic, transform)
+    heuristic = hhce._HeuristicHillClimb__removeTransformFromHeuristic(hhce._HeuristicHillClimb__candidate_heuristic, nx)
     assert nx == Transform([AddNoise(), Encoding()])
     assert heuristic == [
         (Transform([Encoding(), AcceptingPrefix()]), 0.7),
@@ -159,5 +159,5 @@ def test_hhce_selects_and_removes_best_heuristic():
 
 def test_remove_transform_from_heuristic():
     h = [(Transform(AddNoise()), 1), (Transform(Encoding()), 0.5)]
-    h = HeuristicHillClimbExplorer._HeuristicHillClimbExplorer__removeTransformFromHeuristic(h, Transform(AddNoise()))
+    h = HeuristicHillClimb._HeuristicHillClimb__removeTransformFromHeuristic(h, Transform(AddNoise()))
     assert h == [(Transform(Encoding()), 0.5)]

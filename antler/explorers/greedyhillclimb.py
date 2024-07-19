@@ -3,7 +3,7 @@ from antler.explorers import Explorer
 from antler.techniques import Technique
 from antler.transforms import Transform
 
-class GreedyHillClimbExplorer(Explorer):
+class GreedyHillClimb(Explorer):
     def __init__(self, techniques: list[Technique], max_transforms: int) -> None:
         super().__init__(techniques, max_transforms)
         self.scores: list[tuple[Transform, float]] = []
