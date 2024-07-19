@@ -55,7 +55,7 @@ It is adviced to run queries against an Ollama instance sequentially to avoid ti
 * `--provider, -p`          The target provider. Examples: openai, ollama, replicate
 * `--model, -m`             The target model. Examples: gpt-3.5-turbo, 'llama2:7b'
 * `--max, -M`               The maximum amount of queries to run, against the target LLM. Default: 100. 
-* `--explorer, -e`          The explorer strategy. Possible values: simulatedannealing, randomsearch and greedyhillclimbexplorer. Default depends on max queries.
+* `--explorer, -e`          The explorer strategy. Possible values: simulatedannealing, randomsearch and greedyhillclimb. Default depends on max queries.
 * `--repetitions, -r`       The repetitions of each prompt/probe queries. Default: 3
 * `--processes, -P`         The number of processes to run in parallel. Currently only has an effect when = 1, activating sequential querying.
 * `--api_key`               The api_key for the target provider. Optional for locally running LLMs.
