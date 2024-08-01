@@ -30,20 +30,26 @@ Install an editable version with pip, possibly after opening a virtual environme
 pip install -e .
 ```
 ## Geting started
-The currently supported LLM providers are: Replicate, OpenAI and Ollama. 
-
-**Replicate**
-
-When using the replicate provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "REPLICATE_API_TOKEN".
-The full model name, including the provider is required, e.g. "mistralai/mixtral-8x7b-instruct-v0.1".
+The currently supported LLM providers are: OpenAI, Replicate, OctoAI and Ollama. 
 
 **OpenAI**
 
 When using the openai provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "OPENAI_API_TOKEN".
+When specifying model name, simply use the name of the model e.g. "gpt-3.5-turbo".
 
 <!-- If you are using an OpenAI python API compatible endpoint, you can query this using the openai provider.
 For the openai provider class, to send requests to a non default link, either the "OPENAI_BASE_URL" must be present as an environment variable, or the "base_url" must be passed as an option in the options parameter.
 This link should be of the form "host:port" e.g. "localhost:11434". -->
+**Replicate**
+
+When using the replicate provider, an API key is needed. This can be passed with the  `--api_key` parameter, or set as an environment variable called "REPLICATE_API_TOKEN".
+When specifying model name, it is required to include the provider e.g. "mistralai/mixtral-8x7b-instruct-v0.1".
+
+**OctoAI**
+
+When using the octoai provider, an API key is needed. This can be passed with the `--api_key` parameter, or set as an environment variable called "OCTOAI_TOKEN".
+When specifying model name, simply use the name of the model e.g. "meta-llama-3.1-8b-instruct".
+
 
 **Ollama**
 
