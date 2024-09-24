@@ -5,6 +5,10 @@
 The antler tool is an automatic tool for generating and evaluating jailbreak attacks against a target LLM.
 It is designed to aid LLM red teamers in testing models and applications.
 
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Downloads](https://static.pepy.tech/badge/antler)](https://pepy.tech/project/antler)
+[![Downloads](https://static.pepy.tech/badge/antler/month)](https://pepy.tech/project/antler)
+
 ## Introduction
 Built as part of a thesis project, the antler tool attempts to find a combination and permutation of jailbreak techniques, that can successfully jailbreak a given target model.
 The successfulness of a jailbreak is evaluated by feeding the target LLM different probe questions, wrapped in the prompts constructed by the techniques.
